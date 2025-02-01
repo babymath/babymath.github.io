@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addition Speed Game</title>
+
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: auto;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Question Display */
+        #question {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        /* Input Box */
+        input[type="number"] {
+            padding: 10px;
+            width: 80%;
+            font-size: 18px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Buttons */
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Restart Button Style */
+        #restart-btn {
+            background-color: #dc3545; /* Red Color */
+            display: none; /* Initially Hidden */
+        }
+
+        #restart-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Timer Display */
+        #timer {
+            font-size: 22px;
+            color: #ff0000;
+            margin: 10px 0;
+        }
+
+        /* Result Display */
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Hide the Game Area Initially */
+        #game-area {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Addition Speed Game</h1>
+        <div id="timer">Time: 0.00 s</div>
+        <div id="question">Press "Start Game" to begin!</div>
+        
+        <div id="game-area">
+            <input type="number" id="answer" placeholder="Enter your answer" autofocus>
+            <br>
+            <button onclick="checkAnswer()">Submit Answer</button>
+        </div>
+
+        <button id="start-btn" onclick="startGame()">Start Game</button>
+        <button id="restart-btn" onclick="restartGame()">Restart Game</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let num1, num2, correctAnswer;
+        let questionCount = 0;
+        const totalQuestions = 10;
+        let startTime, timerInterval;
+
+        function startGame() {
+            questionCount = 0;
+            document.getElementById('result').textContent = '';
+            document.getElementById('timer').textContent = 'Time: 0.00 s';
+
+            // Hide Start Button, Show Game Area and Restart Button
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            document.getElementById('restart-btn').style.display = 'inline-block';
+
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').focus();
+
+            // Start the Timer
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 100);
+
+            generateQuestion();
+        }
+
+        function updateTimer() {
+            const currentTime = Date.now();
+            const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2);
+            document.getElementById('timer').textContent = `Time: ${elapsedTime} s`;
+        }
+
+        function generateQuestion() {
+            do {
+                num1 = Math.floor(Math.random() * 50) + 1;
+                num2 = Math.floor(Math.random() * 50) + 1;
+            } while (num1 === num2);
+
+            correctAnswer = num1 + num2;
+            document.getElementById('question').textContent = `Question ${questionCount + 1}: What is ${num1} + ${num2}?`;
+
+            document.getElementById('answer').focus();
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            if (userAnswer === correctAnswer) {
+                questionCount++;
+                if (questionCount < totalQuestions) {
+                    document.getElementById('answer').value = '';
+                    generateQuestion();
+                } else {
+                    clearInterval(timerInterval);
+                    const finalTime = document.getElementById('timer').textContent.split(' ')[1];
+                    document.getElementById('result').textContent = `Game Over! Total Time: ${finalTime}`;
+
+                    // Hide Game Area
+                    document.getElementById('game-area').style.display = 'none';
+                }
+            } else {
+                alert('Wrong! Try again.');
+                document.getElementById('answer').value = '';
+                document.getElementById('answer').focus();
+            }
+        }
+
+        // Restart Game Function
+        function restartGame() {
+            clearInterval(timerInterval); // Stop any running timer
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('restart-btn').style.display = 'none';
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('result').textContent = '';
+            document.getElementById('timer').textContent = 'Time: 0.00 s';
+            document.getElementById('question').textContent = 'Press "Start Game" to begin!';
+        }
+
+        // Listen for Enter Key to Submit Answer
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && document.getElementById('game-area').style.display === 'block') {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
