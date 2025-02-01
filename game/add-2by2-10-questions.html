@@ -38,6 +38,14 @@
             margin-top: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        /* Incorrect Answer Style */
+        input.wrong {
+            border: 2px solid red;
+            background-color: #ffe5e5;
         }
 
         /* Buttons */
@@ -151,11 +159,15 @@
         }
 
         function checkAnswer() {
-            const userAnswer = parseInt(document.getElementById('answer').value);
+            const answerInput = document.getElementById('answer');
+            const userAnswer = parseInt(answerInput.value);
+
             if (userAnswer === correctAnswer) {
                 questionCount++;
+                answerInput.value = '';
+                answerInput.classList.remove('wrong'); // Remove red border if previously added
+
                 if (questionCount < totalQuestions) {
-                    document.getElementById('answer').value = '';
                     generateQuestion();
                 } else {
                     clearInterval(timerInterval);
@@ -166,9 +178,16 @@
                     document.getElementById('game-area').style.display = 'none';
                 }
             } else {
-                alert('Wrong! Try again.');
-                document.getElementById('answer').value = '';
-                document.getElementById('answer').focus();
+                // Highlight incorrect answer
+                answerInput.classList.add('wrong');
+
+                // Remove the red highlight after 1 second
+                setTimeout(() => {
+                    answerInput.classList.remove('wrong');
+                }, 1000);
+
+                answerInput.value = '';
+                answerInput.focus();
             }
         }
 
