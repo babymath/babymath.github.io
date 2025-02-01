@@ -6,20 +6,28 @@
     <title>Addition Speed Game</title>
 
     <style>
-        /* General Body Styling */
+        /* Remove All Margins and Padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full-Screen Layout */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
-            padding: 20px;
+            padding: 0; /* No padding */
         }
 
         /* Main Container */
         .container {
             background-color: white;
             padding: 20px;
-            margin: auto;
-            width: 300px;
+            width: 100%; /* Full width */
+            max-width: 400px; /* Max width for larger screens */
+            margin: 0 auto; /* Center horizontally */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
