@@ -33,18 +33,23 @@ $(document).ready(function() {
         if (digitCount === 1) {
             min = 0;
             max = 9;
-        } else {
-            min = Math.pow(10, digitCount - 1);
-            max = Math.pow(10, digitCount) - 1;
+        } else if (digitCount === 2) {
+            min = 10;
+            max = 99;
+        } else if (digitCount === 3) {
+            min = 100;
+            max = 999;
         }
 
-        // Ensure both numbers are different
+        // Generate valid numbers
         num1 = Math.floor(Math.random() * (max - min + 1)) + min;
         do {
             num2 = Math.floor(Math.random() * (max - min + 1)) + min;
         } while (num1 === num2);
 
         correctAnswer = num1 + num2;
+
+        // Display the question
         $('#question').text(`Question ${questionCount + 1}: What is ${num1} + ${num2}?`);
         $('#answer').val('').focus();
     }
@@ -54,7 +59,7 @@ $(document).ready(function() {
         const userAnswer = parseInt($('#answer').val());
         const $answerInput = $('#answer');
 
-        if (userAnswer === correctAnswer) {
+        if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
             questionCount++;
             $answerInput.val('').removeClass('wrong').attr('placeholder', 'Enter your answer');
 
