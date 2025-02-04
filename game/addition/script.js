@@ -39,14 +39,14 @@ $(document).ready(function() {
         }
 
         // Ensure both numbers are different
+        num1 = Math.floor(Math.random() * (max - min + 1)) + min;
         do {
-            num1 = Math.floor(Math.random() * (max - min + 1)) + min;
             num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-        } while (num1 === num2 || num1 < min || num2 < min);
+        } while (num1 === num2);
 
         correctAnswer = num1 + num2;
         $('#question').text(`Question ${questionCount + 1}: What is ${num1} + ${num2}?`);
-        $('#answer').focus();
+        $('#answer').val('').focus();
     }
 
     // Check Answer
