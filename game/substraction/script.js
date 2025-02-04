@@ -107,4 +107,5 @@ $('#restart').click(function () {
     totalTime = totalQuestions = minuendDigits = subtrahendDigits = 0;
     $('.option').removeClass('active');
     $('#start-game').hide();
+    $('#restart').hide();
 });
