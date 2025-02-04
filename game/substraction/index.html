@@ -13,24 +13,35 @@
 
         <!-- Setup Section -->
         <div id="setup">
-            <p>Select Time Limit:</p>
-            <button class="option time-option" data-time="15">15s</button>
-            <button class="option time-option" data-time="30">30s</button>
-            <button class="option time-option" data-time="45">45s</button>
-            <button class="option time-option" data-time="60">1 min</button>
+            <div class="section">
+                <p>Select Time Limit:</p>
+                <button class="option time-option" data-time="15">15s</button>
+                <button class="option time-option" data-time="30">30s</button>
+                <button class="option time-option" data-time="45">45s</button>
+                <button class="option time-option" data-time="60">1 Min</button>
+            </div>
 
-            <p>Select Total Questions:</p>
-            <button class="option question-option" data-questions="5">5</button>
-            <button class="option question-option" data-questions="10">10</button>
-            <button class="option question-option" data-questions="15">15</button>
+            <div class="section">
+                <p>Select Total Questions:</p>
+                <button class="option question-option" data-questions="5">5</button>
+                <button class="option question-option" data-questions="10">10</button>
+                <button class="option question-option" data-questions="15">15</button>
+                <button class="option question-option" data-questions="20">20</button>
+            </div>
 
-            <p>Select Minuend Digits:</p>
-            <button class="option minuend-option" data-digits="1">1 Digit</button>
-            <button class="option minuend-option" data-digits="2">2 Digits</button>
+            <div class="section">
+                <p>Select Minuend Digits:</p>
+                <button class="option minuend-option" data-digits="1">1 Digit</button>
+                <button class="option minuend-option" data-digits="2">2 Digits</button>
+                <button class="option minuend-option" data-digits="3">3 Digits</button>
+            </div>
 
-            <p>Select Subtrahend Digits:</p>
-            <button class="option subtrahend-option" data-digits="1">1 Digit</button>
-            <button class="option subtrahend-option" data-digits="2">2 Digits</button>
+            <div class="section">
+                <p>Select Subtrahend Digits:</p>
+                <button class="option subtrahend-option" data-digits="1">1 Digit</button>
+                <button class="option subtrahend-option" data-digits="2">2 Digits</button>
+                <button class="option subtrahend-option" data-digits="3">3 Digits</button>
+            </div>
 
             <button id="start-game" style="display: none;">Start Game</button>
         </div>
@@ -40,15 +51,15 @@
             <div id="timer"></div>
             <div id="remaining"></div>
             <div id="problem"></div>
-            <input type="number" id="answer" placeholder="Enter your answer">
+            <input type="number" id="answer" placeholder="Your answer" autocomplete="off">
             <button id="submit">Submit</button>
-            <button id="restart">⟳ Restart</button>
         </div>
 
-        <!-- Result Section -->
+        <!-- Result & Restart -->
         <div id="result" style="display: none;"></div>
+        <button id="restart" style="display: none;">Restart Game</button>
     </div>
 
     <script src="script.js"></script>
 </body>
-      </html>
+</html>
