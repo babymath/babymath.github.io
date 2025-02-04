@@ -27,13 +27,22 @@ $(document).ready(function() {
 
     // Generate New Question
     function generateQuestion() {
-        let min = (digitCount === 1) ? 0 : Math.pow(10, digitCount - 1);
-        let max = Math.pow(10, digitCount) - 1;
+        let min, max;
 
+        // Determine the range based on the digit count
+        if (digitCount === 1) {
+            min = 0;
+            max = 9;
+        } else {
+            min = Math.pow(10, digitCount - 1);
+            max = Math.pow(10, digitCount) - 1;
+        }
+
+        // Ensure both numbers are different
         do {
             num1 = Math.floor(Math.random() * (max - min + 1)) + min;
             num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-        } while (num1 === num2);
+        } while (num1 === num2 || num1 < min || num2 < min);
 
         correctAnswer = num1 + num2;
         $('#question').text(`Question ${questionCount + 1}: What is ${num1} + ${num2}?`);
