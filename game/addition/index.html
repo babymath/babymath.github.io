@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addition Speed Game</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Addition Speed Game</h1>
+
+        <!-- Number of Digits Selection -->
+        <label for="digit-select" id="digit-select">Select Number of Digits:</label>
+        <select id="digit-select">
+            <option value="1">1 Digit (0-9)</option>
+            <option value="2">2 Digits (10-99)</option>
+            <option value="3">3 Digits (100-999)</option>
+        </select>
+
+        <div id="timer">Time: 0.00 s</div>
+        <div id="question">Press "Start Game" to begin!</div>
+        
+        <div id="game-area">
+            <input type="number" id="answer" placeholder="Enter your answer" autofocus>
+            <br>
+            <button id="submit-btn">Submit Answer</button>
+        </div>
+
+        <button id="start-btn">Start Game</button>
+        <button id="restart-btn">Restart Game</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
