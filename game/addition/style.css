@@ -1,0 +1,116 @@
+/* Reset Default Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    padding: 30px 20px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 26px;
+}
+
+#timer {
+    font-size: 20px;
+    color: #ff5e57;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+#question {
+    font-size: 22px;
+    color: #444;
+    margin: 20px 0;
+}
+
+input[type="number"], select {
+    padding: 12px;
+    width: 85%;
+    font-size: 18px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+input[type="number"]:focus, select:focus {
+    border-color: #74ebd5;
+    background-color: #f0faff;
+}
+
+input.wrong {
+    border: 2px solid #ff5e57;
+    background-color: #ffe5e5;
+    color: #ff5e57; 
+    font-weight: bold;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 8px 5px;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #9face6, #74ebd5);
+    transform: scale(1.05);
+}
+
+#restart-btn {
+    background: linear-gradient(135deg, #ff5e57, #ff9966);
+    display: none;
+}
+
+#restart-btn:hover {
+    background: linear-gradient(135deg, #ff9966, #ff5e57);
+}
+
+#result {
+    font-size: 20px;
+    margin-top: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+#game-area {
+    display: none;
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 20px 10px;
+    }
+}
