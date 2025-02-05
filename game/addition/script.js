@@ -1,100 +1,137 @@
-$(document).ready(function() {
-    let num1, num2, correctAnswer;
-    let questionCount = 0;
-    const totalQuestions = 10;
-    let startTime, timerInterval;
+document.addEventListener('DOMContentLoaded', () => {
+    const homePage = document.getElementById('home-page');
+    const gamePage = document.getElementById('game-page');
+    const resultPage = document.getElementById('result-page');
+
+    const digitSelect = document.getElementById('digit-select');
+    const timeOptionDiv = document.getElementById('time-option');
+    const questionsOptionDiv = document.getElementById('questions-option');
+
+    const gameTimeOption = document.getElementById('game-time-option');
+    const gameQuestionsOption = document.getElementById('game-questions-option');
+
+    const questionText = document.getElementById('question-text');
+    const questionNumber = document.getElementById('question-number');
+    const answerInput = document.getElementById('answer');
+    const submitBtn = document.getElementById('submit-btn');
+    const timerElement = document.getElementById('timer');
+
+    const restartBtn = document.getElementById('restart-btn');
+    const restartBtnResult = document.getElementById('restart-btn-result');
+
+    const finalTime = document.getElementById('final-time');
+    const totalQuestionsAnswered = document.getElementById('total-questions-answered');
+
+    let correctAnswer, questionCount, startTime, timerInterval;
+    let totalTimeLimit = 0, totalQuestions = 0, gameMode = '';
     let digitCount = 1;
 
-    // Start Game
-    $('#start-btn').click(function() {
-        digitCount = parseInt($('#digit-select').val());
-        questionCount = 0;
-        $('#result, #timer').text('');
-        $('#start-btn, #digit-select').hide();
-        $('#game-area, #restart-btn').show();
-        $('#answer').val('').focus();
-        startTime = Date.now();
-        timerInterval = setInterval(updateTimer, 100);
-        generateQuestion();
+    // Game Mode Selection
+    gameTimeOption.addEventListener('click', () => {
+        timeOptionDiv.classList.remove('hidden');
+        questionsOptionDiv.classList.add('hidden');
+        gameMode = 'time';
     });
 
-    // Update Timer
-    function updateTimer() {
-        const currentTime = Date.now();
-        const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2);
-        $('#timer').text(`Time: ${elapsedTime} s`);
-    }
+    gameQuestionsOption.addEventListener('click', () => {
+        questionsOptionDiv.classList.remove('hidden');
+        timeOptionDiv.classList.add('hidden');
+        gameMode = 'questions';
+    });
 
-    // Generate New Question
-    function generateQuestion() {
-        let min, max;
+    // Start Game for Time Limit
+    document.querySelectorAll('.time-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            totalTimeLimit = parseInt(button.dataset.time) * 1000;
+            startGame();
+        });
+    });
 
-        // Determine the range based on the digit count
-        if (digitCount === 1) {
-            min = 0;
-            max = 9;
-        } else if (digitCount === 2) {
-            min = 10;
-            max = 99;
-        } else if (digitCount === 3) {
-            min = 100;
-            max = 999;
+    // Start Game for Question Limit
+    document.querySelectorAll('.questions-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            totalQuestions = parseInt(button.dataset.questions);
+            startGame();
+        });
+    });
+
+    function startGame() {
+        digitCount = parseInt(digitSelect.value);
+        questionCount = 0;
+        startTime = Date.now();
+        homePage.classList.add('hidden');
+        gamePage.classList.remove('hidden');
+        restartBtn.classList.remove('hidden');
+
+        if (gameMode === 'time') {
+            timerInterval = setInterval(updateTimer, 100);
         }
 
-        // Generate valid numbers
-        num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-        do {
-            num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-        } while (num1 === num2);
+        generateQuestion();
+    }
+
+    function updateTimer() {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        timerElement.textContent = `⏱ Time: ${elapsed} s`;
+
+        if (gameMode === 'time' && Date.now() - startTime >= totalTimeLimit) {
+            clearInterval(timerInterval);
+            endGame();
+        }
+    }
+
+    function generateQuestion() {
+        const min = digitCount === 1 ? 0 : Math.pow(10, digitCount - 1);
+        const max = Math.pow(10, digitCount) - 1;
+
+        const num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+        const num2 = Math.floor(Math.random() * (max - min + 1)) + min;
 
         correctAnswer = num1 + num2;
-
-        // Display the question
-        $('#question').text(`Question ${questionCount + 1}: What is ${num1} + ${num2}?`);
-        $('#answer').val('').focus();
+        questionText.textContent = `What is ${num1} + ${num2}?`;
+        questionNumber.textContent = questionCount + 1;
+        answerInput.value = '';
+        answerInput.focus();
     }
 
-    // Check Answer
+    submitBtn.addEventListener('click', checkAnswer);
+    answerInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') checkAnswer();
+    });
+
     function checkAnswer() {
-        const userAnswer = parseInt($('#answer').val());
-        const $answerInput = $('#answer');
-
-        if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+        const userAnswer = parseInt(answerInput.value);
+        if (userAnswer === correctAnswer) {
             questionCount++;
-            $answerInput.val('').removeClass('wrong').attr('placeholder', 'Enter your answer');
-
-            if (questionCount < totalQuestions) {
-                generateQuestion();
+            if (gameMode === 'questions' && questionCount >= totalQuestions) {
+                endGame();
             } else {
-                clearInterval(timerInterval);
-                const finalTime = $('#timer').text().split(' ')[1];
-                $('#result').text(`🎉 Game Over! Total Time: ${finalTime}`);
-                $('#game-area').hide();
+                generateQuestion();
             }
         } else {
-            $answerInput.addClass('wrong').val('').attr('placeholder', 'Wrong! Try again.');
-            setTimeout(() => $answerInput.removeClass('wrong').attr('placeholder', 'Enter your answer'), 1500);
-            $answerInput.focus();
+            answerInput.value = '';
+            answerInput.placeholder = 'Wrong answer, try again!';
         }
     }
 
-    // Submit Answer on Button Click
-    $('#submit-btn').click(checkAnswer);
-
-    // Submit Answer on Enter Key
-    $(document).keydown(function(event) {
-        if (event.key === 'Enter' && $('#game-area').is(':visible')) {
-            checkAnswer();
-        }
-    });
-
-    // Restart Game
-    $('#restart-btn').click(function() {
+    function endGame() {
         clearInterval(timerInterval);
-        $('#start-btn, #digit-select').show();
-        $('#restart-btn, #game-area').hide();
-        $('#result').text('');
-        $('#timer').text('Time: 0.00 s');
-        $('#question').text('Press "Start Game" to begin!');
-    });
+        const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+        finalTime.textContent = `Total Time: ${totalTime} seconds`;
+        totalQuestionsAnswered.textContent = `Total Questions Answered: ${questionCount}`;
+
+        gamePage.classList.add('hidden');
+        resultPage.classList.remove('hidden');
+    }
+
+    restartBtn.addEventListener('click', resetGame);
+    restartBtnResult.addEventListener('click', resetGame);
+
+    function resetGame() {
+        clearInterval(timerInterval);
+        homePage.classList.remove('hidden');
+        gamePage.classList.add('hidden');
+        resultPage.classList.add('hidden');
+        timerElement.textContent = '⏱ Time: 0.00 s';
+    }
 });
