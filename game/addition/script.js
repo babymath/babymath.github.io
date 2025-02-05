@@ -63,10 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gamePage.classList.remove('hidden');
         restartBtn.classList.remove('hidden');
 
-        if (gameMode === 'time') {
-            timerInterval = setInterval(updateTimer, 100);
-        }
-
+        timerInterval = setInterval(updateTimer, 100); // Start timer for both modes
         generateQuestion();
     }
 
