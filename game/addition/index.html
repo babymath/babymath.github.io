@@ -3,39 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addition Speed Game</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Math Addition Game | Speed Test Your Skills</title>
+    
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="Test your math addition speed with this interactive game. Choose time or question limits and challenge yourself!">
+    <meta name="keywords" content="math game, addition game, speed test, math practice, brain training, educational game, arithmetic quiz">
+    <meta name="author" content="BabyMath">
+
+    <!-- Open Graph for Social Media Sharing -->
+    <meta property="og:title" content="Math Addition Game - Test Your Speed!" />
+    <meta property="og:description" content="Challenge your math skills with timed addition quizzes. Improve your speed and accuracy!" />
+    <meta property="og:image" content="https://babymath.github.io/images/og-image.png" />
+    <meta property="og:url" content="https://babymath.github.io" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card for Social Sharing -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Math Addition Game - Speed Test!" />
+    <meta name="twitter:description" content="Sharpen your mental math skills with this fast-paced addition game. Ready to play?" />
+    <meta name="twitter:image" content="https://babymath.github.io/images/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://babymath.github.io/favicon.ico" type="image/x-icon">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://babymath.github.io/">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+    <header>
+        <h1>🧮 Math Addition Game</h1>
+        <nav>
+            <a href="#home-page">Home</a> | 
+            <a href="#game-page">Game</a> | 
+            <a href="#result-page">Results</a>
+        </nav>
+    </header>
 
-    <div class="container">
-        <h1>Addition Speed Game</h1>
+    <main class="container">
+        <!-- Home Page -->
+        <section id="home-page" class="card">
+            <h2>Start Your Math Challenge!</h2>
+            <p>Choose the number of digits:</p>
+            <select id="digit-select" aria-label="Select number of digits">
+                <option value="1">1 Digit</option>
+                <option value="2">2 Digits</option>
+                <option value="3">3 Digits</option>
+            </select>
 
-        <!-- Number of Digits Selection -->
-        <label for="digit-select" id="digit-select">Select Number of Digits:</label>
-        <select id="digit-select">
-            <option value="1">1 Digit (0-9)</option>
-            <option value="2">2 Digits (10-99)</option>
-            <option value="3">3 Digits (100-999)</option>
-        </select>
+            <p>Pick your challenge:</p>
+            <div class="btn-group">
+                <button id="game-time-option">⏱ Time Limit</button>
+                <button id="game-questions-option">❓ Question Limit</button>
+            </div>
 
-        <div id="timer">Time: 0.00 s</div>
-        <div id="question">Press "Start Game" to begin!</div>
-        
-        <div id="game-area">
-            <input type="number" id="answer" placeholder="Enter your answer" autofocus>
-            <br>
+            <div id="time-option" class="options hidden" aria-label="Select Time Limit">
+                <button class="time-btn" data-time="60">1 Minute</button>
+                <button class="time-btn" data-time="120">2 Minutes</button>
+                <button class="time-btn" data-time="180">3 Minutes</button>
+                <button class="time-btn" data-time="240">4 Minutes</button>
+            </div>
+
+            <div id="questions-option" class="options hidden" aria-label="Select Question Limit">
+                <button class="questions-btn" data-questions="10">10 Questions</button>
+                <button class="questions-btn" data-questions="20">20 Questions</button>
+                <button class="questions-btn" data-questions="30">30 Questions</button>
+                <button class="questions-btn" data-questions="40">40 Questions</button>
+            </div>
+        </section>
+
+        <!-- Game Page -->
+        <section id="game-page" class="card hidden">
+            <h2>Question <span id="question-number">1</span></h2>
+            <p id="question-text" aria-live="polite"></p>
+            <input type="number" id="answer" placeholder="Enter your answer" aria-label="Your answer" autofocus />
             <button id="submit-btn">Submit Answer</button>
-        </div>
+            <p id="timer">⏱ Time: 0.00 s</p>
+            <button id="restart-btn" class="restart-btn hidden">🔄 Restart Game</button>
+        </section>
 
-        <button id="start-btn">Start Game</button>
-        <button id="restart-btn">Restart Game</button>
+        <!-- Result Page -->
+        <section id="result-page" class="card hidden">
+            <h2>🎯 Game Over!</h2>
+            <p id="final-time">Total Time: 0.00 seconds</p>
+            <p id="total-questions-answered"></p>
+            <button id="restart-btn-result">🔄 Play Again</button>
+        </section>
+    </main>
 
-        <div id="result"></div>
-    </div>
+    <footer>
+        <p>&copy; 2025 BabyMath. All rights reserved.</p>
+    </footer>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
-</html>
+            </html>
