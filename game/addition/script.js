@@ -87,7 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
         correctAnswer = num1 + num2;
         questionText.textContent = `What is ${num1} + ${num2}?`;
         questionNumber.textContent = questionCount + 1;
+
+        // Reset input field after each question
         answerInput.value = '';
+        answerInput.placeholder = 'Enter your answer here';
         answerInput.focus();
     }
 
@@ -103,9 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameMode === 'questions' && questionCount >= totalQuestions) {
                 endGame();
             } else {
-                generateQuestion();
+                generateQuestion(); // Move to next question
             }
         } else {
+            // Reset input and show wrong answer message in placeholder
             answerInput.value = '';
             answerInput.placeholder = 'Wrong answer, try again!';
         }
