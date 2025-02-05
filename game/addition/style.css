@@ -1,116 +1,108 @@
-/* Reset Default Styles */
-* {
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #74ebd5, #9face6);
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    color: #333;
 }
 
 .container {
-    background: white;
-    padding: 30px 20px;
-    width: 90%;
     max-width: 400px;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Card Styles */
+.card {
+    background-color: white;
+    padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    animation: fadeIn 1s ease-in-out;
+    transition: transform 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+.card:hover {
+    transform: translateY(-5px);
 }
 
-h1 {
+h1, h2 {
     color: #333;
-    margin-bottom: 10px;
-    font-size: 26px;
 }
 
-#timer {
-    font-size: 20px;
-    color: #ff5e57;
-    font-weight: bold;
-    margin: 15px 0;
-}
-
-#question {
-    font-size: 22px;
-    color: #444;
-    margin: 20px 0;
-}
-
-input[type="number"], select {
-    padding: 12px;
-    width: 85%;
-    font-size: 18px;
-    margin: 10px 0;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    outline: none;
-    transition: border 0.3s, background-color 0.3s;
-}
-
-input[type="number"]:focus, select:focus {
-    border-color: #74ebd5;
-    background-color: #f0faff;
-}
-
-input.wrong {
-    border: 2px solid #ff5e57;
-    background-color: #ffe5e5;
-    color: #ff5e57; 
-    font-weight: bold;
-}
-
+/* Button Styles */
 button {
     padding: 12px 20px;
-    margin: 8px 5px;
-    background: linear-gradient(135deg, #74ebd5, #9face6);
+    margin: 8px 0;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 8px;
+    font-size: 16px;
     cursor: pointer;
-    font-size: 18px;
-    transition: background 0.3s, transform 0.2s;
+    transition: background 0.3s;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #9face6, #74ebd5);
-    transform: scale(1.05);
+    background-color: #0056b3;
 }
 
-#restart-btn {
-    background: linear-gradient(135deg, #ff5e57, #ff9966);
+button.restart-btn {
+    background-color: #ffc107;
+}
+
+button.restart-btn:hover {
+    background-color: #e0a800;
+}
+
+button.time-btn, button.questions-btn {
+    background-color: #28a745;
+}
+
+button.time-btn:hover, button.questions-btn:hover {
+    background-color: #218838;
+}
+
+/* Input Styles */
+input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 18px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Hide/Show Elements */
+.hidden {
     display: none;
 }
 
-#restart-btn:hover {
-    background: linear-gradient(135deg, #ff9966, #ff5e57);
-}
-
-#result {
-    font-size: 20px;
-    margin-top: 20px;
-    color: #333;
+#timer {
+    font-size: 18px;
+    margin: 10px 0;
     font-weight: bold;
 }
 
-#game-area {
-    display: none;
-}
+/* Responsive Design */
+@media (max-width: 480px) {
+    .card {
+        padding: 15px;
+    }
 
-@media (max-width: 400px) {
-    .container {
-        padding: 20px 10px;
+    button {
+        font-size: 14px;
+        padding: 10px;
     }
 }
