@@ -11,6 +11,12 @@ function startGame() {
     timerInterval = setInterval(updateTimer, 1000);
     updateLivesUI();
     generateQuestion();
+
+    // Show question and input field
+    document.getElementById("question").style.display = "block";
+    document.getElementById("answer").style.display = "block";
+    document.querySelector(".btn-submit").style.display = "block";
+    document.querySelector(".btn-end").style.display = "block";
 }
 
 // Generate New Question
@@ -82,13 +88,36 @@ function updateLivesUI() {
     }
 }
 
+// Save High Score
+function saveHighScore(score) {
+    let highScore = localStorage.getItem("highScore") || 0;
+    if (score > highScore) {
+        localStorage.setItem("highScore", score);
+    }
+}
+
+// Get High Score
+function getHighScore() {
+    return localStorage.getItem("highScore") || 0;
+}
+
 // End Game
 function endGame() {
     gameEnded = true;
     clearInterval(timerInterval);
-    document.getElementById("question").innerText = "🎉 Game Over!";
-    document.getElementById("feedback").innerText = `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
+
+    // Hide question and input field
+    document.getElementById("question").style.display = "none";
+    document.getElementById("answer").style.display = "none";
+    document.querySelector(".btn-submit").style.display = "none";
+    document.querySelector(".btn-end").style.display = "none";
+
+    document.getElementById("feedback").innerText = `🎉 Game Over! You answered ${questionCount} questions in ${totalTime} seconds.`;
     document.getElementById("restart").style.display = "block";
+
+    // Save and display best score
+    saveHighScore(questionCount);
+    document.getElementById("bestScore").innerText = getHighScore();
 }
 
 // Restart Game
@@ -98,8 +127,12 @@ function restartGame() {
     totalTime = 0;
     lives = 3;
     document.getElementById("restart").style.display = "none";
+
     startGame();
 }
+
+// Display best score on page load
+document.getElementById("bestScore").innerText = getHighScore();
 
 // Handle Enter Key
 document.getElementById("answer").addEventListener("keyup", function(event) {
