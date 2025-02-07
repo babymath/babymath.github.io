@@ -108,6 +108,8 @@
     </style>
 </head>
 <body>
+<p class="stats"><strong>Best Score:</strong> <span id="bestScore">0</span></p>
+
     <div class="game-container">
         <h1>Multiplication Practice</h1>
         <div id="question">Loading...</div>
@@ -121,6 +123,22 @@
     </div>
 
     <script>
+function saveHighScore(score) {
+    let highScore = localStorage.getItem("highScore") || 0;
+    if (score > highScore) {
+        localStorage.setItem("highScore", score);
+    }
+}
+
+
+function getHighScore() {
+    return localStorage.getItem("highScore") || 0;
+}
+
+
+
+
+
         let num1, num2, correctAnswer;
         let questionCount = 0;
         let startTime, totalTime = 0;
@@ -171,12 +189,24 @@
         }
 
         function endGame() {
-            gameEnded = true;
-            clearInterval(timerInterval);
-            document.getElementById("question").innerText = "🎉 Game Over!";
-            document.getElementById("feedback").innerText = `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
-            document.getElementById("restart").style.display = "block";
-        }
+    gameEnded = true;
+    clearInterval(timerInterval);
+
+    // Save the highest score
+    saveHighScore(questionCount);
+
+    document.getElementById("question").innerText = "🎉 Game Over!";
+    document.getElementById("feedback").innerText = 
+        `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
+
+    // Display best score
+    document.getElementById("bestScore").innerText = getHighScore();
+    document.getElementById("restart").style.display = "block";
+}
+
+// Display the best score when game starts
+document.getElementById("bestScore").innerText = getHighScore();
+
 
         function restartGame() {
             gameEnded = false;
