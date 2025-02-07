@@ -155,7 +155,7 @@ function getHighScore() {
             if (gameEnded) return;
 
             num1 = Math.floor(Math.random() * 20) + 1;
-            num2 = Math.floor(Math.random() * 20) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
             correctAnswer = num1 * num2;
 
             document.getElementById("question").innerText = `${num1} × ${num2} = ?`;
