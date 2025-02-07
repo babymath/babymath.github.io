@@ -1,6 +1,6 @@
-/* General Styling */
+/* Global Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
     text-align: center;
     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     color: white;
@@ -13,28 +13,30 @@ body {
 
 /* Game Container */
 .game-container {
-    width: 380px;
+    width: 400px;
     background: white;
-    padding: 25px;
+    padding: 30px;
     border-radius: 15px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
     color: black;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease-in-out;
+    text-align: center;
+    position: relative;
 }
 .game-container:hover {
-    transform: scale(1.02);
+    transform: scale(1.03);
 }
 
-/* Headings */
+/* Title */
 h1 {
-    font-size: 28px;
+    font-size: 30px;
     color: #ff5e62;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-/* Question */
+/* Question Styling */
 #question {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
     margin-bottom: 15px;
     color: #333;
@@ -44,15 +46,16 @@ h1 {
 input {
     width: 90%;
     padding: 12px;
-    font-size: 18px;
+    font-size: 20px;
     text-align: center;
-    border: 2px solid #ff5e62;
-    border-radius: 8px;
+    border: 3px solid #ff5e62;
+    border-radius: 10px;
     outline: none;
-    transition: border 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 input:focus {
     border-color: #ff758c;
+    box-shadow: 0px 0px 10px rgba(255, 94, 98, 0.5);
 }
 
 /* Buttons */
@@ -62,12 +65,14 @@ button {
     font-size: 18px;
     font-weight: bold;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-top: 10px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 1px;
 }
 
+/* Different Button Styles */
 .btn-submit {
     background: #28a745;
     color: white;
@@ -81,8 +86,10 @@ button {
     color: white;
 }
 
+/* Button Hover Effects */
 button:hover {
     opacity: 0.85;
+    transform: translateY(-2px);
 }
 
 /* Feedback Text */
@@ -92,30 +99,29 @@ button:hover {
     margin-top: 10px;
 }
 
-/* Score Styling */
+/* Score & Timer */
 .stats {
     font-size: 16px;
     margin-top: 10px;
     color: #444;
 }
 
-/* Heart Animation */
-@keyframes flashRed {
-    0% { color: red; }
-    50% { color: white; }
-    100% { color: red; }
+/* Lives UI (Hearts) */
+#lives {
+    margin-top: 15px;
+    font-size: 24px;
 }
 
+/* Heart Animation (When 1 Life Left) */
 .flash {
-    animation: flashRed 0.5s infinite;
+    animation: flash 0.8s infinite alternate;
 }
 
-/* Fade Out Effect */
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-.fade-out {
-    animation: fadeOut 0.5s forwards;
+@keyframes flash {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.3;
+    }
 }
