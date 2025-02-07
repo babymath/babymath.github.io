@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Practice</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <p class="stats"><strong>Best Score:</strong> <span id="bestScore">0</span></p>
+
+    <div class="game-container" id="gameContainer">
+        <h1>Multiplication Practice</h1>
+        <div id="question">Loading...</div>
+        <input type="number" id="answer" placeholder="Your Answer" autofocus>
+        <button class="btn-submit" onclick="checkAnswer()">Submit</button>
+        <button class="btn-end" onclick="endGame()">End Game</button>
+        <p id="feedback"></p>
+
+        <p class="stats"><strong>Questions Attempted:</strong> <span id="questionCount">0</span></p>
+        <p class="stats"><strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
+        <p class="stats"><strong>Lives Left:</strong> <span id="lives"></span></p>
+
+        <button id="restart" class="btn-restart" onclick="restartGame()" style="display:none;">Restart</button>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
