@@ -202,7 +202,7 @@ function getHighScore() {
     // Display best score
     document.getElementById("bestScore").innerText = getHighScore();
     document.getElementById("restart").style.display = "block";
-document.getElementByClassName("game-container").style.display = "none";
+document.getElementsByClassName("game-container")[0].style.display = "none";
 }
 
 // Display the best score when game starts
