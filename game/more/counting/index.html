@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Bouncing Bubbles</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff9a44, #f3ff77, #32ff7e, #18dcff, #7d5fff, #e84393);
+            background-size: 400% 400%;
+            animation: gradientBG 10s infinite linear;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .bubble {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 5px black;
+            border-radius: 50%;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: transform 0.3s, opacity 0.3s, box-shadow 0.2s;
+        }
+
+        .bubble.correct {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+            animation: rainbowGlow 0.3s infinite alternate;
+        }
+
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 15px red; }
+            20% { box-shadow: 0 0 15px orange; }
+            40% { box-shadow: 0 0 15px yellow; }
+            60% { box-shadow: 0 0 15px green; }
+            80% { box-shadow: 0 0 15px blue; }
+            100% { box-shadow: 0 0 15px purple; }
+        }
+
+        .bubble.wrong {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+
+        .blast {
+            transform: scale(2);
+            opacity: 0;
+        }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            text-shadow: 0 0 10px cyan, 0 0 20px cyan;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 15px yellow;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container"></div>
+    <div class="score">Score: 0 / 10</div>
+    <div class="message">🎉 You Win! Restarting... 🎉</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.querySelector(".container");
+            const scoreDisplay = document.querySelector(".score");
+            const message = document.querySelector(".message");
+            let bubbles = [];
+            let numBubbles = 10;
+            let nextNumber = 0;
+
+            function createBubbles() {
+                container.innerHTML = ""; 
+                bubbles = [];
+                nextNumber = 0;
+                scoreDisplay.textContent = `Score: 0 / ${numBubbles}`;
+
+                for (let i = 0; i < numBubbles; i++) {
+                    let bubble = document.createElement("div");
+                    bubble.classList.add("bubble");
+                    bubble.textContent = i; 
+                    container.appendChild(bubble);
+
+                    let size = (i * 10) + 50;
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.fontSize = `${size / 3}px`;
+                    bubble.style.backgroundColor = getRandomColor(); 
+
+                    let x = Math.random() * (window.innerWidth - size);
+                    let y = Math.random() * (window.innerHeight - size);
+                    let dx = (Math.random() - 0.5) * 4;
+                    let dy = (Math.random() - 0.5) * 4;
+
+                    bubbles.push({ bubble, x, y, dx, dy, number: i });
+
+                    bubble.addEventListener("click", function () {
+                        let clickedNumber = parseInt(this.textContent);
+                        if (clickedNumber === nextNumber) {
+                            this.classList.add("correct");
+                            setTimeout(() => {
+                                this.classList.add("blast");
+                                setTimeout(() => this.remove(), 300);
+                            }, 200);
+                            nextNumber++;
+                            scoreDisplay.textContent = `Score: ${nextNumber} / ${numBubbles}`;
+
+                            if (nextNumber === numBubbles) {
+                                showWinMessage();
+                            }
+                        } else {
+                            this.classList.add("wrong");
+                            setTimeout(() => this.classList.remove("wrong"), 300);
+                        }
+                    });
+                }
+            }
+
+            function animate() {
+                bubbles.forEach(b => {
+                    b.x += b.dx;
+                    b.y += b.dy;
+
+                    if (b.x <= 0 || b.x + b.bubble.offsetWidth >= window.innerWidth) {
+                        b.dx *= -1;
+                    }
+                    if (b.y <= 0 || b.y + b.bubble.offsetHeight >= window.innerHeight) {
+                        b.dy *= -1;
+                    }
+
+                    b.bubble.style.transform = `translate(${b.x}px, ${b.y}px)`;
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            function showWinMessage() {
+                message.style.display = "block";
+                confettiEffect();
+                setTimeout(() => {
+                    message.style.display = "none";
+                    createBubbles(); 
+                }, 3000);
+            }
+
+            function confettiEffect() {
+                for (let i = 0; i < 50; i++) {
+                    let confetti = document.createElement("div");
+                    confetti.style.position = "fixed";
+                    confetti.style.left = Math.random() * window.innerWidth + "px";
+                    confetti.style.top = Math.random() * window.innerHeight + "px";
+                    confetti.style.width = "10px";
+                    confetti.style.height = "10px";
+                    confetti.style.background = getRandomColor();
+                    confetti.style.opacity = "0.8";
+                    confetti.style.transition = "top 2s ease-out, opacity 2s";
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => {
+                        confetti.style.top = window.innerHeight + "px";
+                        confetti.style.opacity = "0";
+                        setTimeout(() => confetti.remove(), 2000);
+                    }, 100);
+                }
+            }
+
+            function getRandomColor() {
+                return `hsl(${Math.random() * 360}, 100%, 60%)`;
+            }
+
+            createBubbles();
+            animate();
+        });
+    </script>
+</body>
+</html>
