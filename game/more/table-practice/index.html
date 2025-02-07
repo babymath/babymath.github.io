@@ -195,13 +195,14 @@ function getHighScore() {
     // Save the highest score
     saveHighScore(questionCount);
 
-      document.getElementById("game-container").style.display = "none";  document.getElementById("question").innerText = "🎉 Game Over!";
+        document.getElementById("question").innerText = "🎉 Game Over!";
     document.getElementById("feedback").innerText = 
         `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
 
     // Display best score
     document.getElementById("bestScore").innerText = getHighScore();
     document.getElementById("restart").style.display = "block";
+document.getElementByClassName("game-container").style.display = "none";
 }
 
 // Display the best score when game starts
