@@ -11,6 +11,7 @@
     <div class="game-container" id="gameContainer">
         <h1>Table Practice</h1>
         <p><strong>Best Score:</strong> <span id="bestScore">0</span></p>
+        <p class="stats"><strong>Lives Left:</strong> <span id="lives"></span></p>
         <div id="question">Loading...</div>
         <input type="number" id="answer" placeholder="Your Answer" autofocus>
         <button class="btn-submit" onclick="checkAnswer()">Submit</button>
@@ -19,7 +20,6 @@
 
         <p class="stats"><strong>Questions Attempted:</strong> <span id="questionCount">0</span></p>
         <p class="stats"><strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
-        <p class="stats"><strong>Lives Left:</strong> <span id="lives"></span></p>
 
         <button id="restart" class="btn-restart" onclick="restartGame()" style="display:none;">Restart</button>
     </div>
