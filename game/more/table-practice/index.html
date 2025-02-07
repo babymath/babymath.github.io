@@ -195,7 +195,7 @@ function getHighScore() {
     // Save the highest score
     saveHighScore(questionCount);
 
-    document.getElementById("question").innerText = "🎉 Game Over!";
+      document.getElementById("game-container").style.display = "none";  document.getElementById("question").innerText = "🎉 Game Over!";
     document.getElementById("feedback").innerText = 
         `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
 
