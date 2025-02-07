@@ -19,7 +19,7 @@
         }
 
         /* Game container */
-        .game-container {
+        .game-container, .result-container {
             width: 380px;
             background: white;
             padding: 25px;
@@ -28,7 +28,7 @@
             color: black;
             transition: transform 0.3s;
         }
-        .game-container:hover {
+        .game-container:hover, .result-container:hover {
             transform: scale(1.02);
         }
 
@@ -105,13 +105,18 @@
             color: #444;
         }
 
+        /* Hide result container initially */
+        .result-container {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
-<p class="stats"><strong>Best Score:</strong> <span id="bestScore">0</span></p>
 
-    <div class="game-container">
+    <div class="game-container" id="gameContainer">
         <h1>Multiplication Practice</h1>
+        <p class="stats"><strong>Best Score:</strong> <span id="bestScore">0</span></p>
         <div id="question">Loading...</div>
         <input type="number" id="answer" placeholder="Your Answer" autofocus>
         <button class="btn-submit" onclick="checkAnswer()">Submit</button>
@@ -119,25 +124,26 @@
         <p id="feedback"></p>
         <p class="stats"><strong>Questions Attempted:</strong> <span id="questionCount">0</span></p>
         <p class="stats"><strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
-        <button id="restart" class="btn-restart" onclick="restartGame()" style="display:none;">Restart</button>
+    </div>
+
+    <div class="result-container" id="resultContainer">
+        <h1>🎉 Game Over!</h1>
+        <p id="finalScore"></p>
+        <p><strong>Best Score:</strong> <span id="bestScoreResult">0</span></p>
+        <button class="btn-restart" onclick="restartGame()">Restart</button>
     </div>
 
     <script>
-function saveHighScore(score) {
-    let highScore = localStorage.getItem("highScore") || 0;
-    if (score > highScore) {
-        localStorage.setItem("highScore", score);
-    }
-}
+        function saveHighScore(score) {
+            let highScore = localStorage.getItem("highScore") || 0;
+            if (score > highScore) {
+                localStorage.setItem("highScore", score);
+            }
+        }
 
-
-function getHighScore() {
-    return localStorage.getItem("highScore") || 0;
-}
-
-
-
-
+        function getHighScore() {
+            return localStorage.getItem("highScore") || 0;
+        }
 
         let num1, num2, correctAnswer;
         let questionCount = 0;
@@ -189,25 +195,19 @@ function getHighScore() {
         }
 
         function endGame() {
-    gameEnded = true;
-    clearInterval(timerInterval);
+            gameEnded = true;
+            clearInterval(timerInterval);
 
-    // Save the highest score
-    saveHighScore(questionCount);
+            saveHighScore(questionCount);
 
-        document.getElementById("question").innerText = "🎉 Game Over!";
-    document.getElementById("feedback").innerText = 
-        `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
+            // Hide game container and show results
+            document.getElementById("gameContainer").style.display = "none";
+            document.getElementById("resultContainer").style.display = "block";
 
-    // Display best score
-    document.getElementById("bestScore").innerText = getHighScore();
-    document.getElementById("restart").style.display = "block";
-document.getElementsByClassName("game-container")[0].style.display = "none";
-}
-
-// Display the best score when game starts
-document.getElementById("bestScore").innerText = getHighScore();
-
+            // Display results
+            document.getElementById("finalScore").innerText = `Total Questions: ${questionCount}, Time: ${totalTime} seconds`;
+            document.getElementById("bestScoreResult").innerText = getHighScore();
+        }
 
         function restartGame() {
             gameEnded = false;
@@ -215,18 +215,23 @@ document.getElementById("bestScore").innerText = getHighScore();
             totalTime = 0;
             document.getElementById("questionCount").innerText = "0";
             document.getElementById("timer").innerText = "0";
-            document.getElementById("restart").style.display = "none";
+
+            // Hide results and show game again
+            document.getElementById("resultContainer").style.display = "none";
+            document.getElementById("gameContainer").style.display = "block";
+
             startGame();
         }
 
-        // Handle Enter key for submitting answer
         document.getElementById("answer").addEventListener("keyup", function(event) {
             if (event.key === "Enter") {
                 checkAnswer();
             }
         });
 
+        document.getElementById("bestScore").innerText = getHighScore();
         startGame();
     </script>
+
 </body>
-  </html>
+</html>
