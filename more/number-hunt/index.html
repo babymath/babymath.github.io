@@ -11,18 +11,19 @@
 
     <div class="game-container">
         <h1>Click the Number: <span id="target-number">0</span></h1>
-        <p>Score: <span id="score">0</span></p>
-        <p>Time Left: <span id="timer">10</span>s</p>
+        <p class="score-text">Score: <span id="score">0</span></p>
+        <p class="time-text">Time Left: <span id="timer">10</span>s</p>
         <div class="bubble-container" id="bubble-container"></div>
         <button id="restart-btn">Restart</button>
     </div>
 
     <div class="popup-container" id="popup">
-        <h2>Game Over!</h2>
-        <p id="popup-message"></p>
-        <h3>Leaderboard</h3>
-        <ul id="leaderboard"></ul>
-        <button onclick="closePopup()">OK</button>
+        <div class="popup-content">
+            <h2>Game Over!</h2>
+            <p>Your Score: <span id="final-score">0</span></p>
+            <p>Highest Score: <span id="high-score">0</span></p>
+            <button id="ok-btn">OK</button>
+        </div>
     </div>
 
     <div class="floating-bubbles" id="floating-bubbles"></div>
