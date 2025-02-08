@@ -1,0 +1,12 @@
+<script type="module">
+  import { transpileModule } from 'https://cdn.jsdelivr.net/npm/typescript/lib/typescript.js';
+
+  async function loadAndRunTS() {
+    const response = await fetch('index.ts'); // Fetch TypeScript file from GitHub Pages
+    const tsCode = await response.text();
+    const jsCode = transpileModule(tsCode, { compilerOptions: { module: "ESNext", target: "ES6" } }).outputText;
+    eval(jsCode); // Run the transpiled JavaScript
+  }
+
+  loadAndRunTS();
+</script>
