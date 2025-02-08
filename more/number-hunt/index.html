@@ -4,23 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Hunt</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Welcome to Number Hunt</h1>
-    <p id="message"></p>
+    <div class="timer-bar" id="timer-bar"></div>
 
-    <script type="module">
-        async function loadAndRunTS() {
-            const response = await fetch('index.ts'); // Fetch TypeScript file
-            const tsCode = await response.text();
+    <div class="game-container">
+        <h1>Click the Number: <span id="target-number">0</span></h1>
+        <p>Score: <span id="score">0</span></p>
+        <p>Time Left: <span id="timer">10</span>s</p>
+        <div class="bubble-container" id="bubble-container"></div>
+        <button id="restart-btn">Restart</button>
+    </div>
 
-            const { transpileModule } = await import('https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescript.js');
-            const jsCode = transpileModule(tsCode, { compilerOptions: { module: "ESNext", target: "ES6" } }).outputText;
+    <div class="popup-container" id="popup">
+        <h2>Game Over!</h2>
+        <p id="popup-message"></p>
+        <h3>Leaderboard</h3>
+        <ul id="leaderboard"></ul>
+        <button onclick="closePopup()">OK</button>
+    </div>
 
-            eval(jsCode); // Execute the transpiled JavaScript
-        }
-
-        loadAndRunTS();
-    </script>
+    <div class="floating-bubbles" id="floating-bubbles"></div>
+    <script src="script.js"></script>
 </body>
 </html>
