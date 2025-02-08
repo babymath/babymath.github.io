@@ -9,11 +9,13 @@ body {
     text-align: center;
     font-family: Arial, sans-serif;
     color: white;
+    overflow: hidden;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .game-container {
@@ -25,7 +27,6 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
     gap: 10px;
 }
 
@@ -41,19 +42,17 @@ body {
     justify-content: center;
     font-size: 4vw;
     font-weight: bold;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
-    animation: fadeIn 0.3s ease-in-out;
+    transition: transform 0.2s, background-color 0.3s, opacity 0.3s;
 }
 
 .bubble:hover {
     background-color: rgba(173, 216, 230, 1);
 }
 
-.bubble.wrong {
-    animation: shake 0.3s ease-in-out;
-    background-color: rgba(255, 99, 99, 0.7) !important;
+.bubble:active {
+    transform: scale(1.1);
 }
 
 #restart-btn {
@@ -67,20 +66,84 @@ body {
     cursor: pointer;
 }
 
+#restart-btn:hover {
+    background-color: #cc0000;
+}
+
+/* Timer Bar */
 .timer-bar {
     width: 100%;
-    height: 10px;
-    background-color: #4caf50;
+    height: 8px;
+    background: red;
+    position: absolute;
+    top: 0;
+    left: 0;
     transition: width 1s linear;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+/* Shake Effect */
+.shake {
+    animation: shake 0.3s;
 }
 
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    25%, 75% { transform: translateX(-5px); }
+    25% { transform: translateX(-5px); }
     50% { transform: translateX(5px); }
-  }
+    75% { transform: translateX(-5px); }
+}
+
+/* Popup Styles */
+.popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+    z-index: 10;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup-container button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-container button:hover {
+    background: #cc0000;
+}
+
+/* Floating Bubbles Background */
+.floating-bubbles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.floating-bubble {
+    position: absolute;
+    bottom: -100px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
