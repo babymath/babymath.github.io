@@ -1,0 +1,86 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.mode-btn {
+    background-color: #007BFF;
+    color: white;
+}
+
+.mode-btn:hover {
+    background-color: #0056b3;
+}
+
+#game-content {
+    margin-top: 10px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.answer-btn {
+    background-color: #e0e0e0;
+    padding: 10px;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.answer-btn:hover {
+    background-color: #ccc;
+}
+
+.selected {
+    background-color: #4CAF50 !important;
+    color: white;
+}
+
+#end-game-btn {
+    background-color: #FF5722;
+    color: white;
+}
+
+#end-game-btn:hover {
+    background-color: #E64A19;
+}
+
+#game-over {
+    margin-top: 20px;
+}
+
+#game-over button {
+    background-color: #28a745;
+    color: white;
+}
+
+#game-over button:hover {
+    background-color: #218838;
+  }
