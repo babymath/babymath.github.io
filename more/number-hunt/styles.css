@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0c1e3b;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-container {
+    width: 90%;
+    max-width: 600px;
+}
+
+.bubble-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.bubble {
+    width: 12vw;
+    max-width: 80px;
+    height: 12vw;
+    max-height: 80px;
+    background-color: rgba(173, 216, 230, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4vw;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.bubble:hover {
+    background-color: rgba(173, 216, 230, 1);
+}
+
+.bubble.wrong {
+    animation: shake 0.3s ease-in-out;
+    background-color: rgba(255, 99, 99, 0.7) !important;
+}
+
+#restart-btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    font-size: 18px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.timer-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #4caf50;
+    transition: width 1s linear;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%, 75% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+  }
