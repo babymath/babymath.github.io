@@ -1,1 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Learning Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background-color: #0c1e3b;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden; /* Removes scrollbars */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .bubble-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            gap: 10px;
+        }
+
+        .bubble {
+            width: 12vw;
+            max-width: 80px;
+            height: 12vw;
+            max-height: 80px;
+            background-color: rgba(173, 216, 230, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4vw;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .bubble:hover {
+            background-color: rgba(173, 216, 230, 1);
+        }
+
+        #restart-btn {
+            margin-top: 15px;
+            padding: 10px 15px;
+            font-size: 18px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #restart-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* Popup Styles */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 10;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-container button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup-container button:hover {
+            background: #cc0000;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Click the Number: <span id="target-number">0</span></h1>
+        <p>Score: <span id="score">0</span></p>
+        <p>Time Left: <span id="timer">10</span>s</p>
+        <p>Level: <span id="level">Easy</span></p>
+        <p>Number of Bubbles: <span id="bubble-count">10</span></p>
+        <div class="bubble-container" id="bubble-container"></div>
+        <button id="restart-btn">Restart</button>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-container" id="popup">
+        <h2>Game Over!</h2>
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+
+    <script>
+        const targetNumber = document.getElementById("target-number");
+        const scoreElement = document.getElementById("score");
+        const timerElement = document.getElementById("timer");
+        const levelElement = document.getElementById("level");
+        const bubbleCountElement = document.getElementById("bubble-count");
+        const bubbleContainer = document.getElementById("bubble-container");
+        const restartButton = document.getElementById("restart-btn");
+
+        const popup = document.getElementById("popup");
+        const popupMessage = document.getElementById("popup-message");
+        const overlay = document.getElementById("overlay");
+
+        let score = 0;
+        let timeLeft = 10;
+        let currentTarget = 0;
+        let questionTimer;
+        let numberRange = 10;
+        let numBubbles = 10;
+        let level = "Easy";
+        let maxBubbles = 20;
+
+        function getRandomNumber(max, avoid = []) {
+            let num;
+            do {
+                num = Math.floor(Math.random() * max);
+            } while (avoid.includes(num));
+            return num;
+        }
+
+        function startGame() {
+            score = 0;
+            level = "Easy";
+            numberRange = 10;
+            numBubbles = 10;
+            updateUI();
+            generateBubbles();
+        }
+
+        function updateUI() {
+            scoreElement.textContent = score;
+            levelElement.textContent = level;
+            bubbleCountElement.textContent = numBubbles;
+        }
+
+        function generateBubbles() {
+            clearInterval(questionTimer);
+            timeLeft = 10;
+            timerElement.textContent = timeLeft;
+
+            bubbleContainer.innerHTML = "";
+            let numbers = [];
+            currentTarget = getRandomNumber(numberRange);
+            targetNumber.textContent = currentTarget;
+
+            numbers.push(currentTarget);
+
+            for (let i = 1; i < numBubbles; i++) {
+                numbers.push(getRandomNumber(numberRange, numbers));
+            }
+
+            numbers.sort(() => Math.random() - 0.5);
+
+            numbers.forEach(num => {
+                const bubble = document.createElement("div");
+                bubble.classList.add("bubble");
+                bubble.textContent = num;
+
+                bubble.addEventListener("click", () => handleAnswer(parseInt(bubble.textContent)));
+
+                bubbleContainer.appendChild(bubble);
+            });
+
+            startQuestionTimer();
+        }
+
+        function startQuestionTimer() {
+            clearInterval(questionTimer);
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function handleAnswer(selectedNumber) {
+            clearInterval(questionTimer);
+
+            if (selectedNumber === currentTarget) {
+                score++;
+                updateLevel();
+                updateBubbles();
+                setTimeout(generateBubbles, 300);
+            } else {
+                endGame();
+            }
+
+            updateUI();
+        }
+
+        function updateLevel() {
+            if (score >= 15) {
+                level = "Extreme";
+                numberRange = 100;
+            } else if (score >= 10) {
+                level = "Hard";
+                numberRange = 50;
+            } else if (score >= 5) {
+                level = "Medium";
+                numberRange = 20;
+            }
+            updateUI();
+        }
+
+        function updateBubbles() {
+            if (score % 3 === 0 && numBubbles < maxBubbles) {
+                numBubbles++;
+            }
+        }
+
+        function endGame() {
+            clearInterval(questionTimer);
+            popupMessage.innerHTML = `Your Score: ${score}`;
+            popup.style.display = "block";
+            overlay.style.display = "block";
+        }
+
+        function closePopup() {
+            popup.style.display = "none";
+            overlay.style.display = "none";
+            startGame();
+        }
+
+        restartButton.addEventListener("click", startGame);
+
+        startGame();
+    </script>
+</body>
+  </html>
