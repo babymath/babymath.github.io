@@ -17,14 +17,164 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.babymath.github.io">
     <meta property="og:image" content="https://www.babymath.github.io/preview-image.jpg">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BabyMath - Fun Math Practice for Kids</title>
 
-    <!-- Link to External CSS -->
-    <link rel="stylesheet" href="assets/styles.css">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BabyMath helps kids practice addition, subtraction, multiplication, division, and other fun math exercises.">
+    <meta name="keywords" content="BabyMath, Math Practice, Addition, Subtraction, Multiplication, Division, Kids Math Games">
+    <meta name="author" content="Nikhil Saurav">
+    <meta name="robots" content="index, follow">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+
+    <style>
+        /* Reset Default Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Full-Screen Welcome Header */
+        header {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: background 0.5s;
+        }
+        header:hover {
+            background: linear-gradient(135deg, #2E8B57, #4CAF50);
+        }
+
+        /* Logo */
+        header img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Navigation */
+        nav {
+            margin-top: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffcc00;
+        }
+
+        /* Main + Footer Layout */
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Main Section (80%) */
+        main {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f9f9f9;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* Game Options */
+        #content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .item a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+            display: block;
+        }
+
+        /* Footer (20%) */
+        footer {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <img src="img/logo.png"><br>
+
+    <!-- Full-Screen Welcome Header -->
+    <header id="welcome">
+        <img src="img/logo.png" alt="BabyMath Logo">
+        <h1>Welcome to BabyMath</h1>
+        <p>Fun Math Practice for Kids</p>
         <nav>
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -32,35 +182,45 @@
         </nav>
     </header>
 
-    <main class="container">
-        <h2>Practice Your Math Skills</h2>
-        <p>Choose an activity to practice addition, subtraction, multiplication, and division!</p>
-        <button id="toggleView">Switch to List View</button>
+    <!-- Main & Footer (Shared Full-Screen) -->
+    <div class="container">
+        <main>
+            <h2>Practice Your Math Skills</h2>
+            <p>Choose an activity to practice addition, subtraction, multiplication, and division!</p>
 
-        <section id="content" class="gallery-view">
-            <article class="item">
-                <a href="game/addition" title="Practice Addition">➕ Addition Practice</a>
-            </article>
-            <article class="item">
-                <a href="game/substraction/" title="Practice Subtraction">➖ Subtraction Practice</a>
-            </article>
-            <article class="item">
-                <a href="game/multiplication" title="Practice Multiplication">✖️ Multiplication Practice</a>
-            </article>
-            <article class="item">
-                <a href="#" title="Practice Division">➗ Division Practice</a>
-            </article>
-            <article class="item">
-                <a href="more" title="More Math Games">🎯 More Math Games</a>
-            </article>
-        </section>
-    </main>
+            <section id="content">
+                <article class="item">
+                    <a href="game/addition" title="Practice Addition">➕ Addition Practice</a>
+                </article>
+                <article class="item">
+                    <a href="game/subtraction/" title="Practice Subtraction">➖ Subtraction Practice</a>
+                </article>
+                <article class="item">
+                    <a href="game/multiplication" title="Practice Multiplication">✖️ Multiplication Practice</a>
+                </article>
+                <article class="item">
+                    <a href="#" title="Practice Division">➗ Division Practice</a>
+                </article>
+                <article class="item">
+                    <a href="more" title="More Math Games">🎯 More Math Games</a>
+                </article>
+            </section>
+        </main>
 
-    <footer>
-        <p>&copy; 2025 BabyMath. All rights reserved.</p>
-    </footer>
+        <footer>
+            <p>&copy; 2025 BabyMath. All rights reserved.</p>
+        </footer>
+    </div>
 
-    <!-- Link to External JavaScript -->
-    <script src="assets/script.js"></script>
+    <!-- JavaScript for Smooth Scroll -->
+    <script>
+        document.querySelector("#welcome").addEventListener("click", function () {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: "smooth"
+            });
+        });
+    </script>
+
 </body>
 </html>
