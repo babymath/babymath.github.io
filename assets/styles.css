@@ -20,6 +20,25 @@ header, footer {
     padding: 15px 0;
     text-align: center;
 }
+header {
+    width: 100vw;
+    height: 100dvh; /* Ensures better mobile compatibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Example background */
+    padding: 20px; /* Prevents content from sticking to the edges */
+    box-sizing: border-box;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    header {
+        height: 100vh; /* Fallback for older mobile browsers */
+        padding: 10px; /* Less padding for small screens */
+    }
+}
+
 
 nav a {
     color: white;
