@@ -1,0 +1,21 @@
+p
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Hunt High Score</title>
+</head>
+<body>
+    <h1>Number Hunt High Score</h1>
+    <p>High Score: <span id="highScore">0</span></p>
+
+    <script>
+        // Get the high score from localStorage
+        const highScore = localStorage.getItem("hs-number-hunt") || 0;
+        
+        // Display the high score in the span
+        document.getElementById("highScore").textContent = highScore;
+    </script>
+</body>
+</html>
