@@ -1,4 +1,4 @@
-import { getHighScore, setHighScore } from "./highscore.js";
+const HIGH_SCORE_KEY = "babymath-nh-hs"; // Updated localStorage key
 
 const targetNumber = document.getElementById("target-number");
 const scoreElement = document.getElementById("score");
@@ -19,6 +19,14 @@ let currentTarget = 0;
 let questionTimer;
 let highScore = getHighScore();
 
+function getHighScore() {
+    return parseInt(localStorage.getItem(HIGH_SCORE_KEY)) || 0;
+}
+
+function setHighScore(score) {
+    localStorage.setItem(HIGH_SCORE_KEY, score);
+}
+
 function getRandomNumber() {
     return Math.floor(Math.random() * (10 + Math.floor(score / 5)));
 }
@@ -29,7 +37,6 @@ function startGame() {
     popup.style.display = "none";
     updateUI();
     generateBubbles();
-    startTimer();
 }
 
 function updateUI() {
@@ -40,6 +47,10 @@ function updateUI() {
 
 function generateBubbles() {
     clearInterval(questionTimer);
+    timeLeft = maxTime; // Reset timer for new question
+    updateUI();
+    timerBar.style.width = "100%";
+
     bubbleContainer.innerHTML = "";
     currentTarget = getRandomNumber();
     targetNumber.textContent = currentTarget;
@@ -62,9 +73,10 @@ function generateBubbles() {
 }
 
 function startTimer() {
-    timeLeft = maxTime;
-    updateUI();
+    clearInterval(questionTimer); // Clear any existing timer
+    timeLeft = maxTime; // Reset time
     timerBar.style.width = "100%";
+    updateUI();
 
     questionTimer = setInterval(() => {
         timeLeft--;
@@ -81,8 +93,7 @@ function startTimer() {
 function handleAnswer(num) {
     if (num === currentTarget) {
         score++;
-        generateBubbles();
-        updateUI();
+        generateBubbles(); // Generates new bubbles & resets timer
     } else {
         endGame();
     }
@@ -106,3 +117,4 @@ okButton.addEventListener("click", startGame);
 restartButton.addEventListener("click", startGame);
 updateUI();
 startGame();
+
