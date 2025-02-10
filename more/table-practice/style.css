@@ -2,13 +2,14 @@
 body {
     font-family: 'Poppins', sans-serif;
     text-align: center;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    background: royalblue;
     color: white;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    overflow: hidden;
 }
 
 /* Game Container */
@@ -19,19 +20,22 @@ body {
     border-radius: 15px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
     color: black;
-    transition: transform 0.3s ease-in-out;
     text-align: center;
     position: relative;
-}
-.game-container:hover {
-    transform: scale(1.03);
 }
 
 /* Title */
 h1 {
     font-size: 30px;
-    color: #ff5e62;
-    margin-bottom: 20px;
+    color: royalblue;
+}
+
+/* Top Info: Best Score & Lives */
+.top-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    color: #444;
 }
 
 /* Question Styling */
@@ -48,14 +52,14 @@ input {
     padding: 12px;
     font-size: 20px;
     text-align: center;
-    border: 3px solid #ff5e62;
+    border: 3px solid royalblue;
     border-radius: 10px;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 input:focus {
-    border-color: #ff758c;
-    box-shadow: 0px 0px 10px rgba(255, 94, 98, 0.5);
+    border-color: dodgerblue;
+    box-shadow: 0px 0px 10px rgba(65, 105, 225, 0.5);
 }
 
 /* Buttons */
@@ -72,16 +76,14 @@ button {
     letter-spacing: 1px;
 }
 
-/* Different Button Styles */
-.btn-submit {
-    background: #28a745;
-    color: white;
-}
-.btn-end {
+/* End Button */
+#btn-end {
     background: #dc3545;
     color: white;
 }
-.btn-restart {
+
+/* Restart Button */
+#btn-restart {
     background: #ffb400;
     color: white;
 }
@@ -92,36 +94,30 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* Feedback Text */
-#feedback {
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 10px;
-}
-
-/* Score & Timer */
-.stats {
-    font-size: 16px;
-    margin-top: 10px;
-    color: #444;
-}
-
 /* Lives UI (Hearts) */
 #lives {
-    margin-top: 15px;
     font-size: 24px;
 }
 
-/* Heart Animation (When 1 Life Left) */
-.flash {
-    animation: flash 0.8s infinite alternate;
+/* Attempt Count & Timer (One Line) */
+.stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    color: #444;
 }
 
-@keyframes flash {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0.3;
-    }
+/* Result Window */
+#result-window {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    color: black;
+    display: none;
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
 }
