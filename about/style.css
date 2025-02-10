@@ -1,9 +1,14 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
+/* Global Styles */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    color: #333;
     text-align: center;
 }
 
@@ -11,30 +16,52 @@ body {
 header {
     background: royalblue;
     color: white;
-    padding: 15px;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 /* About Section */
 .about {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 40px auto;
+    padding: 30px;
     background: white;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* About Logo */
-.about-logo {
-    width: 150px;
+.about h2, 
+.about h3 {
+    color: royalblue;
+    margin-bottom: 10px;
+}
+
+.about p {
+    font-size: 18px;
+    line-height: 1.6;
     margin-bottom: 15px;
 }
 
-/* List Style */
-ul {
+.about ul {
     text-align: left;
-    list-style-type: square;
+    margin: 10px auto 20px;
     padding-left: 20px;
+    list-style-type: square;
+    max-width: 600px;
+}
+
+.about ul li {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+/* Logo Styling */
+.about-logo {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
 }
 
 /* Play Button */
@@ -42,12 +69,12 @@ ul {
     display: inline-block;
     background: linear-gradient(45deg, #4169E1, #1E3A8A);
     color: white;
-    padding: 12px 25px;
-    font-size: 18px;
+    padding: 14px 30px;
+    font-size: 20px;
     font-weight: bold;
     text-decoration: none;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
@@ -81,8 +108,9 @@ ul {
 
 /* Footer */
 footer {
-    margin-top: 20px;
-    padding: 10px;
+    margin-top: 30px;
+    padding: 15px;
     background: #333;
     color: white;
+    font-size: 14px;
 }
