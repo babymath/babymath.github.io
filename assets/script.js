@@ -1,13 +1,16 @@
-// Toggle Button Functionality
-const toggleButton = document.getElementById('toggleView');
-const content = document.getElementById('content');
+// Disable Right-Click
+document.addEventListener("contextmenu", (event) => event.preventDefault());
 
-toggleButton.addEventListener('click', () => {
-    content.classList.toggle('list-view');
-
-    if (content.classList.contains('list-view')) {
-        toggleButton.textContent = 'Switch to Gallery View';
-    } else {
-        toggleButton.textContent = 'Switch to List View';
+// Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+document.addEventListener("keydown", (event) => {
+    if (event.key === "F12" || 
+        (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "J")) || 
+        (event.ctrlKey && event.key === "U")) {
+        event.preventDefault();
     }
 });
+
+// Disable Text Selection & Copying
+document.addEventListener("selectstart", (event) => event.preventDefault());
+document.addEventListener("copy", (event) => event.preventDefault());
+
