@@ -11,12 +11,6 @@ function startGame() {
     timerInterval = setInterval(updateTimer, 1000);
     updateLivesUI();
     generateQuestion();
-
-    // Show question and input field
-    document.getElementById("question").style.display = "block";
-    document.getElementById("answer").style.display = "block";
-    document.querySelector(".btn-submit").style.display = "block";
-    document.querySelector(".btn-end").style.display = "block";
 }
 
 // Generate New Question
@@ -29,38 +23,18 @@ function generateQuestion() {
 
     document.getElementById("question").innerText = `${num1} × ${num2} = ?`;
     document.getElementById("answer").value = "";
-    document.getElementById("feedback").innerText = "";
     document.getElementById("answer").focus();
 }
 
-// Check Answer
-function checkAnswer() {
-    if (gameEnded) return;
-
-    let userAnswer = document.getElementById("answer").value;
-
-    if (userAnswer == correctAnswer) {
+// Auto-Submit Answer
+document.getElementById("answer").addEventListener("input", function () {
+    let userAnswer = parseInt(this.value);
+    if (userAnswer === correctAnswer) {
         questionCount++;
         document.getElementById("questionCount").innerText = questionCount;
-        document.getElementById("feedback").innerText = "✅ Correct!";
-        document.getElementById("feedback").style.color = "green";
-        generateQuestion();
-    } else {
-        lives--;
-        updateLivesUI();
-
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-
-        document.getElementById("feedback").innerText = `❌ Wrong! ${lives} lives left.`;
-        document.getElementById("feedback").style.color = "red";
-
-        if (lives === 0) {
-            setTimeout(endGame, 1000);
-        }
+        setTimeout(generateQuestion, 300);
     }
-}
+});
 
 // Update Timer
 function updateTimer() {
@@ -88,36 +62,34 @@ function updateLivesUI() {
     }
 }
 
-// Save High Score
+// Save Best Score
 function saveHighScore(score) {
-    let highScore = localStorage.getItem("highScore") || 0;
+    let highScore = parseInt(localStorage.getItem("highScore")) || 0;
     if (score > highScore) {
         localStorage.setItem("highScore", score);
     }
 }
 
-// Get High Score
+// Get Best Score
 function getHighScore() {
-    return localStorage.getItem("highScore") || 0;
+    return parseInt(localStorage.getItem("highScore")) || 0;
 }
 
 // End Game
 function endGame() {
     gameEnded = true;
     clearInterval(timerInterval);
-
-    // Hide question and input field
-    document.getElementById("question").style.display = "none";
-    document.getElementById("answer").style.display = "none";
-    document.querySelector(".btn-submit").style.display = "none";
-    document.querySelector(".btn-end").style.display = "none";
-
-    document.getElementById("feedback").innerText = `🎉 Game Over! You answered ${questionCount} questions in ${totalTime} seconds.`;
-    document.getElementById("restart").style.display = "block";
-
-    // Save and display best score
+    
     saveHighScore(questionCount);
-    document.getElementById("bestScore").innerText = getHighScore();
+    let bestScore = getHighScore();
+
+    document.getElementById("result-window").style.display = "block";
+    document.getElementById("final-result").innerHTML = `
+        <strong>Best Score:</strong> ${bestScore} <br>
+        <strong>Your Score:</strong> ${questionCount} <br>
+        <strong>Total Questions Attempted:</strong> ${questionCount} <br>
+        <strong>Total Time Taken:</strong> ${totalTime} seconds
+    `;
 }
 
 // Restart Game
@@ -126,19 +98,11 @@ function restartGame() {
     questionCount = 0;
     totalTime = 0;
     lives = 3;
-    document.getElementById("restart").style.display = "none";
-
+    document.getElementById("result-window").style.display = "none";
     startGame();
 }
 
 // Display best score on page load
 document.getElementById("bestScore").innerText = getHighScore();
-
-// Handle Enter Key
-document.getElementById("answer").addEventListener("keyup", function(event) {
-    if (event.key === "Enter") {
-        checkAnswer();
-    }
-});
 
 startGame();
