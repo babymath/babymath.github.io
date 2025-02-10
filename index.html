@@ -29,46 +29,52 @@
 </head>
 <body>
 
-    <!-- Full-Screen Welcome Header -->
-    <header id="welcome">
-        <img src="img/logo.png" alt="BabyMath Logo">
-        <h1>Welcome to BabyMath</h1>
-        <p>Fun Math Practice for Kids</p>
-        <button class="start-btn">Start Playing</button>
+    <!-- Full-Screen Welcome Section -->
+    <section id="welcome-screen">
+        <header>
+            <img src="img/logo.png" alt="BabyMath Logo">
+            <h1>Welcome to BabyMath</h1>
+            <p>Fun Math Practice for Kids</p>
+            <button id="start-playing">Start Playing</button>
+        </header>
+    </section>
 
-        <!-- Floating Bubble -->
-        <img src="img/bubble.png" class="bubble" alt="Floating Bubble">
-    </header>
-
-    <!-- Main & Footer -->
-    <div class="container">
+    <!-- Full-Screen Main Content Section -->
+    <section id="second-screen">
         <main>
             <h2>Practice Your Math Skills</h2>
             <p>Choose an activity to practice addition, subtraction, multiplication, and division!</p>
 
             <section id="content">
                 <article class="item">
-                    <a href="game/addition">➕ Addition Practice</a>
+                    <a href="game/addition" title="Practice Addition">➕ Addition Practice</a>
                 </article>
                 <article class="item">
-                    <a href="game/subtraction">➖ Subtraction Practice</a>
+                    <a href="game/subtraction" title="Practice Subtraction">➖ Subtraction Practice</a>
                 </article>
                 <article class="item">
-                    <a href="game/multiplication">✖️ Multiplication Practice</a>
+                    <a href="game/multiplication" title="Practice Multiplication">✖️ Multiplication Practice</a>
                 </article>
                 <article class="item">
-                    <a href="game/division">➗ Division Practice</a>
+                    <a href="game/division" title="Practice Division">➗ Division Practice</a>
                 </article>
                 <article class="item">
-                    <a href="more">🎯 More Math Games</a>
+                    <a href="more" title="More Math Games">🎯 More Math Games</a>
                 </article>
             </section>
         </main>
 
         <footer>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
             <p>&copy; 2025 BabyMath. All rights reserved.</p>
         </footer>
-    </div>
+    </section>
+
+    <!-- JavaScript File -->
     <script src="assets/script.js"></script>
 </body>
 </html>
