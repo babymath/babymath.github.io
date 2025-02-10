@@ -1,45 +1,36 @@
-/* Reset default margin & padding */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Fullscreen Layout */
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     background-color: #f4f4f4;
     text-align: center;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
 }
 
 /* Header */
 header {
     background: royalblue;
     color: white;
-    padding: 10px;
-    width: 100%;
+    padding: 15px;
 }
 
 /* About Section */
 .about {
-    width: 90%;
-    max-width: 700px;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
     background: white;
-    padding: 5%;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: auto;
-    max-height: 70vh; /* Ensures content fits within screen */
 }
 
-/* List Styling */
+/* About Logo */
+.about-logo {
+    width: 150px;
+    margin-bottom: 15px;
+}
+
+/* List Style */
 ul {
     text-align: left;
     list-style-type: square;
@@ -90,39 +81,8 @@ ul {
 
 /* Footer */
 footer {
-    margin-top: 10px;
-    padding: 5px;
+    margin-top: 20px;
+    padding: 10px;
     background: #333;
     color: white;
-    width: 100%;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .about {
-        width: 95%;
-        max-height: 75vh;
-    }
-
-    .play-button {
-        font-size: 16px;
-        padding: 10px 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-
-    .about {
-        width: 100%;
-        padding: 10%;
-        max-height: 80vh;
-    }
-
-    .play-button {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
 }
