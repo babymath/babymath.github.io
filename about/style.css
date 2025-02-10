@@ -1,11 +1,11 @@
-/* General Styles */
+/* Reset default margin & padding */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden; /* Prevents scrollbars */
 }
 
+/* Fullscreen Layout */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -16,6 +16,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 /* Header */
@@ -28,14 +29,17 @@ header {
 
 /* About Section */
 .about {
-    width: 80%;
+    width: 90%;
     max-width: 700px;
     background: white;
-    padding: 20px;
+    padding: 5%;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+    max-height: 70vh; /* Ensures content fits within screen */
 }
 
+/* List Styling */
 ul {
     text-align: left;
     list-style-type: square;
@@ -91,4 +95,34 @@ footer {
     background: #333;
     color: white;
     width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .about {
+        width: 95%;
+        max-height: 75vh;
+    }
+
+    .play-button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .about {
+        width: 100%;
+        padding: 10%;
+        max-height: 80vh;
+    }
+
+    .play-button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }
