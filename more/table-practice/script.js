@@ -7,6 +7,7 @@ let lives = 3;
 
 // Start Game
 function startGame() {
+    gameEnded = false;
     startTime = Date.now();
     timerInterval = setInterval(updateTimer, 1000);
     updateLivesUI();
@@ -29,7 +30,7 @@ function generateQuestion() {
 // Auto-Submit Answer
 document.getElementById("answer").addEventListener("input", function () {
     let userAnswer = parseInt(this.value);
-    if (userAnswer === correctAnswer) {
+    if (userAnswer === correctAnswer && !gameEnded) {
         questionCount++;
         document.getElementById("questionCount").innerText = questionCount;
         setTimeout(generateQuestion, 300);
@@ -53,7 +54,6 @@ function updateLivesUI() {
         let heart = document.createElement("span");
         heart.innerHTML = "❤️";
         heart.style.fontSize = "20px";
-
         livesContainer.appendChild(heart);
     }
 }
@@ -71,8 +71,10 @@ function getHighScore() {
     return parseInt(localStorage.getItem("highScore")) || 0;
 }
 
-// End Game
+// End Game (Fix: Ensures Everything Stops Properly)
 function endGame() {
+    if (gameEnded) return; // Prevent multiple calls
+
     gameEnded = true;
     clearInterval(timerInterval);
 
@@ -80,7 +82,7 @@ function endGame() {
     let bestScore = getHighScore();
 
     document.querySelector(".game-container").classList.add("hidden"); // Hide game container
-    document.getElementById("result-window").style.display = "block";
+    document.getElementById("result-window").classList.remove("hidden"); // Show result window
     document.getElementById("final-result").innerHTML = `
         <strong>Best Score:</strong> ${bestScore} <br>
         <strong>Your Score:</strong> ${questionCount} <br>
@@ -89,9 +91,27 @@ function endGame() {
     `;
 }
 
-// Restart Game
+// Restart Game (Fix: Properly Resets Everything)
+function restartGame() {
+    gameEnded = false;
+    questionCount = 0;
+    totalTime = 0;
+    lives = 3;
+
+    // Reset UI
+    document.getElementById("questionCount").innerText = questionCount;
+    document.getElementById("timer").innerText = "0";
+    document.getElementById("answer").value = "";
+
+    document.querySelector(".game-container").classList.remove("hidden"); // Show game container
+    document.getElementById("result-window").classList.add("hidden"); // Hide result window
+
+    startGame();
+}
+
+// Event Listeners
 document.getElementById("btn-end").addEventListener("click", endGame);
-document.getElementById("btn-restart").addEventListener("click", () => location.reload());
+document.getElementById("btn-restart").addEventListener("click", restartGame);
 
 // Display best score on page load
 document.getElementById("bestScore").innerText = getHighScore();
