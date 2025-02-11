@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Practice - BabyMath</title>
+    <link rel="canonical" href="https://babymath.github.io/">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="title" content="BabyMath - Fun Math Practice for Kids">
+    <meta name="description" content="BabyMath helps kids practice addition, subtraction, multiplication, division, and other fun math exercises.">
+    <meta name="keywords" content="BabyMath, Math Practice, Addition, Subtraction, Multiplication, Division, Kids Math Games">
+    <meta name="author" content="Nikhil Saurav">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Table Practice - BabyMath">
+    <meta property="og:description" content="Engaging math exercises for kids to improve their skills. Play now!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://babymath.github.io/more/table-practice">
+    <meta property="og:image" content="https://babymath.github.io/logo.png">
+    <meta property="og:site_name" content="Table Practice - BabyMath">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Table Practice - BabyMath">
+    <meta name="twitter:description" content="Practice math skills with BabyMath! Enjoy fun exercises in addition, subtraction, multiplication, and division.">
+    <meta name="twitter:image" content="https://babymath.github.io/logo.png">
+    <meta name="twitter:site" content="@BabyMathOfficial">
+    <meta name="google-site-verification" content="jPIQw5aiErhKvSEdU1MONPCvxlSEHn43lnzrP_gXc0Q" />
+    <meta name="msvalidate.01" content="4B63EFED4549A329A1DF43F94F488E71" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Table Practice</h1>
+
+        <!-- Best Score -->
+        <div class="top-info">
+            <p><strong>Best Score:</strong> <span id="bestScore">0</span></p>
+        </div>
+
+        <div class="stats">
+            <p><strong>Questions Attempted:</strong> <span id="questionCount">0</span>
+            <strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
+        </div>
+
+        <!-- Question -->
+        <div id="question">Loading...</div>
+
+        <!-- Answer Input -->
+        <input type="number" id="answer" placeholder="Your Answer" autofocus>
+
+        <!-- End Game Button -->
+        <button id="btn-end">End Game</button>
+    </div>
+
+    <!-- Result Window -->
+    <div id="result-window" class="hidden">
+        <h2>Game Over</h2>
+        <p id="final-result"></p>
+        <button id="btn-restart">Restart</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
 
