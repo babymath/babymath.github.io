@@ -54,10 +54,6 @@ function updateLivesUI() {
         heart.innerHTML = "❤️";
         heart.style.fontSize = "20px";
 
-        if (lives === 1) {
-            heart.classList.add("flash");
-        }
-
         livesContainer.appendChild(heart);
     }
 }
@@ -79,10 +75,11 @@ function getHighScore() {
 function endGame() {
     gameEnded = true;
     clearInterval(timerInterval);
-    
+
     saveHighScore(questionCount);
     let bestScore = getHighScore();
 
+    document.querySelector(".game-container").classList.add("hidden"); // Hide game container
     document.getElementById("result-window").style.display = "block";
     document.getElementById("final-result").innerHTML = `
         <strong>Best Score:</strong> ${bestScore} <br>
@@ -93,14 +90,8 @@ function endGame() {
 }
 
 // Restart Game
-function restartGame() {
-    gameEnded = false;
-    questionCount = 0;
-    totalTime = 0;
-    lives = 3;
-    document.getElementById("result-window").style.display = "none";
-    startGame();
-}
+document.getElementById("btn-end").addEventListener("click", endGame);
+document.getElementById("btn-restart").addEventListener("click", () => location.reload());
 
 // Display best score on page load
 document.getElementById("bestScore").innerText = getHighScore();
