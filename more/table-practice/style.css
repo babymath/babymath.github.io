@@ -117,7 +117,7 @@ button:hover {
     display: none;
 }
 
-/* Hidden Class */
+/* Hide Elements */
 .hidden {
-    display: none;
+    display: none !important;
 }
