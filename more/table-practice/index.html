@@ -10,7 +10,7 @@
 
     <div class="game-container">
         <h1>Table Practice</h1>
-        
+
         <!-- Best Score & Lives (One Line) -->
         <div class="top-info">
             <p><strong>Best Score:</strong> <span id="bestScore">0</span></p>
@@ -24,23 +24,22 @@
         <input type="number" id="answer" placeholder="Your Answer" autofocus>
 
         <!-- End Game Button -->
-        <button id="btn-end" onclick="endGame()">End Game</button>
+        <button id="btn-end">End Game</button>
 
         <!-- Attempt Count & Timer (One Line) -->
         <div class="stats">
             <p><strong>Questions Attempted:</strong> <span id="questionCount">0</span></p>
             <p><strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
         </div>
+    </div>
 
-        <!-- Result Window (Hidden by Default) -->
-        <div id="result-window" class="hidden">
-            <h2>Game Over</h2>
-            <p id="final-result"></p>
-            <button id="btn-restart" onclick="restartGame()">Restart</button>
-        </div>
+    <!-- Result Window (Hidden by Default) -->
+    <div id="result-window" class="hidden">
+        <h2>Game Over</h2>
+        <p id="final-result"></p>
+        <button id="btn-restart">Restart</button>
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>
