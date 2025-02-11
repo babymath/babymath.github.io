@@ -1,123 +1,105 @@
-/* Global Styles */
+/* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     text-align: center;
-    background: royalblue;
-    color: white;
+    background: linear-gradient(135deg, #4A90E2, #1E3A8A);
     margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 0;
+    color: white;
     overflow: hidden;
+}
+
+/* Heading */
+h1 {
+    margin-top: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Game Container */
 .game-container {
-    width: 400px;
     background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-    color: black;
-    text-align: center;
-    position: relative;
-}
-
-/* Title */
-h1 {
-    font-size: 30px;
-    color: royalblue;
-}
-
-/* Top Info: Best Score & Lives */
-.top-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    color: #444;
-}
-
-/* Question Styling */
-#question {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-/* Input Field */
-input {
     width: 90%;
+    max-width: 450px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+    color: black;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Stats */
+.stats {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Question */
+#question {
+    font-size: 28px;
+    font-weight: bold;
+    color: royalblue;
+    margin-bottom: 10px;
+}
+
+/* Answer Input */
+#answer {
+    width: 80%;
     padding: 12px;
     font-size: 20px;
     text-align: center;
     border: 3px solid royalblue;
-    border-radius: 10px;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-input:focus {
-    border-color: dodgerblue;
-    box-shadow: 0px 0px 10px rgba(65, 105, 225, 0.5);
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
 /* Buttons */
 button {
-    width: 100%;
-    padding: 12px;
-    font-size: 18px;
-    font-weight: bold;
+    background: linear-gradient(135deg, royalblue, #0033A0);
+    color: white;
     border: none;
-    border-radius: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    letter-spacing: 1px;
-}
-
-/* End Button */
-#btn-end {
-    background: #dc3545;
-    color: white;
-}
-
-/* Restart Button */
-#btn-restart {
-    background: #ffb400;
-    color: white;
-}
-
-/* Button Hover Effects */
-button:hover {
-    opacity: 0.85;
-    transform: translateY(-2px);
-}
-
-/* Lives UI (Hearts) */
-#lives {
-    font-size: 24px;
-}
-
-/* Attempt Count & Timer (One Line) */
-.stats {
-    display: flex;
-    justify-content: space-between;
+    padding: 12px 18px;
     font-size: 16px;
-    color: #444;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #0033A0, royalblue);
+    box-shadow: 0px 0px 10px rgba(65, 105, 225, 0.8);
+}
+
+button:active {
+    transform: scale(0.95);
 }
 
 /* Result Window */
 #result-window {
-    margin-top: 20px;
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    margin: 20px auto;
     padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     color: black;
     display: none;
+    animation: slideIn 0.5s ease-in-out;
 }
 
-/* Hide Elements */
-.hidden {
-    display: none !important;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
