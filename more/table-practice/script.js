@@ -71,7 +71,7 @@ function getHighScore() {
     return parseInt(localStorage.getItem("highScore")) || 0;
 }
 
-// End Game (Fix: Ensures Everything Stops Properly)
+// End Game (Fix: Ensures Result Window Shows)
 function endGame() {
     if (gameEnded) return; // Prevent multiple calls
 
@@ -81,8 +81,12 @@ function endGame() {
     saveHighScore(questionCount);
     let bestScore = getHighScore();
 
-    document.querySelector(".game-container").classList.add("hidden"); // Hide game container
-    document.getElementById("result-window").classList.remove("hidden"); // Show result window
+    // Hide game container and show result window
+    document.querySelector(".game-container").style.display = "none"; // Hide game container
+    let resultWindow = document.getElementById("result-window");
+    resultWindow.classList.remove("hidden"); // Ensure it's visible
+    resultWindow.style.display = "block"; // Set display to block
+
     document.getElementById("final-result").innerHTML = `
         <strong>Best Score:</strong> ${bestScore} <br>
         <strong>Your Score:</strong> ${questionCount} <br>
@@ -103,8 +107,11 @@ function restartGame() {
     document.getElementById("timer").innerText = "0";
     document.getElementById("answer").value = "";
 
-    document.querySelector(".game-container").classList.remove("hidden"); // Show game container
-    document.getElementById("result-window").classList.add("hidden"); // Hide result window
+    // Show game container and hide result window
+    document.querySelector(".game-container").style.display = "block"; // Show game container
+    let resultWindow = document.getElementById("result-window");
+    resultWindow.classList.add("hidden"); // Hide result window
+    resultWindow.style.display = "none"; // Ensure it's hidden
 
     startGame();
 }
