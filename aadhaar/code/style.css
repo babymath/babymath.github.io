@@ -1,0 +1,89 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    overflow: hidden;
+}
+
+/* Welcome Screen */
+#welcome-screen {
+    width: 100vw;
+    height: 100vh;
+    background: royalblue;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+#welcome-screen img {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+#welcome-screen button {
+    padding: 10px 20px;
+    background: white;
+    color: royalblue;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#welcome-screen button:hover {
+    background: lightgray;
+}
+
+/* Second Screen */
+#second-screen {
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    display: none; /* Hidden initially */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#content {
+    margin-top: 20px;
+}
+
+.item a {
+    display: block;
+    padding: 15px;
+    background: royalblue;
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.item a:hover {
+    background: darkblue;
+}
+
+/* Footer */
+footer {
+    margin-top: 30px;
+}
+
+footer nav a {
+    margin: 0 10px;
+    color: royalblue;
+    text-decoration: none;
+}
+
+footer nav a:hover {
+    text-decoration: underline;
+}
