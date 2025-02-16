@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Moving Bubbles</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #eef2ff, #cfd9ff);
+            overflow: hidden;
+        }
+
+        .bubble-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bubble {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            box-shadow: inset -3px -3px 8px rgba(255, 255, 255, 0.5),
+                        inset 3px 3px 8px rgba(0, 0, 0, 0.2),
+                        5px 5px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0.9;
+            transition: transform 5s ease-in-out;
+            animation: float 6s infinite ease-in-out alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-30px); }
+        }
+
+        .blue { background: radial-gradient(circle, #4fa3ff, #0057d9); }
+        .red { background: radial-gradient(circle, #ff4f4f, #d90000); }
+    </style>
+</head>
+<body>
+    <div class="bubble-container"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector(".bubble-container");
+
+            // Get current day and month
+            const currentDate = new Date();
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1;
+
+            function createBubble(value, colorClass) {
+                const bubble = document.createElement("div");
+                bubble.classList.add("bubble", colorClass);
+                bubble.textContent = value;
+
+                let x = Math.random() * window.innerWidth * 0.9;
+                let y = Math.random() * window.innerHeight * 0.9;
+                
+                bubble.style.left = `${x}px`;
+                bubble.style.top = `${y}px`;
+
+                container.appendChild(bubble);
+
+                function moveBubble() {
+                    let newX = Math.random() * window.innerWidth * 0.9;
+                    let newY = Math.random() * window.innerHeight * 0.9;
+                    bubble.style.transform = `translate(${newX - x}px, ${newY - y}px)`;
+                    x = newX;
+                    y = newY;
+                }
+
+                setInterval(moveBubble, 5000);
+            }
+
+            // Create bubbles for the current day (blue)
+            for (let i = 0; i < day; i++) {
+                setTimeout(() => createBubble(day, "blue"), i * 100);
+            }
+
+            // Create bubbles for the current month (red)
+            for (let i = 0; i < month; i++) {
+                setTimeout(() => createBubble(month, "red"), i * 300);
+            }
+        });
+    </script>
+</body>
+</html>
