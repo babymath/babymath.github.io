@@ -10,8 +10,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f5f5f5;
             margin: 0;
+            transition: background-color 2s ease-in-out; /* Smooth background transition */
         }
 
         .clock {
@@ -33,7 +33,8 @@
             position: absolute;
             background: black;
             transform-origin: bottom;
-            transition: all 0.05s ease-in-out;
+            transition: transform 0.05s linear;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* 3D effect */
         }
 
         .hour-hand {
@@ -75,24 +76,17 @@
 
         .number {
             position: absolute;
-            font-size: 6vw;
+            font-size: calc(2vw + 1rem); /* Responsive font size */
             font-weight: bold;
             text-align: center;
+            transform: translate(-50%, -50%);
         }
 
-        /* Positioning numbers dynamically */
-        .number-1 { top: 18%; left: 73%; }
-        .number-2 { top: 30%; left: 85%; }
-        .number-3 { top: 50%; left: 90%; }
-        .number-4 { top: 70%; left: 85%; }
-        .number-5 { top: 82%; left: 72%; }
-        .number-6 { top: 87%; left: 50%; transform: translateX(-50%); }
-        .number-7 { top: 82%; left: 28%; }
-        .number-8 { top: 70%; left: 15%; }
-        .number-9 { top: 50%; left: 10%; }
-        .number-10 { top: 30%; left: 15%; }
-        .number-11 { top: 18%; left: 28%; }
-        .number-12 { top: 8%; left: 50%; transform: translateX(-50%); }
+        .tick {
+            position: absolute;
+            background: black;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -101,19 +95,6 @@
         <div class="hand minute-hand"></div>
         <div class="hand second-hand"></div>
         <div class="center-circle"></div>
-        <!-- Clock Numbers -->
-        <div class="number number-1">1</div>
-        <div class="number number-2">2</div>
-        <div class="number number-3">3</div>
-        <div class="number number-4">4</div>
-        <div class="number number-5">5</div>
-        <div class="number number-6">6</div>
-        <div class="number number-7">7</div>
-        <div class="number number-8">8</div>
-        <div class="number number-9">9</div>
-        <div class="number number-10">10</div>
-        <div class="number number-11">11</div>
-        <div class="number number-12">12</div>
     </div>
 
     <script>
@@ -122,18 +103,88 @@
             const hours = now.getHours();
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
+            const milliseconds = now.getMilliseconds();
 
-            const hourDeg = (hours % 12) * 30 + (minutes / 2); // 30° per hour
-            const minuteDeg = minutes * 6; // 6° per minute
-            const secondDeg = seconds * 6; // 6° per second
+            const hourDeg = (hours % 12) * 30 + (minutes / 2);
+            const minuteDeg = minutes * 6 + seconds * 0.1;
+            const secondDeg = (seconds + milliseconds / 1000) * 6;
 
             document.querySelector('.hour-hand').style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`;
             document.querySelector('.minute-hand').style.transform = `translate(-50%, -100%) rotate(${minuteDeg}deg)`;
             document.querySelector('.second-hand').style.transform = `translate(-50%, -100%) rotate(${secondDeg}deg)`;
+
+            requestAnimationFrame(updateClock);
         }
 
-        setInterval(updateClock, 1000);
-        updateClock(); // Initialize the clock immediately
+        function positionNumbers() {
+            const clock = document.querySelector('.clock');
+            const clockRadius = clock.clientWidth / 2;
+            const centerX = clock.clientWidth / 2;
+            const centerY = clock.clientHeight / 2;
+
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i - 3) * (Math.PI / 6);
+                const x = centerX + clockRadius * 0.75 * Math.cos(angle);
+                const y = centerY + clockRadius * 0.75 * Math.sin(angle);
+
+                const numberElem = document.createElement('div');
+                numberElem.classList.add('number');
+                numberElem.textContent = i;
+                numberElem.style.left = `${x}px`;
+                numberElem.style.top = `${y}px`;
+
+                clock.appendChild(numberElem);
+            }
+        }
+
+        function positionTicks() {
+            const clock = document.querySelector('.clock');
+            const clockRadius = clock.clientWidth / 2;
+
+            for (let i = 0; i < 60; i++) {
+                const angle = (i * 6) * (Math.PI / 180);
+                const tick = document.createElement('div');
+                tick.classList.add('tick');
+
+                const isHourMark = i % 5 === 0;
+                tick.style.width = isHourMark ? '3%' : '1%';
+                tick.style.height = isHourMark ? '10%' : '5%';
+                tick.style.background = isHourMark ? 'black' : 'gray';
+
+                tick.style.position = 'absolute';
+                tick.style.left = '50%';
+                tick.style.top = '50%';
+                tick.style.transformOrigin = 'center bottom';
+                tick.style.transform = `translate(-50%, -100%) rotate(${i * 6}deg)`;
+
+                clock.appendChild(tick);
+            }
+        }
+
+        function updateBackground() {
+            const hour = new Date().getHours();
+            let bgColor;
+
+            if (hour >= 5 && hour < 11) {
+                bgColor = '#FFFAE3'; // Morning (light yellow)
+            } else if (hour >= 11 && hour < 16) {
+                bgColor = '#87CEEB'; // Noon (sky blue)
+            } else if (hour >= 16 && hour < 19) {
+                bgColor = '#FFD580'; // Afternoon (light orange)
+            } else if (hour >= 19 && hour < 21) {
+                bgColor = '#FF8C00'; // Evening (dark orange)
+            } else {
+                bgColor = '#1A237E'; // Night (dark blue)
+            }
+
+            document.body.style.backgroundColor = bgColor;
+        }
+
+        positionNumbers();
+        positionTicks();
+        updateClock();
+        updateBackground();
+        setInterval(updateBackground, 60000); // Check background change every minute
     </script>
 </body>
 </html>
