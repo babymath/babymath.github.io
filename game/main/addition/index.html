@@ -67,7 +67,7 @@
         <div id="game" class="hidden">
             <p id="status-bar"><span id="timer"></span> <span id="question-count"></span></p>
             <h2 id="question"></h2>
-            <input type="text" id="answer" onkeydown="checkEnter(event)" placeholder="Enter your answer">
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="answer" onkeydown="checkEnter(event)" placeholder="Enter your answer">
             <button onclick="submitAnswer()">Submit</button>
             <br>
             <button onclick="restartGame()">Restart Game</button>
