@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #f4f4f4;
+    background-color: #f7f4fa;
     overflow: hidden;
 }
 
@@ -40,14 +40,14 @@ body {
 }
 
 #welcome-screen button:hover {
-    background: lightgray;
+    background: rgb(245, 114, 114);
 }
 
 /* Second Screen */
 #second-screen {
     width: 100vw;
     height: 100vh;
-    background: white;
+    background: rgb(137, 17, 192);
     display: none; /* Hidden initially */
     flex-direction: column;
     justify-content: center;

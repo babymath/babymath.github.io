@@ -9,16 +9,19 @@ function startGame() {
     gameEnded = false;
     questionCount = 0;
     totalTime = 0;
-    
-    document.getElementById("questionCount").innerText = questionCount;
+    document.getElementById("questionCount").innerText = questionCount + 1;
     document.getElementById("timer").innerText = "0";
     document.getElementById("answer").value = "";
+    document.getElementById("answer").disabled = false;  // Enable input field
+    document.getElementById("btn-end").disabled = false; // Enable End Game button
 
     // Display best score on game screen
     document.getElementById("bestScore").innerText = getHighScore();
 
+    clearInterval(timerInterval); // ✅ Prevent multiple timers
     startTime = Date.now();
     timerInterval = setInterval(updateTimer, 1000);
+
     generateQuestion();
 }
 
@@ -38,10 +41,12 @@ function generateQuestion() {
 // Auto-Submit Answer
 document.getElementById("answer").addEventListener("input", function () {
     let userAnswer = parseInt(this.value);
-    if (userAnswer === correctAnswer && !gameEnded) {
+
+    if (Number.isInteger(userAnswer) && userAnswer === correctAnswer && !gameEnded) {
         questionCount++;
         document.getElementById("questionCount").innerText = questionCount;
-        setTimeout(generateQuestion, 300);
+
+        setTimeout(generateQuestion, 500); // ✅ Slight delay for better readability
     }
 });
 
@@ -55,16 +60,16 @@ function updateTimer() {
 
 // Calculate Final Score (Based on Time & Questions)
 function calculateScore() {
-    return questionCount * 10 - totalTime; // Simple formula for final score
+    return Math.max(0, questionCount * 10 - totalTime); // ✅ Prevents negative scores
 }
 
-// Save Best Score & Update UI
+// Save Best Score & Update UI Immediately
 function saveHighScore(score) {
-    let highScore = parseInt(localStorage.getItem("highScore")) || 0;
+    let highScore = getHighScore();
     if (score > highScore) {
         localStorage.setItem("highScore", score);
-        document.getElementById("bestScore").innerText = score; // ✅ Update best score in game screen
     }
+    document.getElementById("bestScore").innerText = getHighScore(); // ✅ Update best score in UI
 }
 
 // Get Best Score
@@ -81,30 +86,35 @@ function endGame() {
 
     let finalScore = calculateScore();
     saveHighScore(finalScore);
-    let bestScore = getHighScore();
 
-    // Hide game container and show result window
-    document.querySelector(".game-container").style.display = "none";
+    // Disable the input field and end game button
+    document.getElementById("answer").disabled = true;
+    document.getElementById("btn-end").disabled = true;
+
+    // Hide game container and show result window with smooth transition
+    document.getElementById("game-container").style.display = "none";
     let resultWindow = document.getElementById("result-window");
     resultWindow.classList.remove("hidden");
     resultWindow.style.display = "block";
+    resultWindow.classList.add("fade-in");  // Add fade-in effect (CSS needed)
 
-    document.getElementById("final-result").innerHTML = `
-        <strong>Best Score:</strong> ${bestScore} <br>
-        <strong>Your Score:</strong> ${finalScore}
-    `;
+    document.getElementById("bestScore1").innerText = getHighScore();
+    document.getElementById("yourScore").innerText = finalScore;
 }
 
 // Restart Game
 function restartGame() {
+    if (!gameEnded) return; // ✅ Prevent multiple restarts
+
     gameEnded = false;
 
     // Show game container and hide result window
-    document.querySelector(".game-container").style.display = "block";
+    document.getElementById("game-container").style.display = "block";
     let resultWindow = document.getElementById("result-window");
     resultWindow.classList.add("hidden");
     resultWindow.style.display = "none";
 
+    clearInterval(timerInterval); // ✅ Prevent multiple timers
     startGame();
 }
 
@@ -116,4 +126,3 @@ document.getElementById("btn-restart").addEventListener("click", restartGame);
 document.getElementById("bestScore").innerText = getHighScore();
 
 startGame();
-

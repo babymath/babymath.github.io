@@ -37,9 +37,8 @@
                         inset 3px 3px 8px rgba(0, 0, 0, 0.2),
                         5px 5px 10px rgba(0, 0, 0, 0.3);
             opacity: 0.9;
-            transition: transform 0.3s ease-in-out, opacity 1s ease;
-            animation: float 6s infinite ease-in-out alternate, rotate 10s infinite linear;
-            cursor: pointer;
+            transition: transform 5s ease-in-out;
+            animation: float 6s infinite ease-in-out alternate;
         }
 
         @keyframes float {
@@ -47,24 +46,8 @@
             100% { transform: translateY(-30px); }
         }
 
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .blue { background: radial-gradient(circle, #4fa3ff, #0057d9); }
         .red { background: radial-gradient(circle, #ff4f4f, #d90000); }
-
-        .bubble:hover {
-            transform: scale(1.2);
-            background: radial-gradient(circle, #ffeb3b, #f57c00);
-        }
-
-        .bubble.clicked {
-            background: radial-gradient(circle, #ff4f4f, #d90000);
-            transform: scale(1.5);
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -83,39 +66,23 @@
                 bubble.classList.add("bubble", colorClass);
                 bubble.textContent = value;
 
-                const size = Math.random() * (80 - 40) + 40; // Bubble size between 40px and 80px
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-
                 let x = Math.random() * window.innerWidth * 0.9;
                 let y = Math.random() * window.innerHeight * 0.9;
+                
                 bubble.style.left = `${x}px`;
                 bubble.style.top = `${y}px`;
 
-                // Random speed for bubble movement
-                const speed = Math.random() * 3 + 2; // Speed between 2s and 5s
+                container.appendChild(bubble);
 
-                // Make bubble bounce off the edges
-                function bounceBubble() {
+                function moveBubble() {
                     let newX = Math.random() * window.innerWidth * 0.9;
                     let newY = Math.random() * window.innerHeight * 0.9;
                     bubble.style.transform = `translate(${newX - x}px, ${newY - y}px)`;
                     x = newX;
                     y = newY;
-                    bubble.style.transitionDuration = `${speed}s`;
                 }
 
-                // Click event for interaction
-                bubble.addEventListener('click', function() {
-                    bubble.classList.toggle('clicked');
-                    setTimeout(() => {
-                        bubble.classList.remove('clicked');
-                    }, 500);
-                });
-
-                container.appendChild(bubble);
-
-                setInterval(bounceBubble, 5000);
+                setInterval(moveBubble, 5000);
             }
 
             // Create bubbles for the current day (blue)

@@ -25,37 +25,35 @@
     <meta name="twitter:site" content="@BabyMathOfficial">
     <meta name="google-site-verification" content="jPIQw5aiErhKvSEdU1MONPCvxlSEHn43lnzrP_gXc0Q" />
     <meta name="msvalidate.01" content="4B63EFED4549A329A1DF43F94F488E71" />
+    <link rel="stylesheet" href="../aadhaar/code/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-container">
-        <h1>Table Practice</h1>
-
-        <!-- Best Score -->
+    <div id="game-container">
+        <div id="gameHeading">Table Practice</div>
         <div class="top-info">
-            <p><strong>Best Score:</strong> <span id="bestScore">0</span></p>
+            <div id="tf1">Best Score: <span id="bestScore">0</span></div>
+            <div id="tf2">Timer (sec): <span id="timer">0</span></div>
         </div>
-
-        <div class="stats">
-            <p><strong>Questions Attempted:</strong> <span id="questionCount">0</span>
-            <strong>Time Elapsed:</strong> <span id="timer">0</span> seconds</p>
+        <div id="question-info">
+            <span id="questionCount">0</span> 
+            <span id="question">Loading...</span>
         </div>
-
-        <!-- Question -->
-        <div id="question">Loading...</div>
-
-        <!-- Answer Input -->
         <input type="number" id="answer" placeholder="Your Answer" autofocus>
-
-        <!-- End Game Button -->
         <button id="btn-end">End Game</button>
     </div>
 
-    <!-- Result Window -->
     <div id="result-window" class="hidden">
-        <h2>Game Over</h2>
-        <p id="final-result"></p>
+        <div id="rw1">Game Over</div>
+        <div>
+            <span id="rw2">Best Score</span>
+            <span id="bestScore1">0</span>
+        </div>
+        <div>
+            <span id="rw3">Your Score</span>
+            <span id="yourScore">0</span>
+        </div>
         <button id="btn-restart">Restart</button>
     </div>
 

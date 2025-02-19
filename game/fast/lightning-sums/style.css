@@ -1,0 +1,13 @@
+#answer {
+    width: 80%;
+    padding: 10px;
+    font-size: 18px;
+    border: 2px solid royalblue;
+    border-radius: 5px;
+    text-align: center;
+    outline: none;
+}
+
+#answer:focus {
+    border-color: darkblue;
+}
