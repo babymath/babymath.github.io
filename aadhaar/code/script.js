@@ -48,3 +48,13 @@ setInterval(function () {
         window.location.href = "about:blank";
     }
 }, 1000);
+
+
+
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+    .then(reg => console.log("Service Worker Registered:", reg))
+    .catch(err => console.error("Registration Failed:", err));
+}
