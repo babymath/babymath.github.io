@@ -1,128 +1,119 @@
-let num1, num2, correctAnswer;
-let questionCount = 0;
-let startTime, totalTime = 0;
-let gameEnded = false;
-let timerInterval;
+$(document).ready(function () {
+  let totalQuestions = 0,
+    questionsLeft = 0,
+    score = 0,
+    bestScore = localStorage.getItem("bestScore") || 0,
+    timerInterval,
+    questionNumber = 0,
+    timeRemaining = 0,
+    timeSpent = 0,
+    gameMode = "",
+    gameValue = 0;
 
-// Start Game
-function startGame() {
-    gameEnded = false;
-    questionCount = 0;
-    totalTime = 0;
-    document.getElementById("questionCount").innerText = questionCount + 1;
-    document.getElementById("timer").innerText = "0";
-    document.getElementById("answer").value = "";
-    document.getElementById("answer").disabled = false;  // Enable input field
-    document.getElementById("btn-end").disabled = false; // Enable End Game button
+  const showWindow = (id) => {
+    $(".window").removeClass("show");
+    $(id).addClass("show");
+  };
 
-    // Display best score on game screen
-    document.getElementById("bestScore").innerText = getHighScore();
+  const startGame = (mode, value) => {
+    clearInterval(timerInterval);
+    score = 0;
+    questionNumber = 0;
+    timeSpent = 0;
+    gameMode = mode;
+    gameValue = value;
 
-    clearInterval(timerInterval); // ✅ Prevent multiple timers
-    startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
+    showWindow("#game-container");
+
+    if (mode === "question") {
+      totalQuestions = value;
+      questionsLeft = value;
+      $("#counterWord").text("Time:-");
+      $("#counter").text(timeSpent);
+      $("#leftTotal").text(`${questionsLeft} / ${totalQuestions}`);
+
+      timerInterval = setInterval(() => {
+        timeSpent++;
+        $("#counter").text(timeSpent);
+      }, 1000);
+    } else {
+      timeRemaining = value * 60;
+      $("#counterWord").text("Question No:-");
+      $("#counter").text(1);
+      $("#leftTotal").text(`${timeRemaining} sec`);
+
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        $("#leftTotal").text(`${timeRemaining} sec`);
+        if (timeRemaining <= 0) endGame();
+      }, 1000);
+    }
 
     generateQuestion();
-}
+  };
 
-// Generate New Question
-function generateQuestion() {
-    if (gameEnded) return;
+  const generateQuestion = () => {
+    if (questionsLeft === 0) return endGame();
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    $("#question").text(`${num1} × ${num2}`);
+    $("#answer").val("").focus();
+  };
 
-    num1 = Math.floor(Math.random() * 20) + 1;
-    num2 = Math.floor(Math.random() * 10) + 1;
-    correctAnswer = num1 * num2;
-
-    document.getElementById("question").innerText = `${num1} × ${num2} = ?`;
-    document.getElementById("answer").value = "";
-    document.getElementById("answer").focus();
-}
-
-// Auto-Submit Answer
-document.getElementById("answer").addEventListener("input", function () {
-    let userAnswer = parseInt(this.value);
-
-    if (Number.isInteger(userAnswer) && userAnswer === correctAnswer && !gameEnded) {
-        questionCount++;
-        document.getElementById("questionCount").innerText = questionCount;
-
-        setTimeout(generateQuestion, 500); // ✅ Slight delay for better readability
-    }
-});
-
-// Update Timer
-function updateTimer() {
-    if (!gameEnded) {
-        totalTime = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById("timer").innerText = totalTime;
-    }
-}
-
-// Calculate Final Score (Based on Time & Questions)
-function calculateScore() {
-    return Math.max(0, questionCount * 10 - totalTime); // ✅ Prevents negative scores
-}
-
-// Save Best Score & Update UI Immediately
-function saveHighScore(score) {
-    let highScore = getHighScore();
-    if (score > highScore) {
-        localStorage.setItem("highScore", score);
-    }
-    document.getElementById("bestScore").innerText = getHighScore(); // ✅ Update best score in UI
-}
-
-// Get Best Score
-function getHighScore() {
-    return parseInt(localStorage.getItem("highScore")) || 0;
-}
-
-// End Game
-function endGame() {
-    if (gameEnded) return;
-
-    gameEnded = true;
+  const endGame = () => {
     clearInterval(timerInterval);
+    $("#yourScore").text(score);
+    $("#totalQuestionsAttempted").text(gameMode === "question" ? totalQuestions : questionNumber);
+    $("#totalTimeTaken").text(timeSpent);
 
-    let finalScore = calculateScore();
-    saveHighScore(finalScore);
+    if (score > bestScore) {
+      bestScore = score;
+      localStorage.setItem("bestScore", bestScore);
+      $("#bestScore1").text(bestScore);
+      $("#newBestMessage").text("🎉 New Best Score! 🎉");
+    } else {
+      $("#newBestMessage").text("");
+    }
 
-    // Disable the input field and end game button
-    document.getElementById("answer").disabled = true;
-    document.getElementById("btn-end").disabled = true;
+    showWindow("#result-window");
+  };
 
-    // Hide game container and show result window with smooth transition
-    document.getElementById("game-container").style.display = "none";
-    let resultWindow = document.getElementById("result-window");
-    resultWindow.classList.remove("hidden");
-    resultWindow.style.display = "block";
-    resultWindow.classList.add("fade-in");  // Add fade-in effect (CSS needed)
+  $(".btnQuestion").click(function () {
+    startGame("question", $(this).data("questions"));
+  });
 
-    document.getElementById("bestScore1").innerText = getHighScore();
-    document.getElementById("yourScore").innerText = finalScore;
-}
+  $(".btnTime").click(function () {
+    startGame("time", $(this).data("time"));
+  });
 
-// Restart Game
-function restartGame() {
-    if (!gameEnded) return; // ✅ Prevent multiple restarts
+  $("#answer").keypress(function (e) {
+    if (e.which === 13 && $("#question").text() !== "Loading...") {
+      const [num1, , num2] = $("#question").text().split(" ");
+      const correct = parseInt(num1) * parseInt(num2);
 
-    gameEnded = false;
+      if (parseInt($(this).val()) === correct) {
+        score++;
+        if (gameMode === "question") {
+          questionsLeft--;
+          $("#leftTotal").text(`${questionsLeft} / ${totalQuestions}`);
+          questionsLeft > 0 ? generateQuestion() : endGame();
+        } else {
+          questionNumber++;
+          $("#counter").text(questionNumber + 1);
+          generateQuestion();
+        }
+      }
+    }
+  });
 
-    // Show game container and hide result window
-    document.getElementById("game-container").style.display = "block";
-    let resultWindow = document.getElementById("result-window");
-    resultWindow.classList.add("hidden");
-    resultWindow.style.display = "none";
+  $("#btnEnd").click(endGame);
 
-    clearInterval(timerInterval); // ✅ Prevent multiple timers
-    startGame();
-}
+  $("#btnRestart").click(() => {
+    showWindow("#setup-window");
+  });
 
-// Event Listeners
-document.getElementById("btn-end").addEventListener("click", endGame);
-document.getElementById("btn-restart").addEventListener("click", restartGame);
+  $("#bestScore").text(bestScore);
+  $("#bestScore1").text(bestScore);
 
-// Display best score on page load
-document.getElementById("bestScore").innerText = getHighScore();
-
-startGame();
+  showWindow("#setup-window");
+});
