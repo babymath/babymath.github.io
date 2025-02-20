@@ -1,4 +1,4 @@
-/* General Reset */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -8,10 +8,9 @@
 /* Body Styling */
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    background: linear-gradient(135deg, #667eea, #764ba2, #89f7fe, #66a6ff);
     background-size: 400% 400%;
-    animation: gradientAnimation 8s ease infinite;
-    height: 100%;
+    animation: gradientAnimation 10s ease infinite;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -20,141 +19,140 @@ body {
     color: #fff;
 }
 
-/* Apply 90vh height for phones */
+/* Responsive Height for Phones */
 @media (max-width: 600px) {
     body {
         height: 90vh;
     }
 }
 
-/* Game Container */
-#game-container {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    backdrop-filter: blur(20px);
-    padding: 30px 40px;
+/* Common Container Styles */
+#game-container,
+#result-window {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    padding: 24px 28px;
+    border-radius: 20px;
     text-align: center;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.8s ease-in-out;
+    animation: fadeIn 0.7s ease;
+}
+
+/* Game Container */
+#game-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Result Window */
+#result-window {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f1f1f1;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
 
 /* Heading */
 #gameHeading {
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
     font-weight: bold;
     margin-bottom: 20px;
-    letter-spacing: 1px;
     color: #f7f7f7;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Top Info */
 .top-info {
     display: flex;
     justify-content: space-between;
-    font-size: 1rem;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: clamp(0.9rem, 1vw + 0.4rem, 1rem);
 }
 
 #tf1, #tf2 {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     padding: 10px 14px;
     border-radius: 12px;
     font-weight: 600;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #222;
+    flex: 1;
+    text-align: center;
 }
 
 /* Question Info */
 #question-info {
     margin: 20px 0;
-    font-size: 1.6rem;
+    font-size: clamp(1.4rem, 2vw + 0.6rem, 1.8rem);
     font-weight: 700;
     display: flex;
     justify-content: center;
     gap: 12px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.25);
+    padding: 14px 18px;
     border-radius: 14px;
 }
 
 #questionCount {
-    background-color: rgba(253, 219, 58, 0.9);
-    color: #333;
+    background: linear-gradient(135deg, #ffcc33, #ffdd55);
     padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 1.2rem;
+    border-radius: 10px;
+    color: #222;
+    font-size: clamp(1rem, 1vw + 0.6rem, 1.4rem);
     font-weight: bold;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
+
 
 
 /* Buttons */
 button {
     width: 100%;
     padding: 14px;
-    font-size: 1rem;
+    font-size: clamp(1rem, 1vw + 0.6rem, 1.1rem);
     font-weight: 600;
     border: none;
     border-radius: 14px;
     cursor: pointer;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
     color: #fff;
     transition: all 0.3s ease;
-    margin-top: 10px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    margin-top: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
-    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    background: linear-gradient(135deg, #00b4d8, #0096c7);
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(102, 126, 234, 0.8);
 }
 
 button:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
 }
 
-/* Result Window */
-#result-window {
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 30px 40px;
-    border-radius: 22px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    animation: scaleIn 0.6s ease forwards;
+/* Result Window Text */
+#rw1 {
+    font-size: clamp(1.8rem, 2vw + 1rem, 2.2rem);
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #ffcc33;
+    text-shadow: 0 4px 10px rgba(253, 219, 58, 0.7);
 }
 
 #result-window div {
-    margin: 14px 0;
-    font-size: 1.3rem;
-}
-
-#rw1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #fddb3a;
-    text-shadow: 0 3px 10px rgba(253, 219, 58, 0.9);
+    font-size: clamp(1.2rem, 1vw + 0.6rem, 1.4rem);
+    margin: 12px 0;
 }
 
 #result-window span {
     font-weight: bold;
-    font-size: 1.4rem;
-}
-
-.hidden {
-    display: none;
+    font-size: clamp(1.4rem, 1vw + 0.8rem, 1.6rem);
+    color: #89f7fe;
 }
 
 /* Animations */
@@ -169,19 +167,34 @@ button:active {
     }
 }
 
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+    #game-container, #result-window {
+        padding: 20px;
+    }
+
+    button {
+        padding: 12px;
+    }
+}
+
+/* Tablet Screens */
+@media (min-width: 601px) and (max-width: 1024px) {
+    #game-container, #result-window {
+        max-width: 500px;
+        padding: 28px 32px;
+    }
+}
+
+/* Larger Screens */
+@media (min-width: 1025px) {
+    #game-container, #result-window {
+        max-width: 550px;
+    }
 }
