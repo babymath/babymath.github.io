@@ -1,91 +1,45 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
+/* CSS File: style.css */
 
-#game-container, #result-window {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 3px solid royalblue;
-}
-#question-info {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 15px 0;
-    color: royalblue;
-    background-color: aquamarine;
-    padding: 10px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);;
-}
+/* Reset & Base Styles */
 
-#questionCount{
-                color:black;
-                font-weight: bold;
-                height: 5px;
-                width: 5px;
-                padding: 5px;
-                border: 3px solid black;
-                border-radius: 100%;
-}
+{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
 
-#gameHeading {
-    font-size: 24px;
-    font-weight: bold;
-    color: royalblue;
-    margin-bottom: 15px;
-}
+body { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: #fff; }
 
+#game-container, #result-window { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); padding: 2rem; border-radius: 20px; width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); }
 
+#gameHeading { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: #f1f1f1; }
 
-button {
-    background: royalblue;
-    color: white;
-    font-size: 18px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 15px;
-    cursor: pointer;
-}
+.top-info { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1rem; }
 
-button:hover {
-    background: darkblue;
-}
+#question-info { margin: 1.5rem 0; font-size: 1.5rem; font-weight: 600; }
 
-.hidden {
-    display: none;
-}
+#answer { width: 100%; padding: 0.8rem; font-size: 1rem; border: none; border-radius: 10px; outline: none; margin-bottom: 1rem; background: rgba(255, 255, 255, 0.2); color: #fff; text-align: center; }
 
-#rw1 {
-    font-size: 24px;
-    font-weight: bold;
-    color: royalblue;
-    margin-bottom: 15px;
-}
+#answer::placeholder { color: #ddd; }
 
-#rw2, #rw3 {
-    font-size: 18px;
-    font-weight: bold;
-}
+button { width: 100%; padding: 0.8rem; font-size: 1rem; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; margin-top: 0.5rem; }
 
-button#btn-restart {
-    background: royalblue;
-}
+#btn-end { background: #ff4e50; color: #fff; }
 
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+#btn-end:hover { background: #ff6e73; }
+
+#btn-restart { background: #1dd1a1; color: #fff; }
+
+#btn-restart:hover { background: #10ac84; }
+
+#result-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); border: 2px solid #fff; display: none; }
+
+#result-window div { margin: 1rem 0; font-size: 1.2rem; }
+
+#rw1 { font-size: 2rem; font-weight: bold; }
+
+.hidden { display: none; }
+
+/* Premium Effects */ button:hover { transform: scale(1.05); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); }
+
+#game-container, #result-window { animation: fadeIn 0.8s ease forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
