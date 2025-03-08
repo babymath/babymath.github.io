@@ -79,8 +79,8 @@ function generateQuestion() {
         console.log('No question type is selected');
     }
     const questionTextElement = document.getElementById('questionText');
-    questionTextElement.textContent = `${num1} - ${num2} =`;
-    questionTextElement.dataset.answer = num1 - num2;
+    questionTextElement.textContent = `${num1} × ${num2} =`;
+    questionTextElement.dataset.answer = num1 * num2;
 }
 
 function checkAnswer() {
