@@ -70,11 +70,11 @@ function generateQuestion() {
     const selectedQuestionType = document.querySelector('.typeOption.selected');
     let num1, num2;
     if (selectedQuestionType.dataset.value === '2-2') {
-        num1 = Math.floor(Math.random() * 50 + 51); // num1 will be between 51 and 100
-        num2 = Math.floor(Math.random() * 10 + 49); // num2 will be between 10 and 99
+        num1 = Math.floor(Math.random() * 90) + 10; // Random two-digit number (10-99)
+        num2 = Math.floor(Math.random() * (num1 - 10)) + 10; // Smaller two-digit number
     } else if (selectedQuestionType.dataset.value === '3-3') {
-        num1 = Math.floor(Math.random() * 500 + 501); // num1 will be between 501 and 1000
-        num2 = Math.floor(Math.random() * 900 + 100); // num2 will be between 100 and 999
+        num1 = Math.floor(Math.random() * 900) + 100; // Random three-digit number (100-999)
+        num2 = Math.floor(Math.random() * (num1 - 100)) + 100; // Smaller three-digit number
     } else {
         console.log('No question type is selected');
     }
