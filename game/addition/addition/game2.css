@@ -1,0 +1,112 @@
+body {
+    background-color: #4169e1; /* Royal blue background */
+    color: white; /* Text color for better contrast */
+}
+
+#header1, #footer1 {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    background-color: #365fbd; /* Slightly darker royal blue */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#header1 {
+    top: 0;
+}
+
+#footer1 {
+    bottom: 0;
+}
+
+#header1 h1 {
+    font-size: 36px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ff0000, #ff7300, #ffeb00, #00ff00, #0099ff, #6a00ff, #ff00aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 5s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+#main1 {
+    position: absolute;
+    top: 60px;
+    bottom: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+section {
+    background-color: #f0f0f0;
+    width: 400px;
+    height: 400px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Fixes */
+button {
+    background-color: #4169e1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #365fbd;
+}
+
+#startGame {
+    background: #ff5722;
+    color: white;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s ease-in-out;
+}
+
+#startGame:hover {
+    background: #e64a19;
+}
+
+/* Input Fields */
+input {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ff6b6b;
+    border-radius: 10px;
+    outline: none;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #333;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+input:focus {
+    border-color: #6b5b95;
+    box-shadow: 0 0 8px rgba(161, 140, 209, 0.8);
+}
