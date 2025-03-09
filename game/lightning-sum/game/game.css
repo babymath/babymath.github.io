@@ -1,3 +1,13 @@
+:root {
+    --royal-blue: #4169e1;
+    --dark-blue: #365fbd;
+    --light-grey: #f0f0f0;
+    --red: #dc3545;
+    --orange: #ff5722;
+    --cyan: #00bcd4;
+    --gradient-bg: linear-gradient(45deg, #274bec, #c91853);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,54 +15,44 @@
 }
 
 body {
-    background: #db0da1;
-    background-color: #4169e1; /* Royal blue background */
-    color: white; /* Text color for better contrast */
+    background-color: var(--royal-blue);
+    color: white;
 }
 
-#header1 {
+#header1, #footer1 {
     position: fixed;
-    top: 0;
     left: 0;
     width: 100%;
-    background: #ff6b6b;
-    background-color: #365fbd; /* Slightly darker royal blue for header and footer */
+    background-color: var(--dark-blue);
     color: white;
     text-align: center;
-    padding: 15px;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-#header1 h1 {
-        font-size: 36px;
-        font-weight: bold;
-        text-align: center;
-        text-transform: uppercase;
-        background: linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #00ff00, #0099ff, #6a00ff, #ff00aa);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: rainbow 5s infinite linear;
-    }
-    
-    @keyframes rainbow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
 
+#header1 {
+    top: 0;
+}
 
 #footer1 {
-    position: fixed;
     bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #6b5b95;
-    background-color: #365fbd; /* Slightly darker royal blue for header and footer */
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
-    color: white;
+}
+
+#header1 h1 {
+    font-size: 36px;
+    font-weight: bold;
     text-align: center;
-    padding: 15px;
-    padding: 10px;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #00ff00, #0099ff, #6a00ff, #ff00aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 5s infinite linear;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 #main1 {
@@ -68,12 +68,12 @@ body {
 }
 
 section {
-    background-color: #f0f0f0; /* Light grey background */
+    background-color: var(--light-grey);
     margin: auto;
-    width: 400px;
-    height: 400px;
+    width: 400px; /* Fixed width */
+    height: 400px; /* Fixed height */
     padding: 15px;
-    border: 1px solid #ccc; /* Light grey border */
+    border: 1px solid #ccc;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -89,41 +89,28 @@ section > div {
     margin: 0;
 }
 
-/* Setup CSS */
+/* Common button styles */
+.btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
 
 #changeMode {
     display: flex;
     gap: 10px;
     margin: 0 auto;
-    width: 300px;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background: linear-gradient(45deg, #274bec, #c91853); /* Gradient background */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Fixed width */
+    flex-direction: row; /* Ensure buttons are in one line */
 }
 
 #changeMode button {
     background: transparent;
-    color: #00bcd4; /* Cyan color */
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border: 2px solid #00bcd4;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 0 10px #00bcd4;
-}
-
-#changeMode button:hover {
-    background: #00bcd4;
-    color: #fff;
-    box-shadow: 0 0 20px #00bcd4;
+    color: var(--cyan);
+    border: 2px solid var(--cyan);
+    transition: none; /* Disable hover effect */
 }
 
 #choseMode {
@@ -133,17 +120,16 @@ section > div {
     justify-content: center;
     align-items: center;
     margin: 10px auto;
-    padding: auto;
 }
 
 #choseMode button {
-    background: #007BFF; /* Blue Color */
+    background: #007BFF;
     color: white;
     padding: 12px 28px;
     font-weight: bold;
     border: none;
     border-radius: 8px;
-    box-shadow: 0 0 10px #00bcd4;
+    box-shadow: 0 0 10px var(--cyan);
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -151,7 +137,7 @@ section > div {
 }
 
 #choseMode .selected-mode {
-    background: #dc3545; /* Red color */
+    background: var(--red);
     color: white;
 }
 
@@ -168,22 +154,22 @@ section > div {
 
 #type1 button {
     background: transparent;
-    color: #ff5722; /* Orange Color */
+    color: var(--orange);
     padding: 12px 30px;
     font-size: 18px;
     font-weight: bold;
-    border: 2px solid #ff5722;
+    border: 2px solid var(--orange);
     border-radius: 8px;
     cursor: pointer;
 }
 
 .mode1:hover {
     color: white;
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
 }
 
 #type1 .selected {
-    background: #dc3545; /* Red color */
+    background: var(--red);
     color: white;
 }
 
@@ -194,7 +180,7 @@ section > div {
 }
 
 #startGame {
-    background: #ff5722; /* Orange */
+    background: var(--orange);
     color: white;
     padding: 12px 30px;
     font-size: 18px;
@@ -205,15 +191,15 @@ section > div {
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center; /* Ensures text is centered */
+    text-align: center;
     transition: background 0.3s ease-in-out;
-    align-self: center; /* Center the button horizontally */
+    align-self: center;
 }
 
 #startGame:disabled {
-    background-color: #cccccc; /* Gray background */
-    color: #666666; /* Dark gray text */
-    cursor: not-allowed; /* Not-allowed cursor */
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
 }
 
 /* CSS for game section */
@@ -221,7 +207,7 @@ section > div {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #ff5722;
+    border: 2px solid var(--orange);
     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     width: 48%;
     font-weight: bold;
@@ -230,7 +216,6 @@ section > div {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all
 }
 
 #line2 {
@@ -290,15 +275,15 @@ input:focus {
 }
 
 button {
-    background-color: #4169e1; /* Royal blue button background */
-    color: white; /* Button text color */
+    background-color: var(--royal-blue);
+    color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #365fbd; /* Slightly darker royal blue on hover */
+    background-color: var(--dark-blue);
 }
 
 #questionText {
@@ -348,24 +333,15 @@ button:hover {
     gap: 10px;
     margin: 0 auto;
     width: 300px;
-    padding: 10px 20px;
-    font-size: 10px;
-    color: #fff;
-    background: linear-gradient(45deg, #28a745, #218838); /* Gradient background */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #return1 button {
     background: transparent;
-    color: #e4a909; /* Cyan color */
+    color: #e4a909;
     padding: 12px 24px;
     font-size: 16px;
     font-weight: bold;
-    border: 2px solid #00bcd4;
+    border: 2px solid var(--cyan);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
@@ -373,7 +349,39 @@ button:hover {
 }
 
 #return1 button:hover {
-    background: #00bcd4;
-    color: #fff;
-    box-shadow: 0 0 20px #00bcd4;
+    background: var(--cyan);
+    color: white;
+    box-shadow: 0 0 20px var(--cyan);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #main1 {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    section {
+        width: 90%; /* Make sections full width on small screens */
+        height: auto; /* Allow height to adjust based on content */
+    }
+
+    #changeMode {
+        width: 100%; /* Make changeMode buttons full width */
+    }
+
+    #changeMode button {
+        flex: 1; /* Allow buttons to grow and fill the space */
+    }
+
+    #questionText {
+        font-size: 20px; /* Adjust font size for smaller screens */
+    }
+
+    #answer1 {
+        font-size: 16px; /* Adjust font size for smaller screens */
+    }
+
+    #startGame {
+        font-size: 16px; /* Adjust font size for smaller screens */
+    }
 }
