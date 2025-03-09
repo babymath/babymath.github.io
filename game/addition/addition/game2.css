@@ -70,8 +70,8 @@ body {
 section {
     background-color: var(--light-grey);
     margin: auto;
-    width: 400px;
-    height: 400px;
+    width: 400px; /* Fixed width */
+    height: 400px; /* Fixed height */
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -102,18 +102,15 @@ section > div {
     display: flex;
     gap: 10px;
     margin: 0 auto;
-    width: 300px;
+    width: 300px; /* Fixed width */
+    flex-direction: row; /* Ensure buttons are in one line */
 }
 
 #changeMode button {
     background: transparent;
     color: var(--cyan);
     border: 2px solid var(--cyan);
-}
-
-#changeMode button:hover {
-    background: var(--cyan);
-    color: white;
+    transition: none; /* Disable hover effect */
 }
 
 #choseMode {
@@ -359,11 +356,32 @@ button:hover {
 
 /* Responsive Design */
 @media (max-width: 600px) {
+    #main1 {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
     section {
         width: 90%; /* Make sections full width on small screens */
+        height: auto; /* Allow height to adjust based on content */
     }
 
     #changeMode {
-        flex-direction: column; /* Stack buttons on small screens */
+        width: 100%; /* Make changeMode buttons full width */
+    }
+
+    #changeMode button {
+        flex: 1; /* Allow buttons to grow and fill the space */
+    }
+
+    #questionText {
+        font-size: 20px; /* Adjust font size for smaller screens */
+    }
+
+    #answer1 {
+        font-size: 16px; /* Adjust font size for smaller screens */
+    }
+
+    #startGame {
+        font-size: 16px; /* Adjust font size for smaller screens */
     }
 }
