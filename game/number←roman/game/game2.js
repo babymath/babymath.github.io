@@ -146,7 +146,7 @@ function checkAnswer() {
             questionElement.textContent = `Question No: ${question}`;
         } else if (document.querySelector('.questionMode.selected-mode')) {
             question--;
-            questionElement.textContent = `Question Remaining: ${question}`;
+            questionElement.textContent = `Question Left: ${question}`;
             if (question == 0) {
                 clearInterval(timer);
                 clearInterval(checkQuestionCount);
