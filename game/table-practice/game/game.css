@@ -8,6 +8,7 @@ body {
     background: #db0da1;
     background-color: #4169e1; /* Royal blue background */
     color: white; /* Text color for better contrast */
+    font-family: Arial, sans-serif;
 }
 
 #header1 {
@@ -15,43 +16,39 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    background: #ff6b6b;
-    background-color: #365fbd; /* Slightly darker royal blue for header and footer */
+    background: #365fbd; /* Slightly darker royal blue for header and footer */
     color: white;
     text-align: center;
-    padding: 15px;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-#header1 h1 {
-        font-size: 36px;
-        font-weight: bold;
-        text-align: center;
-        text-transform: uppercase;
-        background: linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #00ff00, #0099ff, #6a00ff, #ff00aa);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: rainbow 5s infinite linear;
-    }
-    
-    @keyframes rainbow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
 
+#header1 h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #00ff00, #0099ff, #6a00ff, #ff00aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 5s infinite linear;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
 #footer1 {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #6b5b95;
-    background-color: #365fbd; /* Slightly darker royal blue for header and footer */
+    background: #365fbd; /* Slightly darker royal blue for header and footer */
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
     color: white;
     text-align: center;
-    padding: 15px;
     padding: 10px;
 }
 
@@ -70,8 +67,9 @@ body {
 section {
     background-color: #f0f0f0; /* Light grey background */
     margin: auto;
-    width: 400px;
-    height: 400px;
+    width: 90%;
+    max-width: 400px;
+    height: auto;
     padding: 15px;
     border: 1px solid #ccc; /* Light grey border */
     border-radius: 10px;
@@ -93,9 +91,11 @@ section > div {
 
 #changeMode {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin: 0 auto;
-    width: 300px;
+    width: 90%;
+    max-width: 300px;
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;
@@ -133,7 +133,8 @@ section > div {
     justify-content: center;
     align-items: center;
     margin: 10px auto;
-    padding: auto;
+    width: 100%;
+    max-width: 300px;
 }
 
 #choseMode button {
@@ -161,9 +162,12 @@ section > div {
 
 #type1 {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     gap: 10px;
     margin: 10px auto;
+    width: 90%;
+    max-width: 300px;
 }
 
 #type1 button {
@@ -230,13 +234,13 @@ section > div {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all
+    transition: all 0.3s ease-in-out;
 }
 
 #line2 {
     background: linear-gradient(135deg, #a18cd1, #fbc2eb);
     color: #333;
-    font-size: 30px;
+    font-size: 18px;
     font-weight: bold;
     padding: 15px 20px;
     border-radius: 10px;
@@ -347,7 +351,8 @@ button:hover {
     display: flex;
     gap: 10px;
     margin: 0 auto;
-    width: 300px;
+    width: 90%;
+    max-width: 300px;
     padding: 10px 20px;
     font-size: 10px;
     color: #fff;
@@ -376,4 +381,16 @@ button:hover {
     background: #00bcd4;
     color: #fff;
     box-shadow: 0 0 20px #00bcd4;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 600px) {
+    #header1 h1, #footer1, #main1, section, #changeMode, #choseMode, #type1, #return1 {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    #header1 h1 {
+        font-size: 18px;
+    }
 }
