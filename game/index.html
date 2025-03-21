@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+
+        .container {
+            position: relative;
+            width: 300px;
+            overflow: hidden;
+        }
+
+        .card-container {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+            will-change: transform;
+        }
+
+        .card {
+            min-width: 300px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            background: #007bff;
+            border-radius: 5px;
+        }
+
+        button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        #prevBtn {
+            left: 10px;
+        }
+
+        #nextBtn {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-container">
+            <div class="card"><a href="#link1">Link 1</a></div>
+            <div class="card"><a href="#link2">Link 2</a></div>
+            <div class="card"><a href="#link3">Link 3</a></div>
+            <div class="card"><a href="#link4">Link 4</a></div>
+            <div class="card"><a href="#link5">Link 5</a></div>
+            <div class="card"><a href="#link6">Link 6</a></div>
+            <div class="card"><a href="#link7">Link 7</a></div>
+        </div>
+        <button id="prevBtn">←</button>
+        <button id="nextBtn">→</button>
+    </div>
+
+    <script>
+        const cardsContainer = document.querySelector(".card-container");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        let index = 0;
+        const totalCards = document.querySelectorAll(".card").length;
+
+        function updateCards() {
+            const offset = -index * 300;
+            cardsContainer.style.transform = `translateX(${offset}px)`;
+        }
+
+        prevBtn.addEventListener("click", () => {
+            if (index > 0) {
+                index--;
+                updateCards();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (index < totalCards - 1) {
+                index++;
+                updateCards();
+            }
+        });
+
+        // Swipe Gesture Support
+        let startX = 0;
+        let endX = 0;
+
+        cardsContainer.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        cardsContainer.addEventListener("touchmove", (e) => {
+            endX = e.touches[0].clientX;
+        });
+
+        cardsContainer.addEventListener("touchend", () => {
+            if (startX - endX > 50 && index < totalCards - 1) {
+                index++;
+            } else if (endX - startX > 50 && index > 0) {
+                index--;
+            }
+            updateCards();
+        });
+    </script>
+</body>
+</html>
