@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swipe Cards</title>
+    <title>Flowing Swipe Cards</title>
     <style>
         * {
             margin: 0;
@@ -23,17 +23,20 @@
         .container {
             position: relative;
             width: 400px;
+            height: 320px;
             overflow: hidden;
         }
 
         .card-container {
             display: flex;
-            transition: transform 0.3s ease-in-out;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
             will-change: transform;
         }
 
         .card {
-            min-width: 400px;
+            width: 400px;
             height: 300px;
             display: flex;
             justify-content: center;
@@ -44,18 +47,15 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            transition: transform 0.3s;
             cursor: pointer;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
+            position: absolute;
+            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s ease-in-out;
         }
 
         button {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translateX(-50%);
             background: #007bff;
             color: white;
             border: none;
@@ -64,83 +64,85 @@
             cursor: pointer;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
         }
 
-        #prevBtn {
-            left: 10px;
+        #upBtn {
+            top: 10px;
         }
 
-        #nextBtn {
-            right: 10px;
+        #downBtn {
+            bottom: 10px;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card-container">
-            <div class="card" data-link="https://example.com/1">Link 1</div>
-            <div class="card" data-link="https://example.com/2">Link 2</div>
-            <div class="card" data-link="https://example.com/3">Link 3</div>
-            <div class="card" data-link="https://example.com/4">Link 4</div>
-            <div class="card" data-link="https://example.com/5">Link 5</div>
-            <div class="card" data-link="https://example.com/6">Link 6</div>
-            <div class="card" data-link="https://example.com/7">Link 7</div>
+            <div class="card" data-link="https://example.com/1" style="z-index: 7;">Link 1</div>
+            <div class="card" data-link="https://example.com/2" style="z-index: 6;">Link 2</div>
+            <div class="card" data-link="https://example.com/3" style="z-index: 5;">Link 3</div>
+            <div class="card" data-link="https://example.com/4" style="z-index: 4;">Link 4</div>
+            <div class="card" data-link="https://example.com/5" style="z-index: 3;">Link 5</div>
+            <div class="card" data-link="https://example.com/6" style="z-index: 2;">Link 6</div>
+            <div class="card" data-link="https://example.com/7" style="z-index: 1;">Link 7</div>
         </div>
-        <button id="prevBtn">←</button>
-        <button id="nextBtn">→</button>
+        <button id="upBtn">↑</button>
+        <button id="downBtn">↓</button>
     </div>
 
     <script>
-        const cardsContainer = document.querySelector(".card-container");
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
+        const cards = document.querySelectorAll(".card");
+        const upBtn = document.getElementById("upBtn");
+        const downBtn = document.getElementById("downBtn");
 
         let index = 0;
-        const totalCards = document.querySelectorAll(".card").length;
 
         function updateCards() {
-            const offset = -index * 400;
-            cardsContainer.style.transform = `translateX(${offset}px)`;
+            cards.forEach((card, i) => {
+                const position = i - index;
+                card.style.transform = `translateY(${position * 100}%) scale(${1 - Math.abs(position) * 0.1})`;
+                card.style.opacity = position === 0 ? "1" : "0.7";
+            });
         }
 
-        prevBtn.addEventListener("click", () => {
+        upBtn.addEventListener("click", () => {
             if (index > 0) {
                 index--;
                 updateCards();
             }
         });
 
-        nextBtn.addEventListener("click", () => {
-            if (index < totalCards - 1) {
+        downBtn.addEventListener("click", () => {
+            if (index < cards.length - 1) {
                 index++;
                 updateCards();
             }
         });
 
         // Swipe Gesture Support
-        let startX = 0;
-        let endX = 0;
+        let startY = 0;
+        let endY = 0;
 
-        cardsContainer.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
+        document.addEventListener("touchstart", (e) => {
+            startY = e.touches[0].clientY;
         });
 
-        cardsContainer.addEventListener("touchmove", (e) => {
-            endX = e.touches[0].clientX;
+        document.addEventListener("touchmove", (e) => {
+            endY = e.touches[0].clientY;
         });
 
-        cardsContainer.addEventListener("touchend", () => {
-            if (startX - endX > 50 && index < totalCards - 1) {
+        document.addEventListener("touchend", () => {
+            if (startY - endY > 50 && index < cards.length - 1) {
                 index++;
-            } else if (endX - startX > 50 && index > 0) {
+            } else if (endY - startY > 50 && index > 0) {
                 index--;
             }
             updateCards();
         });
 
         // Click Event for Cards
-        document.querySelectorAll(".card").forEach(card => {
+        cards.forEach(card => {
             card.addEventListener("click", () => {
                 const link = card.getAttribute("data-link");
                 const confirmOpen = confirm("Do you want to open this link?");
@@ -150,6 +152,8 @@
             });
         });
 
+        // Initialize cards in the correct position
+        updateCards();
     </script>
 </body>
 </html>
