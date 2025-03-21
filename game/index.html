@@ -77,7 +77,7 @@
             color: #fff;
             cursor: pointer;
             position: absolute;
-            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s ease-in-out;
+            transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out, z-index 0.2s ease-in-out;
             transform-origin: center;
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
@@ -94,8 +94,7 @@
             transform: translateY(-50%);
             font-size: 40px;
             color: rgba(255, 215, 0, 0.7);
-            pointer-events: none;
-            user-select: none;
+            cursor: pointer;
         }
 
         .left-arrow { left: -60px; }
@@ -133,13 +132,11 @@
         <div class="arrow right-arrow">→</div>
 
         <div class="card-container">
-            <div class="card" data-link="https://example.com/1" style="z-index: 7;">Link 1</div>
-            <div class="card" data-link="https://example.com/2" style="z-index: 6;">Link 2</div>
-            <div class="card" data-link="https://example.com/3" style="z-index: 5;">Link 3</div>
-            <div class="card" data-link="https://example.com/4" style="z-index: 4;">Link 4</div>
-            <div class="card" data-link="https://example.com/5" style="z-index: 3;">Link 5</div>
-            <div class="card" data-link="https://example.com/6" style="z-index: 2;">Link 6</div>
-            <div class="card" data-link="https://example.com/7" style="z-index: 1;">Link 7</div>
+            <div class="card" data-link="https://example.com/1">Link 1</div>
+            <div class="card" data-link="https://example.com/2">Link 2</div>
+            <div class="card" data-link="https://example.com/3">Link 3</div>
+            <div class="card" data-link="https://example.com/4">Link 4</div>
+            <div class="card" data-link="https://example.com/5">Link 5</div>
         </div>
     </div>
 
@@ -152,12 +149,11 @@
 
         function updateCards(direction) {
             cards.forEach((card, i) => {
-                let position = (i - index + totalCards) % totalCards; // Looping logic
-                
+                let position = (i - index + totalCards) % totalCards;
                 let rotation = direction === "left" ? -position * 30 : position * 30;
                 let translateX = direction === "left" ? -position * 20 : position * 20;
                 let scale = 1 - Math.abs(position * 0.1);
-                
+
                 if (position === 0) {
                     card.style.transform = `rotateY(0deg) translateX(0) scale(1)`;
                     card.style.opacity = "1";
@@ -170,40 +166,67 @@
             });
         }
 
-        // Swipe Gesture Support
-        let startX = 0;
-        let endX = 0;
-
-        document.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
-        });
-
-        document.addEventListener("touchmove", (e) => {
-            endX = e.touches[0].clientX;
-        });
-
-        document.addEventListener("touchend", () => {
-            if (startX - endX > 50) {
-                index = (index + 1) % totalCards; // Move right
-                updateCards("right");
-            } else if (endX - startX > 50) {
-                index = (index - 1 + totalCards) % totalCards; // Move left
-                updateCards("left");
-            }
-        });
-
-        // Click Event for Cards
+        // Click to open link
         cards.forEach(card => {
             card.addEventListener("click", () => {
-                const link = card.getAttribute("data-link");
-                const confirmOpen = confirm("Do you want to open this link?");
-                if (confirmOpen) {
-                    window.open(link, "_blank");
+                if (!moved) {
+                    const link = card.getAttribute("data-link");
+                    if (confirm("Do you want to open this link?")) {
+                        window.open(link, "_blank");
+                    }
                 }
             });
         });
 
-        // Initialize cards
+        // Arrow Navigation
+        document.querySelector(".left-arrow").addEventListener("click", () => {
+            index = (index - 1 + totalCards) % totalCards;
+            updateCards("left");
+        });
+
+        document.querySelector(".right-arrow").addEventListener("click", () => {
+            index = (index + 1) % totalCards;
+            updateCards("right");
+        });
+
+        // Touch Swipe Support
+        let startX = 0, endX = 0, moved = false;
+
+        document.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX;
+            moved = false;
+        });
+
+        document.addEventListener("touchmove", (e) => {
+            endX = e.touches[0].clientX;
+            moved = true;
+        });
+
+        document.addEventListener("touchend", () => {
+            if (moved) {
+                if (startX - endX > 50) {
+                    index = (index + 1) % totalCards;
+                    updateCards("right");
+                } else if (endX - startX > 50) {
+                    index = (index - 1 + totalCards) % totalCards;
+                    updateCards("left");
+                }
+            }
+        });
+
+        // Mouse Drag Support
+        let isDragging = false;
+        document.addEventListener("mousedown", (e) => { isDragging = true; startX = e.clientX; });
+        document.addEventListener("mouseup", () => { isDragging = false; });
+        document.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                if (startX - e.clientX > 50) index = (index + 1) % totalCards, updateCards("right");
+                else if (startX - e.clientX < -50) index = (index - 1 + totalCards) % totalCards, updateCards("left");
+                isDragging = false;
+            }
+        });
+
+        // Initialize
         updateCards("right");
     </script>
 </body>
