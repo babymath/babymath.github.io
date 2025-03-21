@@ -24,9 +24,9 @@
 
         /* Background Color Animation */
         @keyframes backgroundColor {
-            0% { background: #ff5733; }   /* Red */
-            50% { background: #1e90ff; }  /* Blue */
-            100% { background: #ffa500; } /* Orange */
+            0% { background: #ff5733; }
+            50% { background: #1e90ff; }
+            100% { background: #ffa500; }
         }
 
         /* Sparkling Effect */
@@ -96,33 +96,20 @@
             transform: scale(1.05);
         }
 
-        /* Arrows */
-        .arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 40px;
-            color: rgba(255, 215, 0, 0.7);
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .left-arrow { left: -60px; }
-        .right-arrow { right: -60px; }
-
         /* Swipe Message */
         .swipe-message {
             position: absolute;
-            top: 20px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: white;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             background: rgba(0, 0, 0, 0.3);
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 10px;
+            white-space: nowrap; /* Keeps the message in a single line */
             animation: fadeInOut 3s infinite;
         }
 
@@ -138,9 +125,6 @@
     <div class="sparkle-container"></div>
 
     <div class="container">
-        <div class="arrow left-arrow">←</div>
-        <div class="arrow right-arrow">→</div>
-
         <div class="card-container">
             <div class="card" data-link="https://example.com/1" style="z-index: 7;">Link 1</div>
             <div class="card" data-link="https://example.com/2" style="z-index: 6;">Link 2</div>
@@ -152,13 +136,14 @@
         </div>
     </div>
 
-    <div class="swipe-message">Swipe Left or Right</div>
+    <div class="swipe-message">Swipe left or right to explore</div>
 
     <script>
         const cards = document.querySelectorAll(".card");
         let index = 0;
         const totalCards = cards.length;
         const sparkleContainer = document.querySelector(".sparkle-container");
+        let lastSwipeTime = 0; // Prevents accidental swipes
 
         function updateCards(direction) {
             cards.forEach((card, i) => {
@@ -180,22 +165,31 @@
             });
         }
 
-        // Swipe Gesture Support
+        // Swipe Gesture Support with Prevent Mistake Touch
         let startX = 0, endX = 0;
 
         document.addEventListener("touchstart", (e) => startX = e.touches[0].clientX);
         document.addEventListener("touchmove", (e) => endX = e.touches[0].clientX);
         document.addEventListener("touchend", () => {
+            let now = Date.now();
+            if (now - lastSwipeTime < 500) return; // Prevent quick accidental swipes
+            lastSwipeTime = now;
+
             if (startX - endX > 50) { index = (index + 1) % totalCards; updateCards("right"); }
             else if (endX - startX > 50) { index = (index - 1 + totalCards) % totalCards; updateCards("left"); }
         });
 
-        // Click Event
-        cards.forEach(card => card.addEventListener("click", () => {
-            if (confirm("Do you want to open this link?")) {
+        // Open Card Link (Prevent Accidental Tap)
+        cards.forEach(card => {
+            let lastTap = 0;
+            card.addEventListener("click", () => {
+                let now = Date.now();
+                if (now - lastTap < 500) return; // Prevent accidental double taps
+                lastTap = now;
+
                 window.open(card.getAttribute("data-link"), "_blank");
-            }
-        }));
+            });
+        });
 
         // Sparkle Effect
         setInterval(() => {
