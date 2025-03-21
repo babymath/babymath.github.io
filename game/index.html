@@ -85,7 +85,7 @@
             cursor: pointer;
             position: absolute;
             transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s ease-in-out;
-            transform-origin: right center;
+            transform-origin: center;
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -140,22 +140,22 @@
         let index = 0;
         const totalCards = cards.length;
 
-        function updateCards() {
+        function updateCards(direction) {
             cards.forEach((card, i) => {
                 let position = (i - index + totalCards) % totalCards; // Looping logic
+                
+                let rotation = direction === "left" ? -position * 30 : position * 30;
+                let translateX = direction === "left" ? -position * 20 : position * 20;
+                let scale = 1 - Math.abs(position * 0.1);
                 
                 if (position === 0) {
                     card.style.transform = `rotateY(0deg) translateX(0) scale(1)`;
                     card.style.opacity = "1";
                     card.style.zIndex = 10;
-                } else if (position > 0) {
-                    card.style.transform = `rotateY(${position * 30}deg) translateX(${position * 20}px) scale(${1 - position * 0.1})`;
-                    card.style.opacity = "0.7";
-                    card.style.zIndex = 10 - position;
                 } else {
-                    card.style.transform = `rotateY(${position * 30}deg) translateX(${position * 20}px) scale(${1 + position * 0.1})`;
+                    card.style.transform = `rotateY(${rotation}deg) translateX(${translateX}px) scale(${scale})`;
                     card.style.opacity = "0.7";
-                    card.style.zIndex = 10 + position;
+                    card.style.zIndex = 10 - Math.abs(position);
                 }
             });
         }
@@ -174,11 +174,12 @@
 
         document.addEventListener("touchend", () => {
             if (startX - endX > 50) {
-                index = (index + 1) % totalCards; // Move forward, loop to 0 after last
+                index = (index + 1) % totalCards; // Move right, loop to 0 after last
+                updateCards("right");
             } else if (endX - startX > 50) {
-                index = (index - 1 + totalCards) % totalCards; // Move backward, loop to last
+                index = (index - 1 + totalCards) % totalCards; // Move left, loop to last
+                updateCards("left");
             }
-            updateCards();
         });
 
         // Click Event for Cards
@@ -193,7 +194,7 @@
         });
 
         // Initialize cards in the correct position
-        updateCards();
+        updateCards("right");
     </script>
 </body>
 </html>
