@@ -17,12 +17,12 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: #f4f4f4;
+            background: #e0e0e0;
         }
 
         .container {
             position: relative;
-            width: 300px;
+            width: 400px;
             overflow: hidden;
         }
 
@@ -33,26 +33,23 @@
         }
 
         .card {
-            min-width: 300px;
-            height: 200px;
+            min-width: 400px;
+            height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
             background: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
             text-align: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
-        .card a {
-            text-decoration: none;
-            color: white;
-            padding: 15px 20px;
-            background: #007bff;
-            border-radius: 5px;
+        .card:hover {
+            transform: scale(1.05);
         }
 
         button {
@@ -62,10 +59,11 @@
             background: #007bff;
             color: white;
             border: none;
-            padding: 10px 15px;
-            font-size: 20px;
+            padding: 15px 20px;
+            font-size: 22px;
             cursor: pointer;
             border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         #prevBtn {
@@ -75,18 +73,19 @@
         #nextBtn {
             right: 10px;
         }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card-container">
-            <div class="card"><a href="#link1">Link 1</a></div>
-            <div class="card"><a href="#link2">Link 2</a></div>
-            <div class="card"><a href="#link3">Link 3</a></div>
-            <div class="card"><a href="#link4">Link 4</a></div>
-            <div class="card"><a href="#link5">Link 5</a></div>
-            <div class="card"><a href="#link6">Link 6</a></div>
-            <div class="card"><a href="#link7">Link 7</a></div>
+            <div class="card" data-link="https://example.com/1">Link 1</div>
+            <div class="card" data-link="https://example.com/2">Link 2</div>
+            <div class="card" data-link="https://example.com/3">Link 3</div>
+            <div class="card" data-link="https://example.com/4">Link 4</div>
+            <div class="card" data-link="https://example.com/5">Link 5</div>
+            <div class="card" data-link="https://example.com/6">Link 6</div>
+            <div class="card" data-link="https://example.com/7">Link 7</div>
         </div>
         <button id="prevBtn">←</button>
         <button id="nextBtn">→</button>
@@ -101,7 +100,7 @@
         const totalCards = document.querySelectorAll(".card").length;
 
         function updateCards() {
-            const offset = -index * 300;
+            const offset = -index * 400;
             cardsContainer.style.transform = `translateX(${offset}px)`;
         }
 
@@ -139,6 +138,18 @@
             }
             updateCards();
         });
+
+        // Click Event for Cards
+        document.querySelectorAll(".card").forEach(card => {
+            card.addEventListener("click", () => {
+                const link = card.getAttribute("data-link");
+                const confirmOpen = confirm("Do you want to open this link?");
+                if (confirmOpen) {
+                    window.open(link, "_blank");
+                }
+            });
+        });
+
     </script>
 </body>
 </html>
