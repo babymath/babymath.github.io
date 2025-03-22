@@ -150,6 +150,52 @@
                 transform: scale(2);
             }
         }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                height: auto;
+            }
+
+            .card {
+                font-size: 18px;
+            }
+
+            .grid-view .card {
+                width: 100px;
+                height: 100px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toggle-button {
+                top: 5px;
+                right: 5px;
+                padding: 5px 10px;
+                font-size: 14px;
+            }
+
+            .container {
+                width: 100%;
+                height: auto;
+            }
+
+            .card {
+                font-size: 16px;
+            }
+
+            .grid-view .card {
+                width: 80px;
+                height: 80px;
+                font-size: 12px;
+            }
+
+            .message-box {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
