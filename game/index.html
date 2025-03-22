@@ -22,14 +22,12 @@
             animation: backgroundColor 10s infinite alternate ease-in-out;
         }
 
-        /* Background Color Animation */
         @keyframes backgroundColor {
             0% { background: #ff5733; }
             50% { background: #1e90ff; }
             100% { background: #ffa500; }
         }
 
-        /* Sparkling Effect */
         .sparkle-container {
             position: fixed;
             width: 100%;
@@ -54,7 +52,6 @@
             100% { transform: scale(1) translateY(-100px); opacity: 0; }
         }
 
-        /* Container */
         .container {
             position: relative;
             width: 450px;
@@ -63,7 +60,6 @@
             overflow: hidden;
         }
 
-        /* Card Styles */
         .card-container {
             position: relative;
             width: 100%;
@@ -84,19 +80,17 @@
             font-size: 24px;
             font-weight: bold;
             color: #fff;
-            cursor: pointer;
+            cursor: grab;
             position: absolute;
-            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s ease-in-out;
-            transform-origin: center;
+            transition: transform 0.5s ease-out, opacity 0.3s ease-in-out;
             border: 2px solid rgba(255, 255, 255, 0.2);
+            user-select: none;
         }
 
         .card:hover {
             box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
-            transform: scale(1.05);
         }
 
-        /* Swipe Message */
         .swipe-message {
             position: absolute;
             top: 10px;
@@ -109,7 +103,7 @@
             background: rgba(0, 0, 0, 0.3);
             padding: 8px 15px;
             border-radius: 10px;
-            white-space: nowrap; /* Keeps the message in a single line */
+            white-space: nowrap;
             animation: fadeInOut 3s infinite;
         }
 
@@ -121,18 +115,15 @@
 </head>
 <body>
 
-    <!-- Sparkling Effect -->
     <div class="sparkle-container"></div>
 
     <div class="container">
         <div class="card-container">
-            <div class="card" data-link="https://example.com/1" style="z-index: 7;">Link 1</div>
-            <div class="card" data-link="https://example.com/2" style="z-index: 6;">Link 2</div>
-            <div class="card" data-link="https://example.com/3" style="z-index: 5;">Link 3</div>
-            <div class="card" data-link="https://example.com/4" style="z-index: 4;">Link 4</div>
-            <div class="card" data-link="https://example.com/5" style="z-index: 3;">Link 5</div>
-            <div class="card" data-link="https://example.com/6" style="z-index: 2;">Link 6</div>
-            <div class="card" data-link="https://example.com/7" style="z-index: 1;">Link 7</div>
+            <div class="card" data-link="https://example.com/1">Link 1</div>
+            <div class="card" data-link="https://example.com/2">Link 2</div>
+            <div class="card" data-link="https://example.com/3">Link 3</div>
+            <div class="card" data-link="https://example.com/4">Link 4</div>
+            <div class="card" data-link="https://example.com/5">Link 5</div>
         </div>
     </div>
 
@@ -142,67 +133,48 @@
         const cards = document.querySelectorAll(".card");
         let index = 0;
         const totalCards = cards.length;
-        const sparkleContainer = document.querySelector(".sparkle-container");
-        let lastSwipeTime = 0; // Prevents accidental swipes
+        let lastSwipeTime = 0;
 
-        function updateCards(direction) {
+        function updateCards() {
             cards.forEach((card, i) => {
                 let position = (i - index + totalCards) % totalCards;
-                
-                let rotation = direction === "left" ? -position * 30 : position * 30;
-                let translateX = direction === "left" ? -position * 20 : position * 20;
+                let translateX = position * 20;
                 let scale = 1 - Math.abs(position * 0.1);
-                
-                if (position === 0) {
-                    card.style.transform = rotateY(0deg) translateX(0) scale(1);
-                    card.style.opacity = "1";
-                    card.style.zIndex = 10;
-                } else {
-                    card.style.transform = rotateY(${rotation}deg) translateX(${translateX}px) scale(${scale});
-                    card.style.opacity = "0.7";
-                    card.style.zIndex = 10 - Math.abs(position);
-                }
+                card.style.transform = `translateX(${translateX}px) scale(${scale})`;
+                card.style.opacity = position === 0 ? "1" : "0.7";
+                card.style.zIndex = totalCards - Math.abs(position);
             });
         }
 
-        // Swipe Gesture Support with Prevent Mistake Touch
         let startX = 0, endX = 0;
-
         document.addEventListener("touchstart", (e) => startX = e.touches[0].clientX);
         document.addEventListener("touchmove", (e) => endX = e.touches[0].clientX);
         document.addEventListener("touchend", () => {
             let now = Date.now();
-            if (now - lastSwipeTime < 500) return; // Prevent quick accidental swipes
+            if (now - lastSwipeTime < 500) return;
             lastSwipeTime = now;
-
-            if (startX - endX > 50) { index = (index + 1) % totalCards; updateCards("right"); }
-            else if (endX - startX > 50) { index = (index - 1 + totalCards) % totalCards; updateCards("left"); }
+            if (startX - endX > 50) { index = (index + 1) % totalCards; updateCards(); }
+            else if (endX - startX > 50) { index = (index - 1 + totalCards) % totalCards; updateCards(); }
         });
 
-        // Open Card Link (Prevent Accidental Tap)
         cards.forEach(card => {
-            let lastTap = 0;
             card.addEventListener("click", () => {
-                let now = Date.now();
-                if (now - lastTap < 500) return; // Prevent accidental double taps
-                lastTap = now;
-
                 window.open(card.getAttribute("data-link"), "_blank");
             });
         });
 
-        // Sparkle Effect
         setInterval(() => {
             const sparkle = document.createElement("div");
             sparkle.classList.add("sparkle");
-            sparkle.style.left = ${Math.random() * 100}vw;
-            sparkle.style.top = ${Math.random() * 100}vh;
-            sparkle.style.animationDuration = ${Math.random() * 3 + 2}s;
-            sparkleContainer.appendChild(sparkle);
+            sparkle.style.left = `${Math.random() * 100}vw`;
+            sparkle.style.top = `${Math.random() * 100}vh`;
+            sparkle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            document.querySelector(".sparkle-container").appendChild(sparkle);
             setTimeout(() => sparkle.remove(), 5000);
         }, 200);
 
-        updateCards("right");
+        updateCards();
     </script>
+
 </body>
 </html>
