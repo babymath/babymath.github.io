@@ -1,10 +1,8 @@
-        const subjectsData = {
-            Hindi: [
-                    "Samaas", "Kaarak"
-                    ],
-            Math: [
-                "lesson1",
-                "lesson2",
+const subjectsData = {
+Hindi: ["Samaas","Kaarak"],
+
+Math: ["lesson1",
+           "lesson2",
                 "lesson3"
             ],
             Science: [
