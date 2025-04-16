@@ -113,14 +113,8 @@
 <body>
   <h1>Choose a Subject</h1>
   <div id="subjects"></div>
-
+<script src="subjectData.js"></script>
   <script>
-    const subjectsData = {
-      Math: ["Lesson1", "lesson2", "Lesson3"],
-      Science: ["Biology", "Chemistry", "Physics"],
-      History: ["Ancient", "Medieval", "Modern"]
-    };
-
     function generateSubjectButtons() {
       const subjectsContainer = document.getElementById('subjects');
       Object.keys(subjectsData).forEach(subject => {
