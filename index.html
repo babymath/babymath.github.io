@@ -1,164 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BabyMath</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7fc;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subjects and Links</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fc;
+      color: #333;
+    }
 
-        h1 {
-            text-align: center;
-            padding: 20px;
-            background-color: #4CAF50;
-            color: white;
-            margin: 0;
-        }
+    h1 {
+      text-align: center;
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      margin: 0;
+      font-size: 24px;
+    }
 
-        #subjects {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
+    #subjects {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px;
+    }
 
-        .subject-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
+    .subject-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 18px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      flex: 1 1 120px;
+      text-align: center;
+    }
 
-        .subject-btn:hover {
-            background-color: #45a049;
-        }
+    .subject-btn:hover {
+      background-color: #45a049;
+    }
 
-        .link-section {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .link-section {
+      display: none;
+      margin: 20px auto;
+      padding: 16px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
 
-        .link-section h2 {
-            margin-top: 0;
-            color: #333;
-        }
+    .link-section h2 {
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+    }
 
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-top: 10px;
+    }
 
-        ul li {
-            margin-bottom: 10px;
-        }
+    ul li {
+      margin-bottom: 10px;
+      text-align: center;
+    }
 
-        ul li a {
-            text-decoration: none;
-            color: #4CAF50;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
+    ul li a {
+      text-decoration: none;
+      color: #4CAF50;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
 
-        ul li a:hover {
-            color: #45a049;
-        }
+    ul li a:hover {
+      color: #45a049;
+    }
 
-        .icon {
-            margin-right: 8px;
-        }
+    .icon {
+      margin-right: 6px;
+    }
 
-    </style>
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 20px;
+      }
+
+      .subject-btn {
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+
+      .link-section {
+        margin: 15px;
+        padding: 14px;
+      }
+
+      ul li a {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <h1>Choose a Subject</h1>
+  <div id="subjects"></div>
 
-    <h1>Choose a Subject</h1>
-    
-    <div id="subjects">
-        <!-- Subject buttons will be dynamically created here -->
-    </div>
+  <script>
+    const subjectsData = {
+      Math: ["Lesson1", "lesson2", "Lesson3"],
+      Science: ["Biology", "Chemistry", "Physics"],
+      History: ["Ancient", "Medieval", "Modern"]
+    };
 
-    <!-- Link sections will be generated here -->
-    <script src="subjectData.js"></script>
-    <script>
-        // Array of subjects with relative values (without subject name and .html)
+    function generateSubjectButtons() {
+      const subjectsContainer = document.getElementById('subjects');
+      Object.keys(subjectsData).forEach(subject => {
+        const button = document.createElement('button');
+        button.classList.add('subject-btn');
+        button.innerHTML = `<span class="icon">📚</span>${subject}`;
+        button.onclick = () => toggleLinks(subject);
+        subjectsContainer.appendChild(button);
+      });
+    }
 
+    function generateLinkSections() {
+      Object.keys(subjectsData).forEach(subject => {
+        const section = document.createElement('div');
+        section.id = subject.toLowerCase();
+        section.classList.add('link-section');
 
-        // Function to generate the subject buttons dynamically
-        function generateSubjectButtons() {
-            const subjectsContainer = document.getElementById('subjects');
+        const header = document.createElement('h2');
+        header.innerText = `${subject} Links`;
+        section.appendChild(header);
 
-            // Add a button for each subject
-            Object.keys(subjectsData).forEach(subject => {
-                const button = document.createElement('button');
-                button.classList.add('subject-btn');
-                button.innerHTML = `<span class="icon">📚</span>${subject}`;
-                button.onclick = function() {
-                    toggleLinks(subject);
-                };
-                subjectsContainer.appendChild(button);
-            });
-        }
+        const ul = document.createElement('ul');
+        const sortedLessons = subjectsData[subject].sort((a, b) =>
+          a.toLowerCase().localeCompare(b.toLowerCase())
+        );
 
-        // Function to generate link sections dynamically based on subjects data
-        function generateLinkSections() {
-            Object.keys(subjectsData).forEach(subject => {
-                const section = document.createElement('div');
-                section.id = subject.toLowerCase();
-                section.classList.add('link-section');
-                const header = document.createElement('h2');
-                header.innerText = `${subject} Links`;
-                section.appendChild(header);
+        sortedLessons.forEach(lesson => {
+          const li = document.createElement('li');
+          const anchor = document.createElement('a');
+          anchor.href = `${subject.toLowerCase()}/${lesson.toLowerCase()}.html`;
+          anchor.innerText = lesson;
+          li.appendChild(anchor);
+          ul.appendChild(li);
+        });
 
-                const ul = document.createElement('ul');
+        section.appendChild(ul);
+        document.body.appendChild(section);
+      });
+    }
 
-                // Sort lessons in alphabetical order
-                const sortedLessons = subjectsData[subject].sort();
-                
-                sortedLessons.forEach(lesson => {
-                    const li = document.createElement('li');
-                    const anchor = document.createElement('a');
-                    anchor.href = `${subject.toLowerCase()}/${lesson}.html`; // Dynamically create the link
-                    anchor.innerText = lesson; // Removed the "Go to" text
-                    li.appendChild(anchor);
-                    ul.appendChild(li);
-                });
-                section.appendChild(ul);
+    function toggleLinks(subject) {
+      const sections = document.querySelectorAll('.link-section');
+      sections.forEach(section => section.style.display = 'none');
 
-                document.body.appendChild(section);
-            });
-        }
+      const section = document.getElementById(subject.toLowerCase());
+      if (section) section.style.display = 'block';
+    }
 
-        // Function to toggle visibility of subject links
-        function toggleLinks(subject) {
-            const sections = document.querySelectorAll('.link-section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
-
-            const section = document.getElementById(subject.toLowerCase());
-            if (section) {
-                section.style.display = 'block';
-            }
-        }
-
-        // Initialize the subject buttons and link sections
-        generateSubjectButtons();
-        generateLinkSections();
-    </script>
-
+    generateSubjectButtons();
+    generateLinkSections();
+  </script>
 </body>
 </html>
