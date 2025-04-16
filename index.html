@@ -140,11 +140,15 @@
                 section.appendChild(header);
 
                 const ul = document.createElement('ul');
-                subjectsData[subject].forEach(lesson => {
+
+                // Sort lessons in alphabetical order
+                const sortedLessons = subjectsData[subject].sort();
+                
+                sortedLessons.forEach(lesson => {
                     const li = document.createElement('li');
                     const anchor = document.createElement('a');
                     anchor.href = `${subject.toLowerCase()}/${lesson}.html`; // Dynamically create the link
-                    anchor.innerText = `Go to ${lesson}`;
+                    anchor.innerText = lesson; // Removed the "Go to" text
                     li.appendChild(anchor);
                     ul.appendChild(li);
                 });
