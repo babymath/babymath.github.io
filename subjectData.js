@@ -1,4 +1,7 @@
         const subjectsData = {
+            Hindi: [
+                    "Samaas"
+                    ]
             Math: [
                 "lesson1",
                 "lesson2",
