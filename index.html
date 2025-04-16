@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects and Links</title>
+    <style>
+        .link-section {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Subjects</h1>
+    <div id="subjects">
+        <!-- Subject buttons will be generated here -->
+    </div>
+
+    <!-- Link sections will be generated here -->
+
+    <script>
+        // Array of subjects with relative values (without subject name and .html)
+        const subjectsData = {
+            Math: [
+                "lesson1",
+                "lesson2",
+                "lesson3"
+            ],
+            Science: [
+                "biology",
+                "chemistry",
+                "physics"
+            ],
+            History: [
+                "ancient",
+                "medieval",
+                "modern"
+            ]
+        };
+
+        // Function to generate the buttons dynamically
+        function generateSubjectButtons() {
+            const subjectsContainer = document.getElementById('subjects');
+            Object.keys(subjectsData).forEach(subject => {
+                const button = document.createElement('button');
+                button.innerText = subject;
+                button.onclick = function() {
+                    toggleLinks(subject);
+                };
+                subjectsContainer.appendChild(button);
+
+                // Create a div for each subject with links
+                const section = document.createElement('div');
+                section.id = subject.toLowerCase();
+                section.classList.add('link-section');
+                const header = document.createElement('h2');
+                header.innerText = `${subject} Links`;
+                section.appendChild(header);
+
+                const ul = document.createElement('ul');
+                subjectsData[subject].forEach(lesson => {
+                    const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.href = `${subject.toLowerCase()}/${lesson}.html`; // Dynamically create the link
+                    anchor.innerText = `Go to ${lesson}`;
+                    li.appendChild(anchor);
+                    ul.appendChild(li);
+                });
+                section.appendChild(ul);
+
+                document.body.appendChild(section);
+            });
+        }
+
+        // Function to toggle visibility of subject links
+        function toggleLinks(subject) {
+            const sections = document.querySelectorAll('.link-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            const section = document.getElementById(subject.toLowerCase());
+            if (section) {
+                section.style.display = 'block';
+            }
+        }
+
+        // Initialize the subject buttons and sections
+        generateSubjectButtons();
+    </script>
+
+</body>
+</html>
