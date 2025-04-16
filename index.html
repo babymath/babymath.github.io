@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subjects and Links</title>
+    <title>BabyMath</title>
     <style>
         .link-section {
             display: none;
@@ -14,12 +14,15 @@
 <body>
 
     <h1>Subjects</h1>
-    <div id="subjects">
-        <!-- Subject buttons will be generated here -->
-    </div>
+    
+    <!-- Dropdown menu to select a subject -->
+    <label for="subject-select">Choose a subject:</label>
+    <select id="subject-select" onchange="toggleLinksFromDropdown()">
+        <option value="">Select Subject</option>
+    </select>
 
     <!-- Link sections will be generated here -->
-
+    
     <script>
         // Array of subjects with relative values (without subject name and .html)
         const subjectsData = {
@@ -40,18 +43,38 @@
             ]
         };
 
-        // Function to generate the buttons dynamically
-        function generateSubjectButtons() {
-            const subjectsContainer = document.getElementById('subjects');
-            Object.keys(subjectsData).forEach(subject => {
-                const button = document.createElement('button');
-                button.innerText = subject;
-                button.onclick = function() {
-                    toggleLinks(subject);
-                };
-                subjectsContainer.appendChild(button);
+        // Function to generate the subject dropdown dynamically
+        function generateSubjectDropdown() {
+            const subjectSelect = document.getElementById('subject-select');
 
-                // Create a div for each subject with links
+            // Populate the dropdown with subjects
+            Object.keys(subjectsData).forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.toLowerCase();
+                option.innerText = subject;
+                subjectSelect.appendChild(option);
+            });
+        }
+
+        // Function to generate the links when a subject is selected from the dropdown
+        function toggleLinksFromDropdown() {
+            const subject = document.getElementById('subject-select').value;
+            const sections = document.querySelectorAll('.link-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            if (subject) {
+                const section = document.getElementById(subject);
+                if (section) {
+                    section.style.display = 'block';
+                }
+            }
+        }
+
+        // Function to generate link sections dynamically based on subjects data
+        function generateLinkSections() {
+            Object.keys(subjectsData).forEach(subject => {
                 const section = document.createElement('div');
                 section.id = subject.toLowerCase();
                 section.classList.add('link-section');
@@ -74,21 +97,9 @@
             });
         }
 
-        // Function to toggle visibility of subject links
-        function toggleLinks(subject) {
-            const sections = document.querySelectorAll('.link-section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
-
-            const section = document.getElementById(subject.toLowerCase());
-            if (section) {
-                section.style.display = 'block';
-            }
-        }
-
-        // Initialize the subject buttons and sections
-        generateSubjectButtons();
+        // Initialize the dropdown and link sections
+        generateSubjectDropdown();
+        generateLinkSections();
     </script>
 
 </body>
