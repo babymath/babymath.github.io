@@ -1,5 +1,5 @@
 const subjectsData = {
-Hindi: ["Samaas","Kaarak"],
+Hindi: ["Samaas","Kaarak","Muhaavare"],
 
 Math: ["lesson1",
            "lesson2",
