@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,110 +10,138 @@
       padding: 0;
       background-color: #f4f7fc;
       color: #333;
-    }
+    }h1 {
+  text-align: center;
+  padding: 20px;
+  background-color: #4CAF50;
+  color: white;
+  margin: 0;
+  font-size: 24px;
+}
 
-    h1 {
-      text-align: center;
-      padding: 20px;
-      background-color: #4CAF50;
-      color: white;
-      margin: 0;
-      font-size: 24px;
-    }
+#subjects {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px;
+}
 
-    #subjects {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px;
-    }
+.subject-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  flex: 1 1 120px;
+  text-align: center;
+}
 
-    .subject-btn {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 18px;
-      border: none;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: background-color 0.3s;
-      flex: 1 1 120px;
-      text-align: center;
-    }
+.subject-btn:hover {
+  background-color: #45a049;
+}
 
-    .subject-btn:hover {
-      background-color: #45a049;
-    }
+.link-section {
+  display: none;
+  margin: 20px auto;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+}
 
-    .link-section {
-      display: none;
-      margin: 20px auto;
-      padding: 16px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-    }
+.link-section h2 {
+  margin-top: 0;
+  font-size: 20px;
+  text-align: center;
+}
 
-    .link-section h2 {
-      margin-top: 0;
-      font-size: 20px;
-      text-align: center;
-    }
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
 
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-      margin-top: 10px;
-    }
+ul li {
+  margin-bottom: 10px;
+  text-align: center;
+}
 
-    ul li {
-      margin-bottom: 10px;
-      text-align: center;
-    }
+ul li a {
+  text-decoration: none;
+  color: #4CAF50;
+  font-size: 16px;
+  transition: color 0.3s;
+}
 
-    ul li a {
-      text-decoration: none;
-      color: #4CAF50;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
+ul li a:hover {
+  color: #45a049;
+}
 
-    ul li a:hover {
-      color: #45a049;
-    }
+.icon {
+  margin-right: 6px;
+}
 
-    .icon {
-      margin-right: 6px;
-    }
+.back-btn {
+  display: block;
+  margin: 20px auto 0;
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 20px;
-      }
+.back-btn:hover {
+  background-color: #ccc;
+}
 
-      .subject-btn {
-        font-size: 14px;
-        padding: 10px 14px;
-      }
+@media (max-width: 600px) {
+  h1 {
+    font-size: 20px;
+  }
 
-      .link-section {
-        margin: 15px;
-        padding: 14px;
-      }
+  .subject-btn {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
 
-      ul li a {
-        font-size: 14px;
-      }
-    }
+  .link-section {
+    margin: 15px;
+    padding: 14px;
+  }
+
+  ul li a {
+    font-size: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
   <h1>Choose a Subject</h1>
-  <div id="subjects"></div>
-<script src="subjectData.js"></script>
-  <script>
+  <div id="subjects"></div>  <script>
+    const subjectsData = {
+      Hindi: [
+        "संज्ञा",
+        "सर्वनाम",
+        "समास",
+        "कारक",
+        "सन्धि-विच्छेद",
+        "मुहावरे"
+      ],
+      Math: [
+        "Time and Work"
+      ]
+    };
+
     function generateSubjectButtons() {
       const subjectsContainer = document.getElementById('subjects');
       Object.keys(subjectsData).forEach(subject => {
@@ -144,13 +171,23 @@
         sortedLessons.forEach(lesson => {
           const li = document.createElement('li');
           const anchor = document.createElement('a');
-          anchor.href = `${subject.toLowerCase()}/${lesson.toLowerCase()}.html`;
+          anchor.href = `${subject.toLowerCase()}/${encodeURIComponent(lesson)}.html`;
           anchor.innerText = lesson;
           li.appendChild(anchor);
           ul.appendChild(li);
         });
 
         section.appendChild(ul);
+
+        const backBtn = document.createElement('button');
+        backBtn.classList.add('back-btn');
+        backBtn.innerText = '← Back to Subjects';
+        backBtn.onclick = () => {
+          section.style.display = 'none';
+          document.getElementById('subjects').style.display = 'flex';
+        };
+
+        section.appendChild(backBtn);
         document.body.appendChild(section);
       });
     }
@@ -158,6 +195,7 @@
     function toggleLinks(subject) {
       const sections = document.querySelectorAll('.link-section');
       sections.forEach(section => section.style.display = 'none');
+      document.getElementById('subjects').style.display = 'none';
 
       const section = document.getElementById(subject.toLowerCase());
       if (section) section.style.display = 'block';
@@ -165,6 +203,5 @@
 
     generateSubjectButtons();
     generateLinkSections();
-  </script>
-</body>
+  </script></body>
 </html>
