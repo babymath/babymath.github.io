@@ -4,129 +4,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Subjects and Links</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f7fc;
-      color: #333;
-    }h1 {
-  text-align: center;
-  padding: 20px;
-  background-color: #4CAF50;
-  color: white;
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #ffffff;
+      --accent-color: #f5f7fa;
+      --text-color: #333;
+      --hover-color: #357ABD;
+    }body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  font-size: 24px;
+  padding: 0;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+header {
+  background: linear-gradient(135deg, var(--primary-color), #357ABD);
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 26px;
 }
 
 #subjects {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin: 20px;
+  gap: 16px;
+  margin: 30px auto;
+  max-width: 800px;
 }
 
 .subject-btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 18px;
-  border: none;
+  background: white;
+  color: var(--primary-color);
+  padding: 14px 20px;
+  border: 2px solid var(--primary-color);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 16px;
-  transition: background-color 0.3s;
-  flex: 1 1 120px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  flex: 1 1 140px;
   text-align: center;
 }
 
 .subject-btn:hover {
-  background-color: #45a049;
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .link-section {
   display: none;
   margin: 20px auto;
-  padding: 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
 }
 
 .link-section h2 {
   margin-top: 0;
-  font-size: 20px;
+  font-size: 22px;
   text-align: center;
+  color: var(--primary-color);
 }
 
 ul {
   list-style-type: none;
   padding-left: 0;
-  margin-top: 10px;
+  margin-top: 16px;
 }
 
 ul li {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
   text-align: center;
 }
 
 ul li a {
   text-decoration: none;
-  color: #4CAF50;
-  font-size: 16px;
-  transition: color 0.3s;
+  color: var(--primary-color);
+  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.3s, color 0.3s;
 }
 
 ul li a:hover {
-  color: #45a049;
-}
-
-.icon {
-  margin-right: 6px;
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .back-btn {
   display: block;
-  margin: 20px auto 0;
-  background-color: #e0e0e0;
-  color: #333;
-  padding: 10px 16px;
+  margin: 30px auto 0;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   transition: background-color 0.3s;
 }
 
 .back-btn:hover {
-  background-color: #ccc;
+  background-color: var(--hover-color);
 }
 
 @media (max-width: 600px) {
-  h1 {
-    font-size: 20px;
+  header h1 {
+    font-size: 22px;
   }
-
   .subject-btn {
     font-size: 14px;
-    padding: 10px 14px;
+    padding: 12px 16px;
   }
-
   .link-section {
-    margin: 15px;
-    padding: 14px;
+    padding: 16px;
   }
-
   ul li a {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
   </style>
 </head>
 <body>
-  <h1>Choose a Subject</h1>
+  <header>
+    <h1>Choose a Subject</h1>
+  </header>
   <div id="subjects"></div>  <script>
     const subjectsData = {
       Hindi: [
@@ -144,28 +157,35 @@ ul li a:hover {
 
     function generateSubjectButtons() {
       const subjectsContainer = document.getElementById('subjects');
-      Object.keys(subjectsData).forEach(subject => {
+      const sortedSubjects = Object.keys(subjectsData).sort((a, b) =>
+        a.localeCompare(b, 'hi')
+      );
+      sortedSubjects.forEach(subject => {
         const button = document.createElement('button');
         button.classList.add('subject-btn');
-        button.innerHTML = `<span class="icon">📚</span>${subject}`;
+        button.innerHTML = `📘 ${subject}`;
         button.onclick = () => toggleLinks(subject);
         subjectsContainer.appendChild(button);
       });
     }
 
     function generateLinkSections() {
-      Object.keys(subjectsData).forEach(subject => {
+      const sortedSubjects = Object.keys(subjectsData).sort((a, b) =>
+        a.localeCompare(b, 'hi')
+      );
+
+      sortedSubjects.forEach(subject => {
         const section = document.createElement('div');
         section.id = subject.toLowerCase();
         section.classList.add('link-section');
 
         const header = document.createElement('h2');
-        header.innerText = `${subject} Links`;
+        header.innerText = `${subject} Topics`;
         section.appendChild(header);
 
         const ul = document.createElement('ul');
         const sortedLessons = subjectsData[subject].sort((a, b) =>
-          a.toLowerCase().localeCompare(b.toLowerCase())
+          a.localeCompare(b, 'hi')
         );
 
         sortedLessons.forEach(lesson => {
