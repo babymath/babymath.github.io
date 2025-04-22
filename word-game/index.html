@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Chain Game</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(to bottom right, #ece9e6, #ffffff);
+            color: #333;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .section {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #wordLog {
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .wordPair {
+            margin-bottom: 5px;
+        }
+
+        .userWord {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .popup-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .top-bar > div {
+            padding: 0.2rem 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="setup" class="section">
+        <h1>Word Chain Game</h1>
+        <label for="difficulty">Select Difficulty:</label>
+        <select id="difficulty">
+            <option value="easy">Easy (3+ letters)</option>
+            <option value="medium">Medium (4+ letters)</option>
+            <option value="hard">Hard (6+ letters)</option>
+        </select>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <div id="game" class="section" style="display: none;">
+        <div class="top-bar">
+            <div>Level: <span id="levelDisplay"></span></div>
+            <div>⏱ Time Left: <span id="timer">30</span>s</div>
+            <div>🏆 Score: <span id="score">0</span></div>
+            <div>🌟 High Score: <span id="highScore">0</span></div>
+        </div>
+
+        <h2>Computer's Word: <span id="currentWord"></span></h2>
+
+        <input type="text" id="userInput" placeholder="Your word..." />
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button onclick="submitWord()">Submit</button>
+            <button onclick="endGame()">End Game</button>
+        </div>
+
+        <div id="wordLog" class="log"></div>
+    </div>
+
+    <div id="wordUsed" class="section" style="margin-top: 1rem; text-align: left; display: none;">
+        <h3>Words Used</h3>
+    </div>
+
+    <div id="popup" class="popup" onclick="closePopup(event)">
+        <div class="popup-box" onclick="event.stopPropagation()">
+            <div id="popup-text"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentWord = "";
+        let usedWords = [];
+        let score = 0;
+        let timerInterval;
+        let timeLeft = 30;
+        let difficulty = "easy";
+        const initialWord = "apple";
+
+        const timerEl = document.getElementById("timer");
+        const scoreEl = document.getElementById("score");
+        const levelEl = document.getElementById("levelDisplay");
+        const currentWordEl = document.getElementById("currentWord");
+        const userInputEl = document.getElementById("userInput");
+        const wordLogEl = document.getElementById("wordLog");
+        const popupEl = document.getElementById("popup");
+        const popupTextEl = document.getElementById("popup-text");
+
+        function startGame() {
+            difficulty = document.getElementById("difficulty").value;
+            setDifficultyTime();
+            document.getElementById("setup").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            document.getElementById("wordUsed").style.display = "block"; // Show the wordUsed section
+            currentWord = initialWord;
+            usedWords = [currentWord];
+            currentWordEl.textContent = currentWord;
+            levelEl.textContent = difficulty.toUpperCase();
+            updateHighScoreDisplay(); // Update high score display
+            addToLog(currentWord, false);
+            translateWord(currentWord);
+            startTimer();
+            userInputEl.focus();
+        }
+
+        function setDifficultyTime() {
+            timeLeft = difficulty === "easy" ? 30 : difficulty === "medium" ? 25 : 20;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerEl.textContent = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    showPopup("⏱️ Time's up!");
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        async function submitWord() {
+            const word = userInputEl.value.trim().toLowerCase();
+            userInputEl.value = "";
+            userInputEl.focus();
+
+            if (!word) return;
+
+            if (currentWord && word[0] !== getLastLetter(currentWord)) {
+                showPopup(`❌ Word must start with '${getLastLetter(currentWord)}'`);
+                return;
+            }
+
+            const minLength = difficulty === "easy" ? 3 : difficulty === "medium" ? 4 : 6;
+            if (word.length < minLength) {
+                showPopup(`❌ Word too short. Must be at least ${minLength} letters.`);
+                return;
+            }
+
+            if (usedWords.includes(word)) {
+                showPopup("❌ Word already used.");
+                return;
+            }
+
+            const isValid = await isEnglishWord(word);
+            if (!isValid) {
+                showPopup("❌ Not a valid English word.");
+                return;
+            }
+
+            usedWords.push(word);
+            updateScore(word.length);
+            addToLog(word, true);
+
+            const nextWord = await getNextWord(getLastLetter(word));
+            if (!nextWord) {
+                showPopup("✅ You win! No more words found.");
+                endGame();
+                return;
+            }
+
+            currentWord = nextWord;
+            usedWords.push(currentWord);
+            currentWordEl.textContent = currentWord;
+            addToLog(currentWord, false);
+            translateWord(currentWord);
+
+            setDifficultyTime();
+            startTimer();
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            updateHighScore(); // Update high score if necessary
+            showPopup(`🏁 Game Over! Final score: ${score}`);
+        }
+
+        function updateScore(length) {
+            let points = 10;
+            if (difficulty === "medium") points += length;
+            if (difficulty === "hard") points += length * 2;
+            score += points;
+            scoreEl.textContent = score;
+        }
+
+        function updateHighScore() {
+            const highScore = parseInt(localStorage.getItem("highScore") || "0", 10);
+            if (score > highScore) {
+                localStorage.setItem("highScore", score);
+                updateHighScoreDisplay();
+            }
+        }
+
+        function updateHighScoreDisplay() {
+            const highScore = parseInt(localStorage.getItem("highScore") || "0", 10);
+            document.getElementById("highScore").textContent = highScore;
+        }
+
+        function getLastLetter(word) {
+            return word.slice(-1);
+        }
+
+        async function isEnglishWord(word) {
+            try {
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                return res.ok;
+            } catch {
+                return false;
+            }
+        }
+
+        async function getNextWord(startLetter) {
+            try {
+                const res = await fetch(`https://api.datamuse.com/words?sp=${startLetter}*&max=500`);
+                const data = await res.json();
+                const minLen = difficulty === "easy" ? 3 : difficulty === "medium" ? 4 : 6;
+
+                const filtered = data.filter(item =>
+                    !usedWords.includes(item.word) && item.word.length >= minLen
+                );
+
+                if (filtered.length > 0) {
+                    return filtered[Math.floor(Math.random() * filtered.length)].word;
+                }
+                return null;
+            } catch {
+                return null;
+            }
+        }
+
+        async function translateWord(word) {
+            try {
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${word}&langpair=en|hi`);
+                if (!res.ok) {
+                    updateLogTranslation(word, "⚠️ Translation failed");
+                    return;
+                }
+                const data = await res.json();
+                const hindi = data.responseData?.translatedText;
+                if (hindi) {
+                    updateLogTranslation(word, hindi);
+                } else {
+                    updateLogTranslation(word, "❓ No translation found");
+                }
+            } catch {
+                updateLogTranslation(word, "🌐 Translation service error");
+            }
+        }
+
+        function updateLogTranslation(word, translation) {
+            const logEntries = wordLogEl.querySelectorAll('.wordPair');
+            for (const entry of logEntries) {
+                const wordText = entry.querySelector('strong');
+                if (wordText && wordText.textContent.includes("Computer") && entry.textContent.includes(word)) {
+                    const hindiSpan = entry.querySelector(".hindi-meaning");
+                    if (hindiSpan) {
+                        hindiSpan.textContent = translation;
+                        break;
+                    } else {
+                        entry.innerHTML += `<br><em>Hindi:</em> <span class="hindi-meaning">${translation}</span>`;
+                        break;
+                    }
+                }
+            }
+        }
+
+        function addToLog(word, isUser) {
+            const log = document.getElementById("wordLog");
+            const usedWordsSection = document.getElementById("wordUsed");
+
+            // Add word to the used words array if not already present
+            if (!usedWords.includes(word)) {
+                usedWords.push(word);
+            }
+
+            // Update the used words section with sorted, comma-separated words
+            const sortedWords = [...usedWords].sort();
+            usedWordsSection.innerHTML = `<h3>Words Used</h3>${sortedWords.join(", ")}`;
+
+            // Add word to the log (only last two words)
+            const div = document.createElement("div");
+            div.className = "wordPair";
+            div.innerHTML = `<strong>${isUser ? "You" : "Computer"}:</strong> ${word}`; // Include label
+            if (!isUser) {
+                div.innerHTML += `<br><em>Hindi:</em> <span class="hindi-meaning">Translating...</span>`; // Include translation placeholder for computer
+            }
+            log.prepend(div);
+
+            // Keep only the last two words in the log
+            while (log.childNodes.length > 2) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        function showPopup(message) {
+            popupTextEl.innerHTML = message.replace(/\n/g, "<br>");
+            popupEl.style.display = "flex";
+        }
+
+        function closePopup(event) {
+            if (!event || event.target === popupEl) {
+                popupEl.style.display = "none";
+                if (document.getElementById("setup").style.display === "none") {
+                    restartGame(); // Restart the game if the setup screen is hidden
+                }
+            }
+        }
+
+        function restartGame() {
+            clearInterval(timerInterval);
+            score = 0;
+            timeLeft = 30;
+            usedWords = [];
+            document.getElementById("setup").style.display = "block";
+            document.getElementById("game").style.display = "none";
+            document.getElementById("wordUsed").style.display = "none";
+            wordLogEl.innerHTML = "";
+            scoreEl.textContent = score;
+            timerEl.textContent = timeLeft;
+            updateHighScoreDisplay(); // Ensure high score is displayed after restart
+        }
+
+        userInputEl.addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitWord();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            currentWordEl.textContent = initialWord;
+        });
+    </script>
+</body>
+</html>
