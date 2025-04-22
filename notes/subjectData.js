@@ -1,7 +1,9 @@
 const subjectsData = 
 {
-Hindi: ["सर्वनाम”,"Sangya","Samaas","Kaarak","Sandhi Vichchhed","Muhaavare"],
+Hindi: 
+["संज्ञा","सर्वनाम”,"समास","कारक","सन्धि-विच्छेद","मुहावरे"],
 
-Math: ["Time and Work"]
+Math: 
+["Time and Work"]
 
 };
