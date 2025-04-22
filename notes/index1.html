@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes - BabyMath</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #ffffff;
+      --accent-color: #f5f7fa;
+      --text-color: #2c3e50;
+      --hover-color: #357ABD;
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease-in-out;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Devanagari', 'Mangal', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--accent-color);
+      color: var(--text-color);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--hover-color));
+      padding: 30px 20px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+
+    main {
+      padding: 20px 10px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    #subjects {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .subject-btn {
+      background: white;
+      color: var(--primary-color);
+      padding: 16px 24px;
+      border: 2px solid var(--primary-color);
+      cursor: pointer;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      flex: 1 1 160px;
+      text-align: center;
+    }
+
+    .subject-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    section.link-section {
+      display: none;
+      margin: 30px auto;
+      padding: 28px;
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      max-width: 720px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    section.link-section h2 {
+      margin-top: 0;
+      font-size: 24px;
+      text-align: center;
+      color: var(--primary-color);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 20px 0;
+    }
+
+    ul li {
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    ul li a {
+      text-decoration: none;
+      color: var(--primary-color);
+      font-size: 18px;
+      padding: 10px 18px;
+      display: inline-block;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    ul li a:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      display: block;
+      margin: 40px auto 0;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .back-btn:hover {
+      background-color: var(--hover-color);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 22px;
+      }
+
+      .subject-btn {
+        font-size: 15px;
+        padding: 12px 16px;
+      }
+
+      section.link-section {
+        padding: 20px;
+      }
+
+      ul li a {
+        font-size: 16px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Choose a Subject</h1>
+  </header>
+  <main>
+    <div id="subjects" role="navigation" aria-label="Subjects List"></div>
+  </main>
+
+  <script>
+    const subjectsData = {
+      Hindi: ["संज्ञा", "सर्वनाम", "समास", "कारक", "सन्धि-विच्छेद", "मुहावरे"],
+      Math: ["Time and Work"]
+    };
+
+    function generateSubjectButtons() {
+      const subjectsContainer = document.getElementById('subjects');
+      const sortedSubjects = Object.keys(subjectsData).sort((a, b) => a.localeCompare(b, 'hi'));
+
+      sortedSubjects.forEach(subject => {
+        const button = document.createElement('button');
+        button.classList.add('subject-btn');
+        button.setAttribute('aria-label', `Open ${subject} topics`);
+        button.innerHTML = `📘 ${subject}`;
+        button.onclick = () => toggleLinks(subject);
+        subjectsContainer.appendChild(button);
+      });
+    }
+
+    function generateLinkSections() {
+      const sortedSubjects = Object.keys(subjectsData).sort((a, b) => a.localeCompare(b, 'hi'));
+
+      sortedSubjects.forEach(subject => {
+        const section = document.createElement('section');
+        section.id = subject.toLowerCase();
+        section.classList.add('link-section');
+
+        const header = document.createElement('h2');
+        header.innerText = `${subject} Topics`;
+        section.appendChild(header);
+
+        const ul = document.createElement('ul');
+        const sortedLessons = subjectsData[subject].sort((a, b) => a.localeCompare(b, 'hi'));
+
+        sortedLessons.forEach(lesson => {
+          const li = document.createElement('li');
+          const anchor = document.createElement('a');
+          anchor.href = `${subject.toLowerCase()}/${encodeURIComponent(lesson.toLowerCase())}.html`;
+          anchor.innerText = lesson;
+          anchor.setAttribute('title', lesson);
+          li.appendChild(anchor);
+          ul.appendChild(li);
+        });
+
+        section.appendChild(ul);
+
+        const backBtn = document.createElement('button');
+        backBtn.classList.add('back-btn');
+        backBtn.innerText = '← Back to Subjects';
+        backBtn.onclick = () => {
+          section.style.display = 'none';
+          document.getElementById('subjects').style.display = 'flex';
+        };
+
+        section.appendChild(backBtn);
+        document.body.appendChild(section);
+      });
+    }
+
+    function toggleLinks(subject) {
+      document.querySelectorAll('.link-section').forEach(section => {
+        section.style.display = 'none';
+      });
+      document.getElementById('subjects').style.display = 'none';
+
+      const section = document.getElementById(subject.toLowerCase());
+      if (section) section.style.display = 'block';
+    }
+
+    generateSubjectButtons();
+    generateLinkSections();
+  </script>
+</body>
+</html>
