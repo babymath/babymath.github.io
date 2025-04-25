@@ -94,7 +94,12 @@ function showQuizSelection() {
 
   filteredQuizzes.forEach((quiz) => {
     const btn = document.createElement("button");
-    btn.innerHTML = `<i class="fas fa-clipboard-question"></i> <span>${quiz.id}</span><br><span>${quiz.topic}</span>`;
+    btn.innerHTML = `
+  <div style="text-align: left;">
+    <strong>${quiz.id}</strong><br>
+    <small>${quiz.topic}</small>
+  </div>
+`;
     btn.onclick = () => loadQuiz(quiz.file, `${quiz.id}<br>${quiz.topic}`, quiz.id);
     btn.setAttribute("aria-label", `Select ${quiz.id} ${quiz.topic}`);
     quizList.appendChild(btn);
