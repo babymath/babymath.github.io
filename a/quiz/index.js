@@ -100,17 +100,16 @@ function showQuizSelection() {
     <small>${quiz.topic}</small>
   </div>
 `;
-    btn.onclick = () => loadQuiz(quiz.file, `${quiz.id}<br>${quiz.topic}`, quiz.id);
+    btn.onclick = () => loadQuiz(quiz.file, `${quiz.id}, ${quiz.topic}`);
     btn.setAttribute("aria-label", `Select ${quiz.id} ${quiz.topic}`);
     quizList.appendChild(btn);
   });
 }
 
-function loadQuiz(fileName, quizTitle, quizId) {
+function loadQuiz(fileName, quizTitle) {
   const queryParams = new URLSearchParams({
     quizFile: fileName,
-    quizTitle: quizTitle,
-    quizId: quizId,
+    quizTitle: quizTitle
   }).toString();
 
   // Reset filters and message

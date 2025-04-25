@@ -167,8 +167,14 @@ let userLanguage = null;
         });
 
         nextQuestionButton.addEventListener('click', () => {
-             if (currentQuestionIndex < questions.length - 1) {
+            if (currentQuestionIndex < questions.length - 1) {
                 loadQuestion(currentQuestionIndex + 1);
+
+                // Scroll to the last option of the next question
+                const options = optionsDiv.querySelectorAll('label');
+                if (options.length > 0) {
+                    options[options.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }
         });
 
@@ -264,7 +270,9 @@ let userLanguage = null;
         }
 
         function loadQuizData(quizFile, quizTitle) {
-            quizTitleH2.textContent = quizTitle; // Set quiz title as quizTitle
+            const [quizId, topic] = quizTitle.split(',').map(part => part.trim()); // Split quizTitle into id and topic
+
+            quizTitleH2.textContent = `${quizId} (${topic})`; // Display quiz ID and topic
 
             const fileId = quizFile;
             const callbackName = 'quizDataCallback';
@@ -434,7 +442,7 @@ let userLanguage = null;
             let attemptedCount = 0;
 
             const urlParams = new URLSearchParams(window.location.search);
-            const quizId = urlParams.get('quizId'); // Get quizId from URL parameters
+            const quizTitle = urlParams.get('quizTitle'); // Get quizTitle from URL parameters
 
             const resultsHTML = questions.map((q, i) => {
                 const userAnswer = userAnswers[i];
@@ -489,13 +497,13 @@ let userLanguage = null;
                 (${correctText}: ${correctCount}, ${incorrectText}: ${incorrectCount}, ${notAnsweredText}: ${notAttemptedCount})
             `;
 
-            // Display quiz ID below the results heading
+            // Display quiz title below the results heading
             const resultHeading = document.getElementById('result-heading');
-            const quizIdElement = document.createElement('p');
-            quizIdElement.style.fontSize = '0.9em';
-            quizIdElement.style.color = '#555';
-            quizIdElement.textContent = `Quiz ID: ${quizId || 'N/A'}`;
-            resultHeading.insertAdjacentElement('afterend', quizIdElement);
+            const quizTitleElement = document.createElement('p');
+            quizTitleElement.style.fontSize = '0.9em';
+            quizTitleElement.style.color = '#555';
+            quizTitleElement.textContent = `Quiz Title: ${quizTitle || 'N/A'}`;
+            resultHeading.insertAdjacentElement('afterend', quizTitleElement);
 
             window.scrollTo(0, 0);
         }

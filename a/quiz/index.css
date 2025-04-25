@@ -66,8 +66,10 @@ select {
   justify-content: center;
   gap: 8px;
   font-size: 0.9rem;
+  transition: transform 0.2s ease;
 }
 
-#quizList button:hover {
-  transform: scale(1.05);
+#quizList button:focus {
+  transform: scale(1.05); /* Add focus effect */
+  outline: 2px solid #007bff; /* Optional: Add a focus outline */
 }
