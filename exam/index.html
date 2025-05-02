@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Assistant Mock Test (Bihar)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <div class="left-panel">
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+        <h1>Store Assistant Mock Test (Bihar)</h1>
+        <div id="subject-buttons">
+            <!-- Subject buttons will be dynamically populated -->
+        </div>
+        <div id="quiz-container">
+            <!-- Question will be displayed here -->
+        </div>
+        <div id="left-footer">
+            <button id="clear-response-button" onclick="clearResponse()">Clear Response</button>
+            <button id="mark-review-button" onclick="markForReview()">Mark for Review and Next</button>
+            <button id="next-button" onclick="nextQuestion()">Save and Next</button>
+        </div>
+    </div>
+    <div class="right-panel">
+        <div id="dummy-picture">
+            <span class="emoji-large">🧑</span>
+            <span class="message-small">Hello user</span>
+        </div>
+        <div id="timer">Time: 00:00</div>
+        <table id="navigation-type">
+            <tr>
+              <td><button class="attempted" id="answered-count">0</button></td>
+              <td>Answered</td>
+              <td><button class="notAttempted" id="not-attempted-count">0</button></td>
+              <td>Not Answered</td>
+            </tr>
+            <tr>
+              <td><button class="notSeen" id="not-seen-count">0</button></td>
+              <td>Not Seen</td>
+              <td><button class="marked" id="marked-not-attempted-count">0</button></td>
+              <td>Marked</td>
+            </tr>
+            <tr>
+              
+              <td><button class="markAttempted" id="marked-for-review-count">0</button></td>
+              <td colspan="3">Marked and Answered</td>
+            </tr>
+          </table>
+          
+        <h3 id="subject-heading">Subject</h3>
+        <div id="question-navigation">
+            <!-- Navigation buttons will be dynamically populated -->
+        </div>
+        <div class="show-questions-container">
+            <button id="show-questions-button" onclick="showAllQuestions()">Questions</button>
+        </div>
+        <div id="right-footer" onclick="submitQuiz()">
+            Submit
+        </div>
+    </div>
+    <div id="results" style="display: none;">
+        <h2>Quiz Results</h2>
+        <p>Your Score: <span id="score"></span> / <span id="total-questions"></span></p>
+        <div id="feedback"></div>
+    </div>
+    <script>
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let timerInterval;
+        let totalQuestionsCombined = 0;
+        let subjectsOrder = [];
+        let currentSubjectIndex = 0;
+
+        function startTimer(duration) {
+            let timeRemaining = duration;
+            const timerDisplay = document.getElementById('timer');
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerDisplay.textContent = 'Time: ' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz(); // auto submit when time runs out
+                }
+                timeRemaining--;
+            }, 1000);
+        }
+
+        async function loadSubjects() {
+            try {
+                const response = await fetch('1.json');
+                const data = await response.json();
+                subjectsOrder = Object.keys(data);
+                totalQuestionsCombined = Object.values(data).reduce((sum, questions) => sum + questions.length, 0);
+                const subjectButtonsDiv = document.getElementById('subject-buttons');
+                subjectButtonsDiv.innerHTML = '';
+                subjectsOrder.forEach((subject, index) => {
+                    const button = document.createElement('button');
+                    const formattedSubject = subject.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+                    button.textContent = formattedSubject;
+                    button.onclick = () => {
+                        currentSubjectIndex = index;
+                        loadQuiz(subject, data[subject]);
+                    };
+                    subjectButtonsDiv.appendChild(button);
+                    if (index === 0) {
+                        currentSubjectIndex = 0;
+                        loadQuiz(subject, data[subject]);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+                document.getElementById('subject-buttons').innerHTML = '<p>Failed to load subjects.</p>';
+            }
+        }
+
+        function loadQuiz(subject, subjectQuestions) {
+            questions = subjectQuestions;
+            currentQuestionIndex = 0;
+            document.getElementById('quiz-container').innerHTML = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('left-footer').style.display = 'flex';
+            const formattedSubject = subject.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+            document.getElementById('subject-heading').textContent = formattedSubject; // update heading with capitalized words
+            startTimer(totalQuestionsCombined * 60); // total time: combined total questions * 60 seconds
+            populateQuestionNavigation();
+            displayQuestion();
+        }
+
+        function populateQuestionNavigation() {
+            const navContainer = document.getElementById('question-navigation');
+            navContainer.innerHTML = '';
+            questions.forEach((question, index) => {
+                const button = document.createElement('button');
+                button.textContent = `${question.question_number || index + 1}`;
+                button.onclick = () => navigateToQuestion(index);
+                navContainer.appendChild(button);
+            });
+        }
+
+        function navigateToQuestion(index) {
+            const navButtons = document.getElementById('question-navigation').children;
+            if (navButtons[currentQuestionIndex]) {
+                const options = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]`);
+                const isAnswered = Array.from(options).some(option => option.checked);
+                if (!isAnswered) {
+                    navButtons[currentQuestionIndex].classList.add('notAttempted'); // Mark as not attempted if unanswered
+                }
+            }
+            currentQuestionIndex = index;
+            displayQuestion();
+            updateNavigationTypeCounts();
+        }
+
+        function displayQuestion() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+            const questionData = questions[currentQuestionIndex];
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.innerHTML = `<h3>Question ${questionData.question_number}: ${questionData.question}</h3>`;
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options');
+
+            for (const optionKey in questionData.options) {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question-${currentQuestionIndex}`;
+                input.value = optionKey;
+                input.dataset.correctAnswer = questionData.correct_answer;
+
+                // Add event listener to radio input (do not change classes on click)
+                input.addEventListener('change', () => {
+                    updateNavigationTypeCounts();
+                });
+
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(`${optionKey.toUpperCase()}: ${questionData.options[optionKey]}`));
+                optionsDiv.appendChild(label);
+            }
+
+            questionDiv.appendChild(optionsDiv);
+            quizContainer.appendChild(questionDiv);
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const navButtons = document.getElementById('question-navigation').children;
+            if (navButtons[currentQuestionIndex]) {
+                // Mark as not attempted if the question is viewed but not answered
+                const options = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]`);
+                const isAnswered = Array.from(options).some(option => option.checked);
+                if (!isAnswered) {
+                    navButtons[currentQuestionIndex].classList.add('notAttempted');
+                }
+            }
+            // Uncomment below and adjust if you want to avoid disabling the button on last question
+            // document.getElementById('next-button').disabled = currentQuestionIndex === questions.length - 1;
+        }
+
+        function nextQuestion() {
+            const navButtons = document.getElementById('question-navigation').children;
+            const options = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]`);
+            const isAnswered = Array.from(options).some(option => option.checked);
+            if (navButtons[currentQuestionIndex]) {
+                navButtons[currentQuestionIndex].classList.remove('notAttempted', 'markAttempted');
+                if (isAnswered) {
+                    navButtons[currentQuestionIndex].classList.add('attempted');
+                } else {
+                    navButtons[currentQuestionIndex].classList.add('notAttempted');
+                }
+            }
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+                updateNavigationTypeCounts();
+            } else {
+                // Last question in current section: go to first question of next subject
+                let nextSubjectIndex = (currentSubjectIndex + 1) % subjectsOrder.length;
+                const subjectButtons = document.getElementById('subject-buttons').children;
+                subjectButtons[nextSubjectIndex].click(); // simulate click on next subject button
+            }
+        }
+
+        function clearResponse() {
+            const options = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]`);
+            options.forEach(option => option.checked = false);
+            const navButtons = document.getElementById('question-navigation').children;
+            if (navButtons[currentQuestionIndex]) {
+                navButtons[currentQuestionIndex].classList.remove('attempted', 'markAttempted');
+                navButtons[currentQuestionIndex].classList.add('notAttempted');
+            }
+            updateNavigationTypeCounts();
+        }
+
+        function markForReview() {
+            const navButtons = document.getElementById('question-navigation').children;
+            if (navButtons[currentQuestionIndex]) {
+                const options = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]`);
+                const isAnswered = Array.from(options).some(option => option.checked);
+
+                // Remove all previous classes
+                navButtons[currentQuestionIndex].classList.remove('notAttempted', 'attempted', 'marked', 'markAttempted');
+
+                // Apply the appropriate class
+                if (isAnswered) {
+                    navButtons[currentQuestionIndex].classList.add('markAttempted'); // Apply markAttempted if answered
+                } else {
+                    navButtons[currentQuestionIndex].classList.add('marked'); // Apply marked if not answered
+                }
+            }
+
+            // Navigate to the next question
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+            updateNavigationTypeCounts();
+        }
+
+        function submitQuiz() {
+            const questionDivs = document.querySelectorAll('.question');
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            questionDivs.forEach((questionDiv, index) => {
+                const selectedOption = questionDiv.querySelector(`input[name="question-${index}"]:checked`);
+                const correctAnswer = selectedOption ? selectedOption.dataset.correctAnswer : null;
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                const feedbackParagraph = document.createElement('p');
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    feedbackParagraph.classList.add('correct');
+                    feedbackParagraph.textContent = `Question ${index + 1}: Correct`;
+                } else {
+                    feedbackParagraph.classList.add('incorrect');
+                    feedbackParagraph.textContent = `Question ${index + 1}: Incorrect. Correct answer: ${correctAnswer}`;
+                }
+                feedbackDiv.appendChild(feedbackParagraph);
+            });
+            document.getElementById('score').textContent = score;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function showAllQuestions() {
+            const allQuestionsPopup = document.createElement('div');
+            allQuestionsPopup.style.position = 'fixed';
+            allQuestionsPopup.style.top = '50%';
+            allQuestionsPopup.style.left = '50%';
+            allQuestionsPopup.style.transform = 'translate(-50%, -50%)';
+            allQuestionsPopup.style.backgroundColor = 'white';
+            allQuestionsPopup.style.padding = '20px';
+            allQuestionsPopup.style.border = '1px solid #ccc';
+            allQuestionsPopup.style.borderRadius = '5px';
+            allQuestionsPopup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            allQuestionsPopup.style.maxHeight = '80vh';
+            allQuestionsPopup.style.overflowY = 'auto';
+            allQuestionsPopup.style.zIndex = '1000';
+
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Close';
+            closeButton.style.marginBottom = '10px';
+            closeButton.onclick = () => document.body.removeChild(allQuestionsPopup);
+
+            const questionsList = document.createElement('ul');
+            questions.forEach((question, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Q${index + 1}: ${question.question}`;
+                questionsList.appendChild(listItem);
+            });
+
+            allQuestionsPopup.appendChild(closeButton);
+            allQuestionsPopup.appendChild(questionsList);
+            document.body.appendChild(allQuestionsPopup);
+        }
+
+        function updateNavigationTypeCounts() {
+            const navButtons = document.getElementById('question-navigation').children;
+            let answered = 0, notAttempted = 0, markedForReview = 0, markedNotAttempted = 0;
+
+            Array.from(navButtons).forEach(button => {
+                if (button.classList.contains('attempted')) {
+                    answered++;
+                } else if (button.classList.contains('notAttempted')) {
+                    notAttempted++;
+                } else if (button.classList.contains('markAttempted')) {
+                    markedForReview++;
+                } else if (button.classList.contains('marked')) {
+                    markedNotAttempted++;
+                }
+            });
+
+            document.getElementById('answered-count').textContent = answered;
+            document.getElementById('not-attempted-count').textContent = notAttempted;
+            document.getElementById('marked-for-review-count').textContent = markedForReview;
+            document.getElementById('marked-not-attempted-count').textContent = markedNotAttempted;
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.right-panel').classList.toggle('open');
+        }
+
+        window.onload = loadSubjects;
+    </script>
+</body>
+</html>
+`
