@@ -1,0 +1,231 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+div {
+    box-sizing: border-box; /* Ensure padding and border are included in width/height */
+    max-width: 100%; /* Ensure divs do not exceed parent width */
+    padding: 10px;
+    border: 1px solid #ccc; /* Add a border for visibility */
+}
+.left-panel {
+    flex: 3;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 75%; /* 3/4 of the screen width */
+}
+.right-panel {
+    flex: 1;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 25%; /* 1/4 of the screen width */
+    padding: 0;
+}
+.left-panel, .right-panel {
+    overflow-x: hidden;
+}
+#left-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e91313;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#navigation-type {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    margin: 5px 0;
+}
+#navigation-type td {
+    padding: 4px 5px;
+    vertical-align: middle;
+}
+#navigation-type button {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-weight: bold;
+}
+#question-navigation {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+#question-navigation button {
+    width: 35px; /* Reduced width */
+    height: 35px; /* Reduced height */
+    text-align: center;
+    font-size: 12px; /* Smaller font size */
+}
+.notAttempted {
+    background: red;
+    color: white;
+    clip-path: polygon(
+        25% 0%,
+        75% 0%,
+        100% 50%,
+        100% 100%,
+        0% 100%,
+        0% 50%
+    );
+    border: none;
+}
+.attempted {
+    background: green;
+    color: white;
+    clip-path: polygon(
+        0% 0%,     /* Top-left corner */
+        100% 0%,     /* Top-right corner */
+        100% 50%,   /* Middle-right point */
+        75% 100%,   /* Bottom-right corner */
+        25% 100%,   /* Bottom-left corner */
+        0% 50%
+    );
+    border: none;
+}
+.marked {
+    background: purple;
+    border-radius: 50%;
+    color: white;
+}
+.markAttempted {
+    background: purple;
+    border-radius: 50%;
+    color: white;
+    position: relative;
+}
+.markAttempted::after {
+    content: '✔';
+    color: green;
+    font-size: 14px;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+.question {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.options label {
+    display: block;
+    margin-bottom: 5px;
+}
+#results {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.correct {
+    color: green;
+}
+.incorrect {
+    color: red;
+}
+#dummy-picture {
+    text-align: center;
+    padding: 10px;
+}
+.emoji-large {
+    font-size: 48px;
+}
+.message-small {
+    font-size: 16px;
+}
+#timer {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.show-questions-container {
+    text-align: center;
+    margin-top: 10px;
+}
+#right-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: lightgreen;
+    text-align: center;
+    padding: 10px;
+}
+#submit-button {
+    width: 100%;
+}
+#subject-buttons {
+    border: 2px solid black;
+    padding: 10px;
+    position: relative;
+}
+#subject-buttons::before {
+    content: "Section";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: white;
+    padding: 0 5px;
+}
+@media only screen and (max-width: 600px) {
+    .right-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 80%;
+        background: #f9f9f9;
+        z-index: 1001;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    .right-panel.open {
+        transform: translateX(0);
+    }
+    .left-panel, #left-footer {
+        width: 100%;
+    }
+    .left-panel {
+        position: relative;
+        width: 100%;
+    }
+    #left-footer {
+        position: relative;
+        width: 100%;
+    }
+}
+@media only screen and (min-width: 601px) {
+    #toggle-sidebar {
+        display: none;
+    }
+    .left-panel {
+        margin-right: 2px;
+        width: calc(75% - 2px);
+    }
+    .right-panel {
+        margin-left: 2px;
+        width: calc(25% - 2px);
+    }
+}
