@@ -1,232 +1,238 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF Reader</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .selected-outline {
-      background-color: #dbeafe;
-      border-radius: 0.25rem;
-      padding: 0.2rem 0.4rem;
-    }
+    body { margin: 0; font-family: sans-serif; overflow: hidden; background: #121212; color: #fff; }
+    canvas { display: block; margin: 0 auto; background: #fff; }#menuBtn {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  z-index: 10;
+  background: #333;
+  border: 1px solid #555;
+  color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+#menu {
+  display: none;
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000;
+  z-index: 10;
+}
+#menu button {
+  display: block;
+  margin: 5px 0;
+  width: 200px;
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+#sliderContainer {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  z-index: 10;
+}
+
+#pageNum {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 10;
+  display: none;
+}
+
+#libraryPopup {
+  display: none;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  max-height: 70%;
+  overflow: auto;
+  width: 300px;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000;
+  z-index: 10;
+}
+#libraryPopup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#libraryPopup li {
+  padding: 8px;
+  border-bottom: 1px solid #444;
+  cursor: pointer;
+}
+
   </style>
 </head>
-<body class="bg-gray-100">
-  <canvas id="pdf-render" class="mx-auto mt-4 hidden"></canvas>
-  <div id="pdf-scroll" class="hidden"></div>  <!-- Three-dot button -->  <div class="fixed bottom-4 right-4 z-50">
-    <button id="menuBtn" class="bg-gray-700 text-white px-3 py-2 rounded-full">&#x22EE;</button>
-  </div>  <!-- Bottom menu -->  <div id="bottomMenu" class="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 flex justify-around hidden z-50 rounded-t-2xl">
-    <button id="libraryBtn" class="text-blue-600">Library</button>
-    <button id="outlineBtn" class="text-blue-600">Outline</button>
-    <button id="scrollBtn" class="text-blue-600">Continue Scrolling</button>
-    <button id="pageBtn" class="text-blue-600">Page by Page</button>
-  </div>  <!-- Page slider -->  <div id="pageSliderContainer" class="fixed bottom-16 w-full px-4 hidden z-50">
-    <input type="range" id="pageSlider" min="1" value="1" class="w-full">
-    <div id="pageNumDisplay" class="text-center text-black font-bold"></div>
-  </div>  <!-- Outline Panel -->  <div id="outlinePanel" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-4 max-h-72 overflow-auto hidden z-50 rounded-t-2xl">
-    <h2 class="text-lg font-semibold mb-2">Document Outline</h2>
-    <ul id="outlineList" class="space-y-2"></ul>
-  </div>  <!-- Library Modal -->  <div id="libraryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 w-80 max-h-96 overflow-auto">
-      <h2 class="text-lg font-semibold mb-4">PDF Library</h2>
-      <ul id="pdfList" class="space-y-2"></ul>
-      <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onclick="document.getElementById('libraryModal').classList.add('hidden')">Close</button>
-    </div>
-  </div>  <script>
-    let pdfDoc = null, pageNum = 1, mode = 'page';
-    let fileHandles = [];
-    const canvas = document.getElementById('pdf-render');
-    const ctx = canvas.getContext('2d');
-    const scrollView = document.getElementById('pdf-scroll');
-    const bottomMenu = document.getElementById('bottomMenu');
-    const outlinePanel = document.getElementById('outlinePanel');
-    const outlineList = document.getElementById('outlineList');
-    const sliderContainer = document.getElementById('pageSliderContainer');
-    const pageSlider = document.getElementById('pageSlider');
-    const pageNumDisplay = document.getElementById('pageNumDisplay');
+<body>
+  <canvas id="pdfCanvas"></canvas><button id="menuBtn">⋮</button>
 
-    document.getElementById('menuBtn').onclick = () => {
-      bottomMenu.classList.toggle('hidden');
-      sliderContainer.classList.toggle('hidden');
-    };
+  <div id="menu">
+    <button id="libraryBtn">Library</button>
+    <button id="outlineBtn">Outline</button>
+    <button id="scrollBtn">Continue Scrolling</button>
+    <button id="pageBtn">Page by Page</button>
+  </div>  <div id="sliderContainer">
+    <input type="range" id="pageSlider" min="1" value="1" />
+  </div>  <div id="pageNum"></div>  <div id="libraryPopup">
+    <ul id="pdfList"></ul>
+  </div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>  <script>
+    const canvas = document.getElementById("pdfCanvas");
+    const ctx = canvas.getContext("2d");
+    const menuBtn = document.getElementById("menuBtn");
+    const menu = document.getElementById("menu");
+    const pageNum = document.getElementById("pageNum");
+    const slider = document.getElementById("pageSlider");
+    const sliderContainer = document.getElementById("sliderContainer");
+    const libraryPopup = document.getElementById("libraryPopup");
+    const pdfList = document.getElementById("pdfList");
 
-    document.getElementById('pageBtn').onclick = () => {
-      mode = 'page';
-      scrollView.classList.add('hidden');
-      canvas.classList.remove('hidden');
-      renderPage(pageNum);
-      outlinePanel.classList.add('hidden');
-      bottomMenu.classList.add('hidden');
-    };
+    let pdfDoc = null, currentPage = 1, totalPages = 0;
+    let pageMode = "page";
+    let pdfFiles = [], currentFile = "", fileHandles = [];
 
-    document.getElementById('scrollBtn').onclick = () => {
-      mode = 'scroll';
-      scrollView.classList.remove('hidden');
-      canvas.classList.add('hidden');
-      renderAllPages();
-      outlinePanel.classList.add('hidden');
-      bottomMenu.classList.add('hidden');
-    };
-
-    document.getElementById('outlineBtn').onclick = async () => {
-      if (!pdfDoc) return;
-      const outline = await pdfDoc.getOutline();
-      outlineList.innerHTML = '';
-      if (!outline) {
-        outlineList.innerHTML = '<li class="text-gray-500">No outline available</li>';
-        outlinePanel.classList.remove('hidden');
-        return;
-      }
-      await renderOutlineItems(outline, outlineList);
-      outlinePanel.classList.remove('hidden');
-      bottomMenu.classList.add('hidden');
-    };
-
-    document.getElementById('libraryBtn').onclick = () => {
-      const modal = document.getElementById('libraryModal');
-      const list = document.getElementById('pdfList');
-      list.innerHTML = '';
-      fileHandles.sort((a, b) => a.name.localeCompare(b.name));
-      fileHandles.forEach(handle => {
-        const li = document.createElement('li');
-        li.textContent = handle.name;
-        li.className = 'text-blue-700 cursor-pointer hover:underline';
-        li.onclick = async () => {
-          const file = await handle.getFile();
-          const arrayBuffer = await file.arrayBuffer();
-          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-          loadingTask.promise.then(doc => {
-            pdfDoc = doc;
-            pageSlider.max = doc.numPages;
-            pageNum = parseInt(localStorage.getItem('lastReadPage')) || 1;
-            renderPage(pageNum);
-            modal.classList.add('hidden');
-          });
-        };
-        list.appendChild(li);
-      });
-      modal.classList.remove('hidden');
-    };
-
-    async function selectPDFDirectory() {
-      try {
-        const dirHandle = await window.showDirectoryPicker();
-        for await (const entry of dirHandle.values()) {
-          if (entry.kind === 'file' && entry.name.endsWith('.pdf')) {
-            fileHandles.push(entry);
-          }
-        }
-        if (fileHandles.length > 0) {
-          const firstFile = await fileHandles[0].getFile();
-          const buffer = await firstFile.arrayBuffer();
-          pdfjsLib.getDocument({ data: buffer }).promise.then(doc => {
-            pdfDoc = doc;
-            pageSlider.max = doc.numPages;
-            const saved = parseInt(localStorage.getItem('lastReadPage'));
-            pageNum = saved && saved <= doc.numPages ? saved : 1;
-            renderPage(pageNum);
-          });
-        }
-      } catch (err) {
-        alert("Folder access was denied or canceled.");
-      }
-    }
-
-    window.onload = selectPDFDirectory;
-
-    async function renderOutlineItems(items, parentElement) {
-      for (const item of items) {
-        const li = document.createElement('li');
-        li.className = 'my-1 ml-2';
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex items-center justify-start space-x-1 cursor-pointer';
-        const toggle = document.createElement('span');
-        toggle.textContent = item.items?.length ? '+' : '';
-        toggle.className = 'text-gray-500 w-4';
-        toggle.style.cursor = 'pointer';
-        const title = document.createElement('span');
-        title.textContent = item.title;
-        title.className = 'hover:underline text-blue-600 flex-grow';
-        title.onclick = async () => {
-          const dest = await pdfDoc.getDestination(item.dest);
-          const pageIndex = await pdfDoc.getPageIndex(dest[0]);
-          const targetPage = pageIndex + 1;
-          if (mode === 'page') {
-            pageNum = targetPage;
-            renderPage(pageNum);
-          } else {
-            const canvases = scrollView.querySelectorAll('canvas');
-            if (canvases[pageIndex]) canvases[pageIndex].scrollIntoView({ behavior: 'smooth' });
-          }
-          document.querySelectorAll('#outlineList .selected-outline').forEach(el => el.classList.remove('selected-outline', 'font-bold'));
-          title.classList.add('selected-outline', 'font-bold');
-          outlinePanel.classList.add('hidden');
-        };
-        wrapper.appendChild(toggle);
-        wrapper.appendChild(title);
-        li.appendChild(wrapper);
-        parentElement.appendChild(li);
-        if (item.items?.length) {
-          const nested = document.createElement('ul');
-          nested.className = 'ml-5 border-l border-gray-300 pl-2 hidden';
-          li.appendChild(nested);
-          toggle.onclick = () => {
-            nested.classList.toggle('hidden');
-            toggle.textContent = nested.classList.contains('hidden') ? '+' : '–';
-          };
-          await renderOutlineItems(item.items, nested);
-        }
-      }
-    }
-
-    function renderPage(num) {
+    const renderPage = (num) => {
       pdfDoc.getPage(num).then(page => {
         const viewport = page.getViewport({ scale: 1.5 });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
-        const renderContext = { canvasContext: ctx, viewport: viewport };
-        page.render(renderContext);
+        const renderCtx = { canvasContext: ctx, viewport };
+        page.render(renderCtx);
+        slider.max = totalPages;
+        slider.value = num;
+        showPageNum(num);
+        saveLastPage();
       });
-      pageSlider.value = num;
-      localStorage.setItem('lastReadPage', num);
-    }
+    };
 
-    function renderAllPages() {
-      scrollView.innerHTML = '';
-      const scrollTop = parseInt(localStorage.getItem('lastScrollTop')) || 0;
-      let loaded = 0;
-      for (let i = 1; i <= pdfDoc.numPages; i++) {
-        pdfDoc.getPage(i).then(page => {
-          const viewport = page.getViewport({ scale: 1 });
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          scrollView.appendChild(canvas);
-          page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
-            loaded++;
-            if (loaded === pdfDoc.numPages) {
-              scrollView.scrollTop = scrollTop;
-            }
-          });
-        });
+    const showPageNum = (num) => {
+      pageNum.textContent = `Page ${num}`;
+      pageNum.style.display = "block";
+      clearTimeout(pageNum.timeout);
+      pageNum.timeout = setTimeout(() => pageNum.style.display = "none", 1000);
+    };
+
+    const loadPDF = async (file) => {
+      currentFile = file.name;
+      const lastPage = parseInt(localStorage.getItem("pdf-" + file.name)) || 1;
+      const url = URL.createObjectURL(await file.getFile());
+      pdfDoc = await pdfjsLib.getDocument(url).promise;
+      totalPages = pdfDoc.numPages;
+      currentPage = lastPage;
+      if (pageMode === "page") renderPage(currentPage);
+    };
+
+    const saveLastPage = () => {
+      localStorage.setItem("pdf-" + currentFile, currentPage);
+    };
+
+    const selectFolderOrFile = async () => {
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === "file" && entry.name.endsWith(".pdf")) {
+            fileHandles.push(entry);
+          }
+        }
+        fileHandles.sort((a, b) => a.name.localeCompare(b.name));
+        pdfList.innerHTML = fileHandles.map(f => `<li>${f.name}</li>`).join("");
+        await loadPDF(fileHandles[0]);
+      } catch (e) {
+        const [file] = await window.showOpenFilePicker({ types: [{ accept: { "application/pdf": [".pdf"] } }] });
+        fileHandles = [file];
+        pdfList.innerHTML = `<li>${file.name}</li>`;
+        await loadPDF(file);
       }
-    }
+    };
 
-    scrollView.addEventListener('scroll', () => {
-      localStorage.setItem('lastScrollTop', scrollView.scrollTop);
+    menuBtn.onclick = () => {
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+      sliderContainer.style.display = menu.style.display;
+    };
+
+    slider.oninput = () => {
+      currentPage = parseInt(slider.value);
+      if (pageMode === "page") renderPage(currentPage);
+    };
+
+    document.getElementById("scrollBtn").onclick = async () => {
+      if (!pdfDoc) return;
+      pageMode = "scroll";
+      menu.style.display = "none";
+      sliderContainer.style.display = "none";
+      document.body.innerHTML = "";
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const c = document.createElement("canvas");
+        c.width = viewport.width;
+        c.height = viewport.height;
+        document.body.appendChild(c);
+        await page.render({ canvasContext: c.getContext("2d"), viewport }).promise;
+      }
+    };
+
+    document.getElementById("pageBtn").onclick = () => location.reload();
+
+    document.getElementById("libraryBtn").onclick = () => {
+      libraryPopup.style.display = libraryPopup.style.display === "block" ? "none" : "block";
+    };
+
+    pdfList.onclick = async (e) => {
+      if (e.target.tagName === "LI") {
+        const selected = fileHandles.find(f => f.name === e.target.textContent);
+        if (selected) {
+          location.reload();
+        }
+      }
+    };
+
+    document.getElementById("outlineBtn").onclick = async () => {
+      if (!pdfDoc) return;
+      const outline = await pdfDoc.getOutline();
+      alert(outline.map(item => item.title).join("\n") || "No outline found.");
+    };
+
+    document.addEventListener("keydown", e => {
+      if (pageMode === "page") {
+        if (e.key === "ArrowRight" && currentPage < totalPages) {
+          currentPage++; renderPage(currentPage);
+        } else if (e.key === "ArrowLeft" && currentPage > 1) {
+          currentPage--; renderPage(currentPage);
+        }
+      }
     });
 
-    pageSlider.oninput = (e) => {
-      pageNum = parseInt(e.target.value);
-      pageNumDisplay.textContent = `Page ${pageNum}`;
-      renderPage(pageNum);
-    };
+    selectFolderOrFile();
   </script></body>
 </html>
