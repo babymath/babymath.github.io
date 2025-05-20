@@ -4,26 +4,81 @@
   <meta charset="UTF-8" />
   <title>PDF Reader</title>
   <style>
-    body { margin: 0; background: #121212; color: white; font-family: sans-serif; overflow: hidden; }
-    canvas { display: block; margin: auto; background: white; }
-    #menuBtn {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: #333; color: white; border: none; border-radius: 50%; width: 40px; height: 40px;
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      color: white;
+      font-family: sans-serif;
+      height: 100%;
+      width: 100%;
     }
-    #menu {
-      position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
-      background: #222; padding: 10px; border-radius: 8px; display: none;
-    }
-    #menu button { margin: 5px 0; width: 200px; background: #444; color: white; border: none; padding: 8px; border-radius: 4px; }
-    #sliderContainer {
-      position: fixed; bottom: 10px; left: 10%; right: 10%; display: none;
-    }
-    #pageNum {
-      position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
-      background: black; padding: 5px 10px; border-radius: 4px; display: none;
+    #pdfCanvas {
+      display: block;
+      margin: auto;
+      background: #fff;
+      max-width: 100%;
+      max-height: 100%;
     }
     #fileInput {
-      position: fixed; top: 10px; left: 10px;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+    }
+    #menuBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      z-index: 10;
+    }
+    #menu {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      z-index: 10;
+    }
+    #menu button {
+      margin: 5px 0;
+      width: 200px;
+      background: #444;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    #sliderContainer {
+      position: fixed;
+      bottom: 70px;
+      left: 10%;
+      right: 10%;
+      display: none;
+      z-index: 10;
+    }
+    #pageNum {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: none;
+      z-index: 10;
     }
   </style>
 </head>
@@ -58,31 +113,35 @@
     let totalPages = 0;
     let renderMode = "page";
 
-    const renderPage = (num) => {
+    function renderPage(num) {
       pdfDoc.getPage(num).then(page => {
         const viewport = page.getViewport({ scale: 1.5 });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         page.render({ canvasContext: ctx, viewport });
         pageSlider.value = num;
-        pageNum.textContent = `Page ${num}`;
+        pageNum.textContent = `Page ${num} / ${totalPages}`;
         pageNum.style.display = "block";
         setTimeout(() => pageNum.style.display = "none", 1000);
       });
-    };
+    }
 
     fileInput.addEventListener("change", async (e) => {
       const file = e.target.files[0];
+      if (!file) return;
       const url = URL.createObjectURL(file);
       pdfDoc = await pdfjsLib.getDocument(url).promise;
       totalPages = pdfDoc.numPages;
       pageSlider.max = totalPages;
+      currentPage = 1;
+      renderMode = "page";
+      sliderContainer.style.display = "block";
       renderPage(currentPage);
     });
 
     menuBtn.onclick = () => {
       menu.style.display = menu.style.display === "block" ? "none" : "block";
-      sliderContainer.style.display = menu.style.display;
+      sliderContainer.style.display = menu.style.display === "block" && renderMode === "page" ? "block" : "none";
     };
 
     pageSlider.oninput = () => {
@@ -92,8 +151,12 @@
 
     document.getElementById("scrollBtn").onclick = async () => {
       renderMode = "scroll";
-      document.body.innerHTML = "";
-      for (let i = 1; i <= pdfDoc.numPages; i++) {
+      menu.style.display = "none";
+      sliderContainer.style.display = "none";
+      canvas.style.display = "none";
+      document.querySelectorAll("canvas").forEach((c, i) => i > 0 && c.remove());
+
+      for (let i = 1; i <= totalPages; i++) {
         const page = await pdfDoc.getPage(i);
         const viewport = page.getViewport({ scale: 1.5 });
         const c = document.createElement("canvas");
@@ -105,12 +168,12 @@
     };
 
     document.getElementById("pageBtn").onclick = () => {
-      location.reload();
+      location.reload(); // Resets to page mode
     };
 
     document.getElementById("outlineBtn").onclick = async () => {
       const outline = await pdfDoc.getOutline();
-      alert(outline.map(item => item.title).join('\\n') || \"No outline found\");
+      alert(outline?.map(item => item.title).join("\n") || "No outline found.");
     };
   </script>
 </body>
