@@ -25,110 +25,128 @@
     }
     h1 { font-size: 22px; margin-bottom: 10px; }
     #question { font-size: 20px; margin: 15px 0; }
-    input, select, button {
+    input {
       padding: 10px;
       margin: 8px;
       font-size: 16px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      width: 80%;
+      text-align: center;
     }
-    button {
-      background: #66a6ff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover { background: #4a90e2; }
     #feedback { font-weight: bold; margin-top: 10px; }
+    #score {
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Alphabet Quiz</h1>
-    <label for="mode">Choose Mode:</label>
-    <select id="mode">
-      <option value="A2P">Alphabet → Position</option>
-      <option value="P2A">Position → Alphabet</option>
-      <option value="P2AR">Position → Alphabet (Reverse)</option>
-      <option value="ADD_SUB">Addition / Subtraction</option>
-    </select>
-    <div id="question">Press Start!</div>
+    <div id="question">Loading...</div>
     <input type="text" id="answer" placeholder="Your answer">
-    <button onclick="checkAnswer()">Submit</button>
-    <button onclick="nextQuestion()">Next</button>
     <div id="feedback"></div>
+    <div id="score">✅ 0 | ❌ 0</div>
   </div>
 
   <script>
     const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     let current = {};
+    let correctCount = 0;
+    let wrongCount = 0;
 
-    function getPos(letter){
-      return alphabets.indexOf(letter.toUpperCase())+1;
+    function getPos(letter){ return alphabets.indexOf(letter.toUpperCase())+1; }
+    function getLetter(pos){ return alphabets[(pos-1+26)%26]; }
+    function getLetterReverse(pos){ return alphabets[(26-pos+26)%26]; }
+
+    function randomMode(){
+      const modes = ["A2P","P2A","P2AR","ADD_SUB"];
+      return modes[Math.floor(Math.random()*modes.length)];
     }
-    function getLetter(pos){
-      return alphabets[(pos-1+26)%26];
+
+    function updateScore(){
+      document.getElementById("score").innerText = `✅ ${correctCount} | ❌ ${wrongCount}`;
     }
-    function getLetterReverse(pos){
-      return alphabets[(26-pos+26)%26];
+
+    function focusInput(){
+      const input = document.getElementById("answer");
+      input.focus();
+      input.value = "";
     }
 
     function nextQuestion(){
-      const mode = document.getElementById("mode").value;
+      const mode = randomMode();
       let q="", expect="";
 
-      if(mode==="A2P"){ // Alphabet → Position
+      if(mode==="A2P"){
         const letter = alphabets[Math.floor(Math.random()*26)];
         q = `What is the position of '${letter}'?`;
         expect = String(getPos(letter));
       }
-      else if(mode==="P2A"){ // Position → Alphabet
+      else if(mode==="P2A"){
         const pos = Math.floor(Math.random()*26)+1;
         q = `Which alphabet is at position ${pos}?`;
         expect = getLetter(pos);
       }
-      else if(mode==="P2AR"){ // Position → Alphabet Reverse
+      else if(mode==="P2AR"){
         const pos = Math.floor(Math.random()*26)+1;
         q = `Which alphabet is at reverse position ${pos}? (Z=1, A=26)`;
         expect = getLetterReverse(pos);
       }
-      else if(mode==="ADD_SUB"){ // Addition/Subtraction
-        if(Math.random()<0.5){ // Letter ± Number
+      else if(mode==="ADD_SUB"){
+        if(Math.random()<0.5){
           const letter = alphabets[Math.floor(Math.random()*26)];
           const num = Math.floor(Math.random()*25)+1;
           const op = Math.random()<0.5 ? "+" : "-";
           q = `${letter} ${op} ${num} = ?`;
           let pos = getPos(letter);
-          if(op==="+") pos += num; else pos -= num;
+          pos = op==="+" ? pos+num : pos-num;
           expect = getLetter(((pos-1)%26+26)%26+1);
-        } else { // Letter ± Letter
+        } else {
           const l1 = alphabets[Math.floor(Math.random()*26)];
           const l2 = alphabets[Math.floor(Math.random()*26)];
           const op = Math.random()<0.5 ? "+" : "-";
           q = `${l1} ${op} ${l2} = ?`;
           let p1 = getPos(l1), p2 = getPos(l2), pos;
-          if(op==="+") pos = p1+p2; else pos = p1-p2;
+          pos = op==="+" ? p1+p2 : p1-p2;
           expect = getLetter(((pos-1)%26+26)%26+1);
         }
       }
 
       current = {expect};
       document.getElementById("question").innerText = q;
-      document.getElementById("answer").value = "";
       document.getElementById("feedback").innerText = "";
+      focusInput();
     }
 
     function checkAnswer(){
       const ans = document.getElementById("answer").value.trim().toUpperCase();
       const correct = current.expect.toUpperCase();
       if(ans===correct){
+        correctCount++;
         document.getElementById("feedback").innerText = "✅ Correct!";
         document.getElementById("feedback").style.color = "green";
+        updateScore();
+        setTimeout(nextQuestion, 800);
       } else {
-        document.getElementById("feedback").innerText = `❌ Wrong! Correct: ${correct}`;
+        wrongCount++;
+        document.getElementById("feedback").innerText = "❌ Wrong!";
         document.getElementById("feedback").style.color = "red";
+        updateScore();
+        focusInput();
       }
     }
+
+    // Enter key submit
+    document.addEventListener("keydown", e => {
+      if(e.key==="Enter") checkAnswer();
+    });
+
+    // Start game automatically
+    window.onload = nextQuestion;
   </script>
 </body>
 </html>
