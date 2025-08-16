@@ -4,172 +4,137 @@
   <meta charset="UTF-8">
   <title>Alphabet Game</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: linear-gradient(135deg, #89f7fe, #66a6ff);
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+    body { 
+      font-family: Arial, sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      background: #f2f2f2; 
+      margin: 0; 
     }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      max-width: 400px;
-      width: 90%;
+    .game-box { 
+      background: #fff; 
+      padding: 25px; 
+      border-radius: 15px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+      text-align: center; 
+      width: 360px; 
     }
-    h1 { font-size: 22px; margin-bottom: 10px; }
-    #question { font-size: 20px; margin: 15px 0; }
-    input {
-      padding: 10px;
-      margin: 8px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 80%;
-      text-align: center;
-    }
-    #feedback { font-weight: bold; margin-top: 10px; }
-    #score {
-      margin-top: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-    }
-    .modes button {
-      margin: 4px;
-      padding: 8px 16px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      background: #66a6ff;
-      color: white;
-      cursor: pointer;
-    }
-    .modes button.active {
-      background: #0056d6;
-    }
+    h1 { font-size: 22px; margin-bottom: 20px; color: #333; }
+    .question { font-size: 20px; margin: 20px 0; font-weight: bold; color: #444; }
+    input { padding: 10px; font-size: 18px; width: 200px; border: 2px solid #ddd; border-radius: 8px; text-align: center; }
+    .feedback { margin-top: 15px; font-size: 18px; height: 24px; }
+    .correct { color: green; font-weight: bold; }
+    .wrong { color: red; font-weight: bold; }
+    select { margin-top: 15px; padding: 8px; font-size: 16px; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Alphabet Quiz</h1>
-    <div class="modes">
-      <button onclick="setMode('A2P')">Alphabet → Position</button>
-      <button onclick="setMode('P2A')">Position → Alphabet</button>
-      <button onclick="setMode('P2AR')">Reverse Position</button>
-      <button onclick="setMode('ADD_SUB')">Add / Sub</button>
-      <button onclick="setMode('RANDOM')">Random</button>
-    </div>
-    <div id="question">Select a mode to start!</div>
-    <input type="text" id="answer" placeholder="Your answer">
-    <div id="feedback"></div>
-    <div id="score">✅ 0 | ❌ 0</div>
+  <div class="game-box">
+    <h1>Alphabet Game</h1>
+    <select id="mode" title="Game Mode">
+      <option value="L2P">Alphabet → Position</option>
+      <option value="P2L">Position → Alphabet</option>
+      <option value="P2LR">Position → Alphabet (Reverse)</option>
+      <option value="ADD_SUB">Addition / Subtraction</option>
+    </select>
+    <div class="question" id="question"></div>
+    <input type="text" id="answer" autocomplete="off" placeholder="Type answer">
+    <div class="feedback" id="feedback"></div>
   </div>
 
   <script>
-    const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    let current = {};
-    let correctCount = 0;
-    let wrongCount = 0;
-    let mode = null;
+    const qBox = document.getElementById("question");
+    const aBox = document.getElementById("answer");
+    const feedback = document.getElementById("feedback");
+    const modeSel = document.getElementById("mode");
 
-    function getPos(letter){ return alphabets.indexOf(letter.toUpperCase())+1; }
-    function getLetter(pos){ return alphabets[(pos-1+26)%26]; }
-    function getLetterReverse(pos){ return alphabets[(26-pos+26)%26]; }
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-    function setMode(m){
-      mode = m;
-      document.querySelectorAll(".modes button").forEach(b => b.classList.remove("active"));
-      event.target.classList.add("active");
-      nextQuestion();
+    function posToLetter(pos) {
+      return letters[(pos - 1 + 26) % 26];
+    }
+    function letterToPos(l) {
+      return l.toUpperCase().charCodeAt(0) - 64;
     }
 
-    function updateScore(){
-      document.getElementById("score").innerText = `✅ ${correctCount} | ❌ ${wrongCount}`;
-    }
+    function nextQuestion() {
+      const mode = modeSel.value;
+      let q, expect;
 
-    function focusInput(){
-      const input = document.getElementById("answer");
-      input.focus();
-      input.value = "";
-    }
+      if (mode === "L2P") {
+        const letter = letters[Math.floor(Math.random() * 26)];
+        q = `Position of ${letter}`;
+        expect = letterToPos(letter).toString();
 
-    function nextQuestion(){
-      if(!mode) return;
-      let q="", expect="";
+      } else if (mode === "P2L") {
+        const pos = Math.floor(Math.random() * 26) + 1;
+        q = `Alphabet at position ${pos}`;
+        expect = posToLetter(pos);
 
-      let m = (mode==="RANDOM") ? ["A2P","P2A","P2AR","ADD_SUB"][Math.floor(Math.random()*4)] : mode;
+      } else if (mode === "P2LR") {
+        const pos = Math.floor(Math.random() * 26) + 1;
+        q = `Alphabet at reverse position ${pos}`;
+        expect = posToLetter(27 - pos);
 
-      if(m==="A2P"){
-        const letter = alphabets[Math.floor(Math.random()*26)];
-        q = `What is the position of '${letter}'?`;
-        expect = String(getPos(letter));
-      }
-      else if(m==="P2A"){
-        const pos = Math.floor(Math.random()*26)+1;
-        q = `Which alphabet is at position ${pos}?`;
-        expect = getLetter(pos);
-      }
-      else if(m==="P2AR"){
-        const pos = Math.floor(Math.random()*26)+1;
-        q = `Which alphabet is at reverse position ${pos}? (Z=1, A=26)`;
-        expect = getLetterReverse(pos);
-      }
-      else if(m==="ADD_SUB"){
-        if(Math.random()<0.5){
-          const letter = alphabets[Math.floor(Math.random()*26)];
-          const num = Math.floor(Math.random()*25)+1;
-          const op = Math.random()<0.5 ? "+" : "-";
-          q = `${letter} ${op} ${num} = ?`;
-          let pos = getPos(letter);
-          pos = op==="+" ? pos+num : pos-num;
-          expect = getLetter(((pos-1)%26+26)%26+1);
+      } else if (mode === "ADD_SUB") {
+        if (Math.random() < 0.5) {
+          // Letter + Number
+          const letter = letters[Math.floor(Math.random() * 26)];
+          const shift = Math.floor(Math.random() * 25) + 1;
+          q = `${letter} + ${shift}`;
+          expect = posToLetter(letterToPos(letter) + shift);
+
+        } else if (Math.random() < 0.5) {
+          // Letter + Letter
+          const l1 = letters[Math.floor(Math.random() * 26)];
+          const l2 = letters[Math.floor(Math.random() * 26)];
+          q = `${l1} + ${l2}`;
+          expect = posToLetter(letterToPos(l1) + letterToPos(l2));
+
         } else {
-          const l1 = alphabets[Math.floor(Math.random()*26)];
-          const l2 = alphabets[Math.floor(Math.random()*26)];
-          const op = Math.random()<0.5 ? "+" : "-";
-          q = `${l1} ${op} ${l2} = ?`;
-          let p1 = getPos(l1), p2 = getPos(l2), pos;
-          pos = op==="+" ? p1+p2 : p1-p2;
-          expect = getLetter(((pos-1)%26+26)%26+1);
+          // Letter - Letter (ensure first >= second)
+          let p1 = Math.floor(Math.random() * 26) + 1;
+          let p2 = Math.floor(Math.random() * 26) + 1;
+          if (p1 < p2) [p1, p2] = [p2, p1]; // swap
+          const l1 = posToLetter(p1);
+          const l2 = posToLetter(p2);
+          q = `${l1} - ${l2}`;
+          expect = posToLetter(p1 - p2 || 26); // wrap, non-zero
         }
       }
 
-      current = {expect};
-      document.getElementById("question").innerText = q;
-      document.getElementById("feedback").innerText = "";
-      focusInput();
+      qBox.textContent = q;
+      qBox.dataset.answer = expect.toUpperCase();
+      aBox.value = "";
+      aBox.focus();
     }
 
-    function checkAnswer(){
-      const ans = document.getElementById("answer").value.trim().toUpperCase();
-      const correct = current.expect.toUpperCase();
-      if(ans===correct){
-        correctCount++;
-        document.getElementById("feedback").innerText = "✅ Correct!";
-        document.getElementById("feedback").style.color = "green";
-        updateScore();
-        setTimeout(nextQuestion, 800);
-      } else {
-        wrongCount++;
-        document.getElementById("feedback").innerText = "❌ Wrong!";
-        document.getElementById("feedback").style.color = "red";
-        updateScore();
-        focusInput();
+    aBox.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        const userAns = aBox.value.trim().toUpperCase();
+        const correct = qBox.dataset.answer;
+        if (userAns === correct) {
+          feedback.textContent = "✅ Correct!";
+          feedback.className = "feedback correct";
+          setTimeout(() => {
+            feedback.textContent = "";
+            nextQuestion();
+          }, 700);
+        } else {
+          feedback.textContent = "❌ Wrong!";
+          feedback.className = "feedback wrong";
+        }
       }
-    }
-
-    // Enter key submit
-    document.addEventListener("keydown", e => {
-      if(e.key==="Enter") checkAnswer();
     });
 
+    modeSel.addEventListener("change", nextQuestion);
+
+    // start random mode
+    const modes = ["L2P", "P2L", "P2LR", "ADD_SUB"];
+    modeSel.value = modes[Math.floor(Math.random() * modes.length)];
+    nextQuestion();
   </script>
 </body>
 </html>
