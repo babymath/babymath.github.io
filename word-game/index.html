@@ -1,140 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Alphabet Game</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      background: #f2f2f2; 
-      margin: 0; 
-    }
-    .game-box { 
-      background: #fff; 
-      padding: 25px; 
-      border-radius: 15px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-      text-align: center; 
-      width: 360px; 
-    }
-    h1 { font-size: 22px; margin-bottom: 20px; color: #333; }
-    .question { font-size: 20px; margin: 20px 0; font-weight: bold; color: #444; }
-    input { padding: 10px; font-size: 18px; width: 200px; border: 2px solid #ddd; border-radius: 8px; text-align: center; }
-    .feedback { margin-top: 15px; font-size: 18px; height: 24px; }
-    .correct { color: green; font-weight: bold; }
-    .wrong { color: red; font-weight: bold; }
-    select { margin-top: 15px; padding: 8px; font-size: 16px; border-radius: 8px; }
-  </style>
+<meta charset="UTF-8">
+<title>Alphabet Game</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; margin: 30px; }
+  .game-box { max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  h2 { margin-bottom: 10px; }
+  .question { font-size: 26px; margin: 20px 0; font-weight: bold; }
+  input { font-size: 20px; padding: 6px; width: 160px; text-align: center; }
+  select { font-size: 18px; padding: 6px; }
+  .stats { margin-top: 15px; font-size: 18px; }
+  .result { font-size: 22px; font-weight: bold; margin-top: 20px; }
+</style>
 </head>
 <body>
-  <div class="game-box">
-    <h1>Alphabet Game</h1>
-    <select id="mode" title="Game Mode">
+
+<div class="game-box">
+  <h2>Alphabet Quiz Game</h2>
+  <label>Mode: 
+    <select id="mode">
       <option value="L2P">Alphabet → Position</option>
       <option value="P2L">Position → Alphabet</option>
       <option value="P2LR">Position → Alphabet (Reverse)</option>
-      <option value="ADD_SUB">Addition / Subtraction</option>
+      <option value="ADD">Addition / Subtraction</option>
     </select>
-    <div class="question" id="question"></div>
-    <input type="text" id="answer" autocomplete="off" placeholder="Type answer">
-    <div class="feedback" id="feedback"></div>
+  </label>
+  <div class="question" id="question"></div>
+  <input id="answer" type="text" autocomplete="off" placeholder="Your answer">
+  <div class="stats">
+    Correct: <span id="correct">0</span> | 
+    Incorrect: <span id="incorrect">0</span> | 
+    Time: <span id="time">59</span>s
   </div>
+  <div class="result" id="result"></div>
+</div>
 
-  <script>
-    const qBox = document.getElementById("question");
-    const aBox = document.getElementById("answer");
-    const feedback = document.getElementById("feedback");
-    const modeSel = document.getElementById("mode");
+<script>
+const qBox = document.getElementById("question");
+const ansInput = document.getElementById("answer");
+const modeSel = document.getElementById("mode");
+const correctEl = document.getElementById("correct");
+const incorrectEl = document.getElementById("incorrect");
+const timeEl = document.getElementById("time");
+const resultEl = document.getElementById("result");
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+let correct = 0, incorrect = 0, timer = 59, interval;
+let current = {};
 
-    function posToLetter(pos) {
-      return letters[(pos - 1 + 26) % 26];
-    }
-    function letterToPos(l) {
-      return l.toUpperCase().charCodeAt(0) - 64;
-    }
+function letterToPos(ch){ return ch.toUpperCase().charCodeAt(0) - 64; }
+function posToLetter(p){ return String.fromCharCode(64 + ((p-1)%26 + 1)); }
+function posToLetterRev(p){ return String.fromCharCode(91 - ((p-1)%26 + 1)); }
 
-    function nextQuestion() {
-      const mode = modeSel.value;
-      let q, expect;
-
-      if (mode === "L2P") {
-        const letter = letters[Math.floor(Math.random() * 26)];
-        q = `Position of ${letter}`;
-        expect = letterToPos(letter).toString();
-
-      } else if (mode === "P2L") {
-        const pos = Math.floor(Math.random() * 26) + 1;
-        q = `Alphabet at position ${pos}`;
-        expect = posToLetter(pos);
-
-      } else if (mode === "P2LR") {
-        const pos = Math.floor(Math.random() * 26) + 1;
-        q = `Alphabet at reverse position ${pos}`;
-        expect = posToLetter(27 - pos);
-
-      } else if (mode === "ADD_SUB") {
-        if (Math.random() < 0.5) {
-          // Letter + Number
-          const letter = letters[Math.floor(Math.random() * 26)];
-          const shift = Math.floor(Math.random() * 25) + 1;
-          q = `${letter} + ${shift}`;
-          expect = posToLetter(letterToPos(letter) + shift);
-
-        } else if (Math.random() < 0.5) {
-          // Letter + Letter
-          const l1 = letters[Math.floor(Math.random() * 26)];
-          const l2 = letters[Math.floor(Math.random() * 26)];
-          q = `${l1} + ${l2}`;
-          expect = posToLetter(letterToPos(l1) + letterToPos(l2));
-
-        } else {
-          // Letter - Letter (ensure first >= second)
-          let p1 = Math.floor(Math.random() * 26) + 1;
-          let p2 = Math.floor(Math.random() * 26) + 1;
-          if (p1 < p2) [p1, p2] = [p2, p1]; // swap
-          const l1 = posToLetter(p1);
-          const l2 = posToLetter(p2);
-          q = `${l1} - ${l2}`;
-          expect = posToLetter(p1 - p2 || 26); // wrap, non-zero
-        }
+function newQuestion(){
+  let mode = modeSel.value;
+  let q="", a="";
+  
+  if(mode==="L2P"){ // Alphabet -> Position
+    let letter = posToLetter(Math.floor(Math.random()*26)+1);
+    q = `Position of ${letter}?`;
+    a = String(letterToPos(letter));
+  }
+  else if(mode==="P2L"){ // Position -> Alphabet
+    let pos = Math.floor(Math.random()*26)+1;
+    q = `Alphabet at ${pos}?`;
+    a = posToLetter(pos);
+  }
+  else if(mode==="P2LR"){ // Reverse
+    let pos = Math.floor(Math.random()*26)+1;
+    q = `Alphabet at ${pos} (Reverse)?`;
+    a = posToLetterRev(pos);
+  }
+  else if(mode==="ADD"){ // Addition/Subtraction
+    if(Math.random()<0.5){ // Letter + Number
+      let letter = posToLetter(Math.floor(Math.random()*26)+1);
+      let shift = Math.floor(Math.random()*25)+1;
+      q = `${letter} + ${shift} = ?`;
+      a = posToLetter(letterToPos(letter)+shift);
+    } else { // Letter +/- Letter
+      let p1 = Math.floor(Math.random()*26)+1;
+      let p2 = Math.floor(Math.random()*26)+1;
+      if(p1 < p2){ [p1,p2] = [p2,p1]; }
+      if(Math.random()<0.5){
+        q = `${posToLetter(p1)} + ${posToLetter(p2)} = ?`;
+        a = posToLetter(p1+p2);
+      } else {
+        q = `${posToLetter(p1)} - ${posToLetter(p2)} = ?`;
+        a = posToLetter(p1-p2);
       }
-
-      qBox.textContent = q;
-      qBox.dataset.answer = expect.toUpperCase();
-      aBox.value = "";
-      aBox.focus();
     }
+  }
 
-    aBox.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const userAns = aBox.value.trim().toUpperCase();
-        const correct = qBox.dataset.answer;
-        if (userAns === correct) {
-          feedback.textContent = "✅ Correct!";
-          feedback.className = "feedback correct";
-          setTimeout(() => {
-            feedback.textContent = "";
-            nextQuestion();
-          }, 700);
-        } else {
-          feedback.textContent = "❌ Wrong!";
-          feedback.className = "feedback wrong";
-        }
-      }
-    });
+  current = {q, a};
+  qBox.textContent = q;
+  ansInput.value="";
+  ansInput.focus();
+}
 
-    modeSel.addEventListener("change", nextQuestion);
+function checkAnswer(){
+  if(!current.q) return;
+  let user = ansInput.value.trim().toUpperCase();
+  if(user === current.a.toUpperCase()){
+    correct++;
+    correctEl.textContent = correct;
+    newQuestion();
+  } else {
+    incorrect++;
+    incorrectEl.textContent = incorrect;
+    ansInput.value="";
+    ansInput.focus();
+  }
+}
 
-    // start random mode
-    const modes = ["L2P", "P2L", "P2LR", "ADD_SUB"];
-    modeSel.value = modes[Math.floor(Math.random() * modes.length)];
-    nextQuestion();
-  </script>
+ansInput.addEventListener("keydown", e=>{
+  if(e.key==="Enter"){ checkAnswer(); }
+});
+
+function startGame(){
+  correct=0; incorrect=0; timer=59;
+  correctEl.textContent=0;
+  incorrectEl.textContent=0;
+  resultEl.textContent="";
+  newQuestion();
+  interval = setInterval(()=>{
+    timer--;
+    timeEl.textContent = timer;
+    if(timer<=0){
+      clearInterval(interval);
+      qBox.textContent="Time Over!";
+      ansInput.disabled = true;
+      resultEl.textContent = `✅ Correct: ${correct} | ❌ Incorrect: ${incorrect} | Total: ${correct+incorrect}`;
+    }
+  },1000);
+}
+
+modeSel.addEventListener("change", startGame);
+window.onload = startGame;
+</script>
+
 </body>
 </html>
