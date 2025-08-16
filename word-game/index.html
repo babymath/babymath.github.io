@@ -1,179 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Alphabet Game</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-    #question { font-size: 28px; margin: 20px 0; }
-    #message { font-size: 20px; margin: 10px; height: 24px; }
-    #scoreBoard { margin-top: 15px; font-size: 18px; }
-    select, input { padding: 8px; font-size: 16px; margin: 5px; }
-    #timer { font-size: 22px; margin: 15px; }
-    #timeup { font-size: 26px; color: red; margin-top: 15px; display: none; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Alphabet Game</title>
+<style>
+  :root{
+    --bg:#f6f8fc; --card:#fff; --pri:#2563eb; --mut:#64748b; --good:#16a34a; --bad:#ef4444;
+  }
+  body{margin:0;background:var(--bg);font-family:system-ui,Segoe UI,Arial,sans-serif;color:#0f172a;}
+  .wrap{max-width:420px;margin:18px auto;padding:12px;}
+  .card{background:var(--card);border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:14px;}
+  h1{font-size:18px;margin:6px 0 10px;text-align:center;color:#1e293b;font-weight:700}
+  .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0}
+  select, input{width:100%;font-size:14px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;outline:none}
+  #question{margin:10px 0;padding:10px 12px;border:1.5px solid var(--pri);border-radius:10px;
+            background:#eff6ff;color:var(--pri);font-weight:700;font-size:18px;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center}
+  #feedback{min-height:20px;margin:6px 0 2px;font-size:14px;font-weight:700}
+  #feedback.good{color:var(--good)} #feedback.bad{color:var(--bad)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+  .stat{background:#f1f5f9;border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;color:var(--mut)}
+  .stat b{display:block;color:#0f172a;font-size:14px;margin-top:2px}
+  .hs{margin-top:8px;font-size:12px;color:#475569;text-align:center}
+  #timeup{margin-top:8px;text-align:center;color:var(--bad);font-weight:800;font-size:16px;min-height:18px}
+</style>
 </head>
 <body>
-  <h1>Alphabet Game</h1>
+  <div class="wrap">
+    <div class="card">
+      <h1>Alphabet Game</h1>
 
-  <label for="mode">Select Mode:</label>
-  <select id="mode">
-    <option value="MIX" selected>Mix</option>
-    <option value="L2P">Alphabet → Position</option>
-    <option value="P2L">Position → Alphabet</option>
-    <option value="P2LR">Position → Alphabet (Reverse)</option>
-    <option value="ADD">Addition / Subtraction</option>
-  </select>
+      <div class="row">
+        <select id="mode">
+          <option value="MIX" selected>Mix</option>
+          <option value="A2P">Alphabet → Position</option>
+          <option value="P2A">Position → Alphabet</option>
+          <option value="P2AR">Position → Alphabet (Reverse)</option>
+          <option value="ADD">Addition / Subtraction</option>
+        </select>
+      </div>
 
-  <div id="timer">⏳ Time: 59</div>
-  <div id="question"></div>
+      <div id="question">Loading…</div>
 
-  <input type="text" id="answer" autocomplete="off" placeholder="Type answer" />
-  <div id="message"></div>
+      <div class="row">
+        <input id="answer" type="text" placeholder="Type answer & press Enter" autocomplete="off" />
+      </div>
 
-  <div id="scoreBoard">
-    ✅ Correct: <span id="correct">0</span> |
-    ❌ Wrong: <span id="wrong">0</span> |
-    ⭐ Score: <span id="score">0</span><br>
-    🏆 High Score: <span id="highscore">0</span>
+      <div id="feedback"></div>
+
+      <div class="stats">
+        <div class="stat">Correct<b id="correct">0</b></div>
+        <div class="stat">Wrong<b id="wrong">0</b></div>
+        <div class="stat">Score<b id="score">0</b></div>
+        <div class="stat">Time<b id="timer">59</b></div>
+      </div>
+
+      <div class="hs">🏆 High Score (<span id="modeName">Mix</span>): <b id="highscore">0</b></div>
+      <div id="timeup"></div>
+    </div>
   </div>
 
-  <div id="timeup">⏳ Time's up!</div>
-
 <script>
-const qDiv = document.getElementById("question");
-const ansInput = document.getElementById("answer");
-const msgDiv = document.getElementById("message");
-const correctSpan = document.getElementById("correct");
-const wrongSpan = document.getElementById("wrong");
-const scoreSpan = document.getElementById("score");
-const highscoreSpan = document.getElementById("highscore");
-const modeSel = document.getElementById("mode");
-const timerDiv = document.getElementById("timer");
-const timeupDiv = document.getElementById("timeup");
+(function(){
+  // === Helpers ===
+  const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const $ = id => document.getElementById(id);
+  const rand = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
+  const pos = l => l.toUpperCase().charCodeAt(0)-64;                // A=1..Z=26
+  const wrapPos = n => ((n-1)%26+26)%26 + 1;                         // -> 1..26
+  const toLetter = p => String.fromCharCode(64+wrapPos(p));          // -> A..Z
+  const revLetter = p => String.fromCharCode(90 - ((p-1)%26));       // p=1->Z
 
-let correct = 0, wrong = 0, score = 0;
-let current = {};
-let time = 59;
-let timer;
-let mode = "MIX";
+  // === State ===
+  let mode = "MIX";
+  let expect = "";              // expected answer (string)
+  let correct = 0, wrong = 0, score = 0;
+  let t = 59, timerId = null;
 
-const highscores = JSON.parse(localStorage.getItem("alphaHighScores") || "{}");
+  // === Highscores (per mode) ===
+  const hsKey = m => `hs_${m}`;
+  const getHS = m => +localStorage.getItem(hsKey(m)) || 0;
+  const setHS = (m,val)=> localStorage.setItem(hsKey(m), val);
 
-function saveHighScore() {
-  if (!highscores[mode] || score > highscores[mode]) {
-    highscores[mode] = score;
-    localStorage.setItem("alphaHighScores", JSON.stringify(highscores));
+  const ui = {
+    mode: $("mode"), q: $("question"), ans: $("answer"),
+    fb: $("feedback"), ok: $("correct"), bad: $("wrong"),
+    sc: $("score"), tm: $("timer"), hs: $("highscore"),
+    modeName: $("modeName"), timeup: $("timeup")
+  };
+
+  // === Question generation ===
+  function newQuestion(){
+    ui.fb.textContent = ""; ui.fb.className = "";
+    let kind = mode;
+    if(kind === "MIX"){
+      const pool = ["A2P","P2A","P2AR","ADD"];
+      kind = pool[rand(0, pool.length-1)];
+    }
+
+    let q="", ans="";
+    if(kind === "A2P"){
+      const L = A[rand(0,25)];
+      q = `What is the position of letter "${L}"?`;
+      ans = String(pos(L));
+    } else if(kind === "P2A"){
+      const p = rand(1,26);
+      q = `Which letter is at position ${p}?`;
+      ans = toLetter(p);
+    } else if(kind === "P2AR"){
+      const p = rand(1,26);
+      q = `Which letter is at reverse position ${p}? (Z=1)`;
+      ans = revLetter(p);
+    } else if(kind === "ADD"){
+      if(Math.random() < 0.5){
+        // Letter ± Number
+        const L = A[rand(0,25)];
+        const n = rand(1,25);
+        if(Math.random() < 0.5){
+          q = `What is "${L} + ${n}"?`;
+          ans = toLetter(pos(L)+n);
+        }else{
+          q = `What is "${L} - ${n}"?`;
+          ans = toLetter(pos(L)-n);
+        }
+      }else{
+        // Letter ± Letter (subtraction: first must be bigger)
+        let a = rand(1,26), b = rand(1,26);
+        if(a<=b){ a = Math.max(a,b); b = rand(1, a-1); } // ensure a>b
+        const L1 = toLetter(a), L2 = toLetter(b);
+        if(Math.random()<0.5){
+          q = `What is "${L1} + ${L2}"?`;
+          ans = toLetter(a+b);
+        }else{
+          q = `What is "${L1} - ${L2}"?`;
+          ans = toLetter(a-b); // if a==b would map to Z, but we ensured a>b
+        }
+      }
+    }
+    expect = ans.toUpperCase();
+    ui.q.textContent = q;
+    ui.ans.value = ""; ui.ans.focus();
   }
-}
 
-function getHighScore(m) {
-  return highscores[m] || 0;
-}
+  // === Answer check ===
+  function check(){
+    if(ui.ans.disabled) return;
+    const val = ui.ans.value.trim().toUpperCase();
+    if(!val) return;
 
-function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function letterAt(n){return String.fromCharCode(64+n);}
-function posOf(ch){return ch.toUpperCase().charCodeAt(0)-64;}
-
-function newQuestion(){
-  msgDiv.textContent="";
-  let m = mode;
-  if(m==="MIX"){
-    const arr=["L2P","P2L","P2LR","ADD"];
-    m = arr[randInt(0,arr.length-1)];
-  }
-  if(m==="L2P"){
-    let l=letterAt(randInt(1,26));
-    qDiv.textContent=`Position of ${l}?`;
-    current.answer=posOf(l).toString();
-  } else if(m==="P2L"){
-    let p=randInt(1,26);
-    qDiv.textContent=`Alphabet at position ${p}?`;
-    current.answer=letterAt(p).toUpperCase();
-  } else if(m==="P2LR"){
-    let p=randInt(1,26);
-    qDiv.textContent=`Alphabet at reverse position ${p}?`;
-    current.answer=letterAt(27-p).toUpperCase();
-  } else if(m==="ADD"){
-    if(Math.random()<0.5){
-      // letter ± number
-      let l=letterAt(randInt(1,26));
-      let n=randInt(1,25);
-      let op=Math.random()<0.5?"+":"-";
-      let res=posOf(l)+(op==="+"?n:-n);
-      while(res<1)res+=26; while(res>26)res-=26;
-      qDiv.textContent=`${l} ${op} ${n} = ?`;
-      current.answer=letterAt(res);
+    if(val === expect){
+      correct++; score = 3*correct - wrong;
+      ui.fb.textContent = "✅ Correct"; ui.fb.className = "good";
+      // Auto next ONLY on correct
+      newQuestion();
     }else{
-      // letter ± letter (subtraction always bigger - smaller)
-      let a=randInt(1,26), b=randInt(1,26);
-      if(a<b)[a,b]=[b,a];
-      let op=Math.random()<0.5?"+":"-";
-      let res=op==="+"?a+b:a-b;
-      while(res<1)res+=26; while(res>26)res-=26;
-      qDiv.textContent=`${letterAt(a)} ${op} ${letterAt(b)} = ?`;
-      current.answer=letterAt(res);
+      wrong++; score = 3*correct - wrong;
+      ui.fb.textContent = "❌ Wrong"; ui.fb.className = "bad";
+      // keep same question; don't reveal; re-focus for retry
+      ui.ans.select();
     }
+
+    ui.ok.textContent = correct;
+    ui.bad.textContent = wrong;
+    ui.sc.textContent = score;
   }
-  ansInput.value="";
-  ansInput.focus();
-}
 
-function checkAnswer(){
-  if(ansInput.disabled) return;
-  let val=ansInput.value.trim().toUpperCase();
-  if(!val) return;
-  if(val===current.answer){
-    correct++;
-    msgDiv.textContent="✅ Right!";
-  } else {
-    wrong++;
-    msgDiv.textContent="❌ Wrong!";
+  // === Timer ===
+  function startTimer(){
+    clearInterval(timerId);
+    t = 59; ui.tm.textContent = t;
+    ui.timeup.textContent = ""; ui.ans.disabled = false; ui.ans.focus();
+    timerId = setInterval(()=>{
+      t--; ui.tm.textContent = t;
+      if(t<=0){
+        clearInterval(timerId);
+        ui.ans.disabled = true;
+        ui.timeup.textContent = "⏰ Time's up!";
+        // save HS for current mode only
+        const old = getHS(mode);
+        if(score > old){ setHS(mode, score); }
+        ui.hs.textContent = getHS(mode);
+      }
+    },1000);
   }
-  score=3*correct - wrong;
-  correctSpan.textContent=correct;
-  wrongSpan.textContent=wrong;
-  scoreSpan.textContent=score;
-  newQuestion();
-}
 
-function startGame(){
-  clearInterval(timer);
-  correct=wrong=score=0;
-  correctSpan.textContent=0;
-  wrongSpan.textContent=0;
-  scoreSpan.textContent=0;
-  msgDiv.textContent="";
-  timeupDiv.style.display="none";
-  ansInput.disabled=false;
-  time=59;
-  timerDiv.textContent="⏳ Time: "+time;
-  highscoreSpan.textContent=getHighScore(mode);
-  newQuestion();
-  timer=setInterval(()=>{
-    time--;
-    timerDiv.textContent="⏳ Time: "+time;
-    if(time<=0){
-      clearInterval(timer);
-      saveHighScore();
-      highscoreSpan.textContent=getHighScore(mode);
-      ansInput.disabled=true;
-      timeupDiv.style.display="block";
-    }
-  },1000);
-}
+  // === Mode change / restart ===
+  function reset(){
+    correct = wrong = score = 0;
+    ui.ok.textContent = "0"; ui.bad.textContent = "0"; ui.sc.textContent = "0";
+    ui.modeName.textContent = ui.mode.options[ui.mode.selectedIndex].text;
+    ui.hs.textContent = getHS(mode);
+    startTimer();
+    newQuestion();
+  }
 
-ansInput.addEventListener("keydown",e=>{
-  if(e.key==="Enter") checkAnswer();
-});
+  // === Events ===
+  ui.ans.addEventListener("keydown", e => { if(e.key === "Enter") check(); });
+  ui.mode.addEventListener("change", () => { mode = ui.mode.value; reset(); });
 
-modeSel.addEventListener("change",()=>{
-  mode=modeSel.value;
-  startGame();
-});
-
-mode=modeSel.value; // default MIX
-startGame();
+  // === Init ===
+  mode = "MIX"; ui.mode.value = "MIX";
+  ui.modeName.textContent = "Mix";
+  ui.hs.textContent = getHS("MIX");
+  reset();
+})();
 </script>
 </body>
 </html>
