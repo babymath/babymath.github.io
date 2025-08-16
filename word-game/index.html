@@ -1,182 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Alphabet Game</title>
-<style>
-  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-  #question { font-size: 28px; margin: 20px; font-weight: bold; }
-  #answer { font-size: 20px; padding: 5px; }
-  #feedback { font-size: 20px; margin: 10px; height: 30px; }
-  .correct { color: green; font-weight: bold; }
-  .wrong { color: red; font-weight: bold; }
-  .info { margin: 10px; font-size: 18px; }
-  select { font-size: 18px; padding: 5px; margin: 10px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Alphabet Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    #question { font-size: 28px; margin: 20px 0; }
+    #message { font-size: 20px; margin: 10px; height: 24px; }
+    #scoreBoard { margin-top: 15px; font-size: 18px; }
+    select, input { padding: 8px; font-size: 16px; margin: 5px; }
+    #timer { font-size: 22px; margin: 15px; }
+    #timeup { font-size: 26px; color: red; margin-top: 15px; display: none; }
+  </style>
 </head>
 <body>
+  <h1>Alphabet Game</h1>
 
-<h2>Alphabet Game</h2>
-
-<label>Mode: 
+  <label for="mode">Select Mode:</label>
   <select id="mode">
-    <option value="MIX">Mix</option>
+    <option value="MIX" selected>Mix</option>
     <option value="L2P">Alphabet → Position</option>
     <option value="P2L">Position → Alphabet</option>
-    <option value="P2LR">Position → Alphabet Reverse</option>
+    <option value="P2LR">Position → Alphabet (Reverse)</option>
     <option value="ADD">Addition / Subtraction</option>
   </select>
-</label>
 
-<div id="timer" class="info">Time: 59</div>
-<div id="score" class="info">Score: 0</div>
-<div id="highscore" class="info">High Score: 0</div>
+  <div id="timer">⏳ Time: 59</div>
+  <div id="question"></div>
 
-<div id="question"></div>
-<input type="text" id="answer" autocomplete="off" placeholder="Type answer...">
-<div id="feedback"></div>
+  <input type="text" id="answer" autocomplete="off" placeholder="Type answer" />
+  <div id="message"></div>
+
+  <div id="scoreBoard">
+    ✅ Correct: <span id="correct">0</span> |
+    ❌ Wrong: <span id="wrong">0</span> |
+    ⭐ Score: <span id="score">0</span><br>
+    🏆 High Score: <span id="highscore">0</span>
+  </div>
+
+  <div id="timeup">⏳ Time's up!</div>
 
 <script>
-const qEl = document.getElementById("question");
-const aEl = document.getElementById("answer");
-const feedback = document.getElementById("feedback");
-const scoreEl = document.getElementById("score");
-const highEl = document.getElementById("highscore");
-const timerEl = document.getElementById("timer");
+const qDiv = document.getElementById("question");
+const ansInput = document.getElementById("answer");
+const msgDiv = document.getElementById("message");
+const correctSpan = document.getElementById("correct");
+const wrongSpan = document.getElementById("wrong");
+const scoreSpan = document.getElementById("score");
+const highscoreSpan = document.getElementById("highscore");
 const modeSel = document.getElementById("mode");
+const timerDiv = document.getElementById("timer");
+const timeupDiv = document.getElementById("timeup");
 
-let state = { mode: "MIX", current: {}, score: 0, timer: 59, tId: null };
-let highscores = JSON.parse(localStorage.getItem("alphaHighscores") || "{}");
+let correct = 0, wrong = 0, score = 0;
+let current = {};
+let time = 59;
+let timer;
+let mode = "MIX";
 
-function posToLetter(p){ return String.fromCharCode(64 + ((p-1)%26)+1); }
-function letterToPos(l){ return l.toUpperCase().charCodeAt(0)-64; }
+const highscores = JSON.parse(localStorage.getItem("alphaHighScores") || "{}");
 
-function nextQuestion(){
-  let mode = state.mode;
-  if(mode==="MIX"){
-    const modes = ["L2P","P2L","P2LR","ADD"];
-    mode = modes[Math.floor(Math.random()*modes.length)];
+function saveHighScore() {
+  if (!highscores[mode] || score > highscores[mode]) {
+    highscores[mode] = score;
+    localStorage.setItem("alphaHighScores", JSON.stringify(highscores));
   }
-  let q, expect;
+}
 
-  if(mode==="L2P"){
-    const letter = posToLetter(Math.floor(Math.random()*26)+1);
-    q = `What is the position of '${letter}'?`;
-    expect = letterToPos(letter).toString();
+function getHighScore(m) {
+  return highscores[m] || 0;
+}
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function letterAt(n){return String.fromCharCode(64+n);}
+function posOf(ch){return ch.toUpperCase().charCodeAt(0)-64;}
+
+function newQuestion(){
+  msgDiv.textContent="";
+  let m = mode;
+  if(m==="MIX"){
+    const arr=["L2P","P2L","P2LR","ADD"];
+    m = arr[randInt(0,arr.length-1)];
   }
-  else if(mode==="P2L"){
-    const pos = Math.floor(Math.random()*26)+1;
-    q = `Which letter is at position ${pos}?`;
-    expect = posToLetter(pos).toUpperCase();
-  }
-  else if(mode==="P2LR"){
-    const pos = Math.floor(Math.random()*26)+1;
-    q = `Which letter is at reverse position ${pos}? (Z=1)`;
-    expect = posToLetter(27-pos).toUpperCase();
-  }
-  else if(mode==="ADD"){
-    if(Math.random()<0.5){ // letter + number or subtraction
-      let letter = posToLetter(Math.floor(Math.random()*26)+1);
-      let shift = Math.floor(Math.random()*25)+1;
-      if(Math.random()<0.5){
-        q = `${letter} + ${shift} = ?`;
-        let pos = (letterToPos(letter)+shift-1)%26+1;
-        expect = posToLetter(pos).toUpperCase();
-      } else {
-        let pos = letterToPos(letter);
-        if(pos<=shift) pos += 26;
-        q = `${letter} - ${shift} = ?`;
-        expect = posToLetter(pos-shift).toUpperCase();
-      }
-    } else { // letter ± letter
-      let l1 = posToLetter(Math.floor(Math.random()*26)+1);
-      let l2 = posToLetter(Math.floor(Math.random()*26)+1);
-      let p1 = letterToPos(l1), p2 = letterToPos(l2);
-      if(p1 < p2) [l1,l2,p1,p2] = [l2,l1,p2,p1]; // bigger first
-      if(Math.random()<0.5){
-        q = `${l1} + ${l2} = ?`;
-        expect = posToLetter((p1+p2-1)%26+1).toUpperCase();
-      } else {
-        q = `${l1} - ${l2} = ?`;
-        expect = posToLetter(p1-p2+1).toUpperCase();
-      }
+  if(m==="L2P"){
+    let l=letterAt(randInt(1,26));
+    qDiv.textContent=`Position of ${l}?`;
+    current.answer=posOf(l).toString();
+  } else if(m==="P2L"){
+    let p=randInt(1,26);
+    qDiv.textContent=`Alphabet at position ${p}?`;
+    current.answer=letterAt(p).toUpperCase();
+  } else if(m==="P2LR"){
+    let p=randInt(1,26);
+    qDiv.textContent=`Alphabet at reverse position ${p}?`;
+    current.answer=letterAt(27-p).toUpperCase();
+  } else if(m==="ADD"){
+    if(Math.random()<0.5){
+      // letter ± number
+      let l=letterAt(randInt(1,26));
+      let n=randInt(1,25);
+      let op=Math.random()<0.5?"+":"-";
+      let res=posOf(l)+(op==="+"?n:-n);
+      while(res<1)res+=26; while(res>26)res-=26;
+      qDiv.textContent=`${l} ${op} ${n} = ?`;
+      current.answer=letterAt(res);
+    }else{
+      // letter ± letter (subtraction always bigger - smaller)
+      let a=randInt(1,26), b=randInt(1,26);
+      if(a<b)[a,b]=[b,a];
+      let op=Math.random()<0.5?"+":"-";
+      let res=op==="+"?a+b:a-b;
+      while(res<1)res+=26; while(res>26)res-=26;
+      qDiv.textContent=`${letterAt(a)} ${op} ${letterAt(b)} = ?`;
+      current.answer=letterAt(res);
     }
   }
-
-  state.current = { expect };
-  qEl.textContent = q;
-  aEl.value = "";
-  aEl.focus();
-  feedback.textContent = "";
+  ansInput.value="";
+  ansInput.focus();
 }
 
 function checkAnswer(){
-  let ans = aEl.value.trim().toUpperCase();
-  if(ans === state.current.expect){
-    state.score++;
-    scoreEl.textContent = "Score: "+state.score;
-    feedback.textContent = "✅ Correct!";
-    feedback.className = "correct";
-    setTimeout(nextQuestion, 600);
+  if(ansInput.disabled) return;
+  let val=ansInput.value.trim().toUpperCase();
+  if(!val) return;
+  if(val===current.answer){
+    correct++;
+    msgDiv.textContent="✅ Right!";
   } else {
-    feedback.textContent = "❌ Wrong!";
-    feedback.className = "wrong";
+    wrong++;
+    msgDiv.textContent="❌ Wrong!";
   }
+  score=3*correct - wrong;
+  correctSpan.textContent=correct;
+  wrongSpan.textContent=wrong;
+  scoreSpan.textContent=score;
+  newQuestion();
 }
 
-function startTimer(){
-  clearInterval(state.tId);
-  state.timer = 59;
-  timerEl.textContent = "Time: "+state.timer;
-  state.tId = setInterval(()=>{
-    state.timer--;
-    timerEl.textContent = "Time: "+state.timer;
-    if(state.timer<=0){
-      clearInterval(state.tId);
-      endGame();
+function startGame(){
+  clearInterval(timer);
+  correct=wrong=score=0;
+  correctSpan.textContent=0;
+  wrongSpan.textContent=0;
+  scoreSpan.textContent=0;
+  msgDiv.textContent="";
+  timeupDiv.style.display="none";
+  ansInput.disabled=false;
+  time=59;
+  timerDiv.textContent="⏳ Time: "+time;
+  highscoreSpan.textContent=getHighScore(mode);
+  newQuestion();
+  timer=setInterval(()=>{
+    time--;
+    timerDiv.textContent="⏳ Time: "+time;
+    if(time<=0){
+      clearInterval(timer);
+      saveHighScore();
+      highscoreSpan.textContent=getHighScore(mode);
+      ansInput.disabled=true;
+      timeupDiv.style.display="block";
     }
   },1000);
 }
 
-function endGame(){
-  let mode = state.mode;
-  if(mode==="MIX") mode="MIX";
-  if(!highscores[mode] || state.score>highscores[mode]){
-    highscores[mode]=state.score;
-    localStorage.setItem("alphaHighscores", JSON.stringify(highscores));
-  }
-  alert("Time's up! Your Score: "+state.score);
-  updateHighscore();
-}
-
-function updateHighscore(){
-  let hs = highscores[state.mode]||0;
-  highEl.textContent = "High Score: "+hs;
-}
-
-aEl.addEventListener("keydown", e=>{
+ansInput.addEventListener("keydown",e=>{
   if(e.key==="Enter") checkAnswer();
 });
 
-modeSel.addEventListener("change", ()=>{
-  state.mode = modeSel.value;
-  state.score = 0;
-  scoreEl.textContent="Score: 0";
-  updateHighscore();
-  startTimer();
-  nextQuestion();
+modeSel.addEventListener("change",()=>{
+  mode=modeSel.value;
+  startGame();
 });
 
-function startGame(){
-  state.mode = "MIX";
-  modeSel.value = "MIX";
-  state.score = 0;
-  scoreEl.textContent="Score: 0";
-  updateHighscore();
-  startTimer();
-  nextQuestion();
-}
-
+mode=modeSel.value; // default MIX
 startGame();
 </script>
 </body>
