@@ -41,12 +41,32 @@
       font-weight: bold;
       color: #333;
     }
+    .modes button {
+      margin: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #66a6ff;
+      color: white;
+      cursor: pointer;
+    }
+    .modes button.active {
+      background: #0056d6;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Alphabet Quiz</h1>
-    <div id="question">Loading...</div>
+    <div class="modes">
+      <button onclick="setMode('A2P')">Alphabet → Position</button>
+      <button onclick="setMode('P2A')">Position → Alphabet</button>
+      <button onclick="setMode('P2AR')">Reverse Position</button>
+      <button onclick="setMode('ADD_SUB')">Add / Sub</button>
+      <button onclick="setMode('RANDOM')">Random</button>
+    </div>
+    <div id="question">Select a mode to start!</div>
     <input type="text" id="answer" placeholder="Your answer">
     <div id="feedback"></div>
     <div id="score">✅ 0 | ❌ 0</div>
@@ -57,14 +77,17 @@
     let current = {};
     let correctCount = 0;
     let wrongCount = 0;
+    let mode = null;
 
     function getPos(letter){ return alphabets.indexOf(letter.toUpperCase())+1; }
     function getLetter(pos){ return alphabets[(pos-1+26)%26]; }
     function getLetterReverse(pos){ return alphabets[(26-pos+26)%26]; }
 
-    function randomMode(){
-      const modes = ["A2P","P2A","P2AR","ADD_SUB"];
-      return modes[Math.floor(Math.random()*modes.length)];
+    function setMode(m){
+      mode = m;
+      document.querySelectorAll(".modes button").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+      nextQuestion();
     }
 
     function updateScore(){
@@ -78,25 +101,27 @@
     }
 
     function nextQuestion(){
-      const mode = randomMode();
+      if(!mode) return;
       let q="", expect="";
 
-      if(mode==="A2P"){
+      let m = (mode==="RANDOM") ? ["A2P","P2A","P2AR","ADD_SUB"][Math.floor(Math.random()*4)] : mode;
+
+      if(m==="A2P"){
         const letter = alphabets[Math.floor(Math.random()*26)];
         q = `What is the position of '${letter}'?`;
         expect = String(getPos(letter));
       }
-      else if(mode==="P2A"){
+      else if(m==="P2A"){
         const pos = Math.floor(Math.random()*26)+1;
         q = `Which alphabet is at position ${pos}?`;
         expect = getLetter(pos);
       }
-      else if(mode==="P2AR"){
+      else if(m==="P2AR"){
         const pos = Math.floor(Math.random()*26)+1;
         q = `Which alphabet is at reverse position ${pos}? (Z=1, A=26)`;
         expect = getLetterReverse(pos);
       }
-      else if(mode==="ADD_SUB"){
+      else if(m==="ADD_SUB"){
         if(Math.random()<0.5){
           const letter = alphabets[Math.floor(Math.random()*26)];
           const num = Math.floor(Math.random()*25)+1;
@@ -145,8 +170,6 @@
       if(e.key==="Enter") checkAnswer();
     });
 
-    // Start game automatically
-    window.onload = nextQuestion;
   </script>
 </body>
 </html>
