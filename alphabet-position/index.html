@@ -5,24 +5,127 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Alphabet Game</title>
 <style>
-  :root{
+  /* === Color Variables & Basic Styles === */
+  :root {
     --bg:#f6f8fc; --card:#fff; --pri:#2563eb; --mut:#64748b; --good:#16a34a; --bad:#ef4444;
   }
-  body{margin:0;background:var(--bg);font-family:system-ui,Segoe UI,Arial,sans-serif;color:#0f172a;}
-  .wrap{max-width:420px;margin:18px auto;padding:12px;}
-  .card{background:var(--card);border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:14px;}
-  h1{font-size:18px;margin:6px 0 10px;text-align:center;color:#1e293b;font-weight:700}
-  .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0}
-  select, input{width:100%;font-size:14px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;outline:none}
-  #question{margin:10px 0;padding:10px 12px;border:1.5px solid var(--pri);border-radius:10px;
-            background:#eff6ff;color:var(--pri);font-weight:700;font-size:18px;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center}
-  #feedback{min-height:20px;margin:6px 0 2px;font-size:14px;font-weight:700}
-  #feedback.good{color:var(--good)} #feedback.bad{color:var(--bad)}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
-  .stat{background:#f1f5f9;border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;color:var(--mut)}
-  .stat b{display:block;color:#0f172a;font-size:14px;margin-top:2px}
-  .hs{margin-top:8px;font-size:12px;color:#475569;text-align:center}
-  #timeup{margin-top:8px;text-align:center;color:var(--bad);font-weight:800;font-size:16px;min-height:18px}
+  body {
+    margin:0;
+    background:var(--bg);
+    font-family:system-ui,Segoe UI,Arial,sans-serif;
+    color:#0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width:420px;
+    margin:18px auto;
+    padding:12px;
+  }
+  .card {
+    background:var(--card);
+    border-radius:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    padding:14px;
+  }
+  h1 {
+    font-size:18px;
+    margin:6px 0 10px;
+    text-align:center;
+    color:#1e293b;
+    font-weight:700;
+  }
+  .row {
+    display:flex;
+    gap:8px;
+    align-items:center;
+    justify-content:space-between;
+    margin:8px 0;
+  }
+  select, input {
+    width:100%;
+    font-size:14px;
+    padding:8px 10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    outline:none;
+  }
+  #question {
+    margin:10px 0;
+    padding:10px 12px;
+    border:1.5px solid var(--pri);
+    border-radius:10px;
+    background:#eff6ff;
+    color:var(--pri);
+    font-weight:700;
+    font-size:18px;
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  #feedback {
+    min-height:20px;
+    margin:6px 0 2px;
+    font-size:14px;
+    font-weight:700;
+  }
+  #feedback.good {
+    color:var(--good);
+  }
+  #feedback.bad {
+    color:var(--bad);
+  }
+  .stats {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-top:8px;
+  }
+  .stat {
+    background:#f1f5f9;
+    border-radius:8px;
+    padding:8px 6px;
+    text-align:center;
+    font-size:12px;
+    color:var(--mut);
+  }
+  .stat b {
+    display:block;
+    color:#0f172a;
+    font-size:14px;
+    margin-top:2px;
+  }
+  .hs {
+    margin-top:8px;
+    font-size:12px;
+    color:#475569;
+    text-align:center;
+  }
+  #timeup {
+    margin-top:8px;
+    text-align:center;
+    color:var(--bad);
+    font-weight:800;
+    font-size:16px;
+    min-height:18px;
+  }
+  #restartBtn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--pri);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
 </style>
 </head>
 <body>
@@ -57,6 +160,7 @@
 
       <div class="hs">🏆 High Score (<span id="modeName">Mix</span>): <b id="highscore">0</b></div>
       <div id="timeup"></div>
+      <button id="restartBtn" style="display:none;">Play Again</button>
     </div>
   </div>
 
@@ -83,15 +187,24 @@
   const setHS = (m,val)=> localStorage.setItem(hsKey(m), val);
 
   const ui = {
-    mode: $("mode"), q: $("question"), ans: $("answer"),
-    fb: $("feedback"), ok: $("correct"), bad: $("wrong"),
-    sc: $("score"), tm: $("timer"), hs: $("highscore"),
-    modeName: $("modeName"), timeup: $("timeup")
+    mode: $("mode"),
+    q: $("question"),
+    ans: $("answer"),
+    fb: $("feedback"),
+    ok: $("correct"),
+    bad: $("wrong"),
+    sc: $("score"),
+    tm: $("timer"),
+    hs: $("highscore"),
+    modeName: $("modeName"),
+    timeup: $("timeup"),
+    restartBtn: $("restartBtn") // Added reference to the new button
   };
 
   // === Question generation ===
   function newQuestion(){
-    ui.fb.textContent = ""; ui.fb.className = "";
+    ui.fb.textContent = "";
+    ui.fb.className = "";
     let kind = mode;
     if(kind === "MIX"){
       const pool = ["A2P","P2A","P2AR","ADD"];
@@ -149,13 +262,17 @@
     if(!val) return;
 
     if(val === expect){
-      correct++; score = 3*correct - wrong;
-      ui.fb.textContent = "✅ Correct"; ui.fb.className = "good";
+      correct++;
+      score = 3*correct - wrong;
+      ui.fb.textContent = "✅ Correct";
+      ui.fb.className = "good";
       // Auto next ONLY on correct
       newQuestion();
-    }else{
-      wrong++; score = 3*correct - wrong;
-      ui.fb.textContent = "❌ Wrong"; ui.fb.className = "bad";
+    } else {
+      wrong++;
+      score = 3*correct - wrong;
+      ui.fb.textContent = "❌ Wrong";
+      ui.fb.className = "bad";
       // keep same question; don't reveal; re-focus for retry
       ui.ans.select();
     }
@@ -165,41 +282,66 @@
     ui.sc.textContent = score;
   }
 
-  // === Timer ===
+  // === Timer & Game Over Logic ===
   function startTimer(){
     clearInterval(timerId);
-    t = 59; ui.tm.textContent = t;
-    ui.timeup.textContent = ""; ui.ans.disabled = false; ui.ans.focus();
+    t = 59;
+    ui.tm.textContent = t;
+    ui.ans.disabled = false;
+    ui.ans.focus();
+
     timerId = setInterval(()=>{
-      t--; ui.tm.textContent = t;
-      if(t<=0){
-        clearInterval(timerId);
-        ui.ans.disabled = true;
-        ui.timeup.textContent = "⏰ Time's up!";
-        // save HS for current mode only
-        const old = getHS(mode);
-        if(score > old){ setHS(mode, score); }
-        ui.hs.textContent = getHS(mode);
+      t--;
+      ui.tm.textContent = t;
+      if(t <= 0){
+        gameOver();
       }
     },1000);
+  }
+
+  function gameOver() {
+    clearInterval(timerId);
+    ui.ans.disabled = true;
+    ui.timeup.textContent = "⏰ Time's up!";
+
+    const oldHS = getHS(mode);
+    if (score > oldHS) {
+        setHS(mode, score);
+        ui.hs.textContent = score;
+        ui.timeup.textContent = `🎉 New High Score: ${score}!`;
+    }
+
+    // Show the "Play Again" button
+    ui.restartBtn.style.display = 'block';
   }
 
   // === Mode change / restart ===
   function reset(){
     correct = wrong = score = 0;
-    ui.ok.textContent = "0"; ui.bad.textContent = "0"; ui.sc.textContent = "0";
+    ui.ok.textContent = "0";
+    ui.bad.textContent = "0";
+    ui.sc.textContent = "0";
     ui.modeName.textContent = ui.mode.options[ui.mode.selectedIndex].text;
     ui.hs.textContent = getHS(mode);
+    ui.restartBtn.style.display = 'none'; // Hide the button
+    ui.timeup.textContent = "";
     startTimer();
     newQuestion();
   }
 
   // === Events ===
-  ui.ans.addEventListener("keydown", e => { if(e.key === "Enter") check(); });
-  ui.mode.addEventListener("change", () => { mode = ui.mode.value; reset(); });
+  ui.ans.addEventListener("keydown", e => {
+    if (e.key === "Enter") check();
+  });
+  ui.mode.addEventListener("change", () => {
+    mode = ui.mode.value;
+    reset();
+  });
+  ui.restartBtn.addEventListener("click", reset); // New event listener for the restart button
 
   // === Init ===
-  mode = "MIX"; ui.mode.value = "MIX";
+  mode = "MIX";
+  ui.mode.value = "MIX";
   ui.modeName.textContent = "Mix";
   ui.hs.textContent = getHS("MIX");
   reset();
